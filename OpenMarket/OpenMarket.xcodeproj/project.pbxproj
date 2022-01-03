@@ -37,6 +37,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		369126202782D3A0002304D4 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		369126212782D3AC002304D4 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C70FB10025BEF61C00C9924E /* Main.storyboard */,
+				C70FB10525BEF61D00C9924E /* LaunchScreen.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		369126222782D3B1002304D4 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				C70FB0FE25BEF61C00C9924E /* ViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		C70FB0EE25BEF61C00C9924E = {
 			isa = PBXGroup;
 			children = (
@@ -56,13 +80,13 @@
 		C70FB0F925BEF61C00C9924E /* OpenMarket */ = {
 			isa = PBXGroup;
 			children = (
+				369126222782D3B1002304D4 /* Controller */,
+				369126212782D3AC002304D4 /* View */,
+				369126202782D3A0002304D4 /* Model */,
+				C70FB10825BEF61D00C9924E /* Info.plist */,
+				C70FB10325BEF61D00C9924E /* Assets.xcassets */,
 				C70FB0FA25BEF61C00C9924E /* AppDelegate.swift */,
 				C70FB0FC25BEF61C00C9924E /* SceneDelegate.swift */,
-				C70FB0FE25BEF61C00C9924E /* ViewController.swift */,
-				C70FB10025BEF61C00C9924E /* Main.storyboard */,
-				C70FB10325BEF61D00C9924E /* Assets.xcassets */,
-				C70FB10525BEF61D00C9924E /* LaunchScreen.storyboard */,
-				C70FB10825BEF61D00C9924E /* Info.plist */,
 			);
 			path = OpenMarket;
 			sourceTree = "<group>";
