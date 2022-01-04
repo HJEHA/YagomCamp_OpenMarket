@@ -1,6 +1,6 @@
 import XCTest
 
-class OpenMarketTests: XCTestCase {
+class JSONParserTests: XCTestCase {
     func test_Product타입_decode했을때_Nil이_아닌지_테스트() {
         guard let path = Bundle.main.path(forResource: "MockProduct", ofType: "json"),
               let jsonString = try? String(contentsOfFile: path) else {
