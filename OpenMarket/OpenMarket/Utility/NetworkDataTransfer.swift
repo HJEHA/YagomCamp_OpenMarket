@@ -36,4 +36,32 @@ struct NetworkDataTransfer {
         
         return result
     }
+    
+    func getProductDetail(id: Int) -> Product? {
+        guard isConnected,
+              let url = URL(string: "\(self.url)api/products/\(id)") else {
+            return nil
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "GET"
+        
+        var product: Product?
+        let dataTask = URLSession.shared.dataTask(with: urlRequest) { data, response, _ in
+            let successStatusCode = 200...299
+            
+            guard let httpResponse = response as? HTTPURLResponse,
+                  successStatusCode.contains(httpResponse.statusCode) else {
+                      semaphore.signal()
+                      return
+                  }
+            
+            product = JSONParser<Product>().decode(from: data)
+            semaphore.signal()
+        }
+        dataTask.resume()
+        semaphore.wait()
+        
+        return product
+    }
 }
