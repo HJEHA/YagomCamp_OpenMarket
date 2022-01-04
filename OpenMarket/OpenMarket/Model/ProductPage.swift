@@ -9,7 +9,7 @@ struct ProductPage: Codable {
     let pages: [Product]
     let lastPage: Int
     let hasNextPage: Bool
-    let hasPrevpage: Bool
+    let hasPrevPage: Bool
     
     enum CodingKeys: String, CodingKey {
         case itemsPerPage
@@ -18,9 +18,9 @@ struct ProductPage: Codable {
         case limit
         case pages
         case lastPage
-        
-        case pageNumber = "page_no"
-        case hasNextPage = "has_next"
-        case hasPrevpage = "has_prev"
+
+        case pageNumber = "pageNo"
+        case hasNextPage = "hasNext"
+        case hasPrevPage = "hasPrev"
     }
 }
