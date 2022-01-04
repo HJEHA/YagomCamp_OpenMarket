@@ -1,27 +1,29 @@
 import XCTest
 
-class OpenMarketTests: XCTestCase {    
+class OpenMarketTests: XCTestCase {
     func test_Product타입_decode했을때_Nil이_아닌지_테스트() {
-        let result = JSONParser<Product>().decode(from: MockProduct.json)
+        guard let path = Bundle.main.path(forResource: "MockProduct", ofType: "json"),
+              let jsonString = try? String(contentsOfFile: path) else {
+            return
+        }
+        
+        let data = jsonString.data(using: .utf8)
+        let result = JSONParser<Product>().decode(from: data)
         
         XCTAssertNotNil(result)
-    }
-    
-    func test_Product타입_decode했을때_id가_일치하는지_테스트() {
-        let result = JSONParser<Product>().decode(from: MockProduct.json)
-        
         XCTAssertEqual(result?.id, 15)
     }
     
     func test_ProductPage타입_decode했을때_Nil이_아닌지_테스트() {
-        let result = JSONParser<ProductPage>().decode(from: MockProductPage.json)
+        guard let path = Bundle.main.path(forResource: "MockProductPage", ofType: "json"),
+              let jsonString = try? String(contentsOfFile: path) else {
+            return
+        }
         
+        let data = jsonString.data(using: .utf8)
+        let result = JSONParser<ProductPage>().decode(from: data)
+
         XCTAssertNotNil(result)
-    }
-    
-    func test_ProductPage타입_decode했을때_pageNumber가_일치하는지_테스트() {
-        let result = JSONParser<ProductPage>().decode(from: MockProductPage.json)
-        
         XCTAssertEqual(result?.pageNumber, 1)
     }
 }

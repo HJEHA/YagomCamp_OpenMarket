@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		08A5B0D427843617002E1ABE /* MockProduct.json in Resources */ = {isa = PBXBuildFile; fileRef = 08A5B0D327843617002E1ABE /* MockProduct.json */; };
+		08A5B0D62784362C002E1ABE /* MockProductPage.json in Resources */ = {isa = PBXBuildFile; fileRef = 08A5B0D52784362C002E1ABE /* MockProductPage.json */; };
 		08B2CE8B2782DEAD009295F2 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B2CE8A2782DEAD009295F2 /* Product.swift */; };
 		08B2CE8D2782E0D4009295F2 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B2CE8C2782E0D4009295F2 /* Currency.swift */; };
 		08B2CE8F2782E7B1009295F2 /* ProductPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B2CE8E2782E7B1009295F2 /* ProductPage.swift */; };
 		08B2CE972782EE56009295F2 /* OpenMarketTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B2CE962782EE56009295F2 /* OpenMarketTests.swift */; };
 		08B2CE9D2782EE8B009295F2 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B2CE8A2782DEAD009295F2 /* Product.swift */; };
-		08B2CEA02782EF92009295F2 /* MockProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B2CE9F2782EF92009295F2 /* MockProduct.swift */; };
 		08B2CEA12782F0C3009295F2 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B2CE8C2782E0D4009295F2 /* Currency.swift */; };
 		08B2CEA22782F0C6009295F2 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369126232782E558002304D4 /* Image.swift */; };
 		08B2CEA32782F0C9009295F2 /* Vendor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369126252782E5C5002304D4 /* Vendor.swift */; };
@@ -21,7 +22,6 @@
 		369126242782E558002304D4 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369126232782E558002304D4 /* Image.swift */; };
 		369126262782E5C5002304D4 /* Vendor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369126252782E5C5002304D4 /* Vendor.swift */; };
 		369126292782EAC1002304D4 /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369126282782EAC1002304D4 /* JSONParser.swift */; };
-		3691262B27832EED002304D4 /* MockProductPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3691262A27832EED002304D4 /* MockProductPage.swift */; };
 		3691262E2783D6FA002304D4 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3691262D2783D6FA002304D4 /* .swiftlint.yml */; };
 		6DDB0F9DE9375850BABD8722 /* Pods_OpenMarketTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 915CCA0E361B84730E9B5851 /* Pods_OpenMarketTests.framework */; };
 		C70FB0FB25BEF61C00C9924E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70FB0FA25BEF61C00C9924E /* AppDelegate.swift */; };
@@ -44,16 +44,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		08A5B0D327843617002E1ABE /* MockProduct.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MockProduct.json; sourceTree = "<group>"; };
+		08A5B0D52784362C002E1ABE /* MockProductPage.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MockProductPage.json; sourceTree = "<group>"; };
 		08B2CE8A2782DEAD009295F2 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		08B2CE8C2782E0D4009295F2 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 		08B2CE8E2782E7B1009295F2 /* ProductPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPage.swift; sourceTree = "<group>"; };
 		08B2CE942782EE56009295F2 /* OpenMarketTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenMarketTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		08B2CE962782EE56009295F2 /* OpenMarketTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenMarketTests.swift; sourceTree = "<group>"; };
-		08B2CE9F2782EF92009295F2 /* MockProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProduct.swift; sourceTree = "<group>"; };
 		369126232782E558002304D4 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		369126252782E5C5002304D4 /* Vendor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vendor.swift; sourceTree = "<group>"; };
 		369126282782EAC1002304D4 /* JSONParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
-		3691262A27832EED002304D4 /* MockProductPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductPage.swift; sourceTree = "<group>"; };
 		3691262D2783D6FA002304D4 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		8175CB3350BE04295834DF12 /* Pods-OpenMarketTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OpenMarketTests.release.xcconfig"; path = "Target Support Files/Pods-OpenMarketTests/Pods-OpenMarketTests.release.xcconfig"; sourceTree = "<group>"; };
 		915CCA0E361B84730E9B5851 /* Pods_OpenMarketTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OpenMarketTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -103,8 +103,8 @@
 		08B2CE9E2782EF01009295F2 /* Mock */ = {
 			isa = PBXGroup;
 			children = (
-				08B2CE9F2782EF92009295F2 /* MockProduct.swift */,
-				3691262A27832EED002304D4 /* MockProductPage.swift */,
+				08A5B0D327843617002E1ABE /* MockProduct.json */,
+				08A5B0D52784362C002E1ABE /* MockProductPage.json */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -285,6 +285,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08A5B0D427843617002E1ABE /* MockProduct.json in Resources */,
+				08A5B0D62784362C002E1ABE /* MockProductPage.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,8 +373,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				08B2CEA12782F0C3009295F2 /* Currency.swift in Sources */,
-				3691262B27832EED002304D4 /* MockProductPage.swift in Sources */,
-				08B2CEA02782EF92009295F2 /* MockProduct.swift in Sources */,
 				08B2CEA52782F191009295F2 /* JSONParser.swift in Sources */,
 				08B2CEA42782F0CC009295F2 /* ProductPage.swift in Sources */,
 				08B2CE972782EE56009295F2 /* OpenMarketTests.swift in Sources */,
