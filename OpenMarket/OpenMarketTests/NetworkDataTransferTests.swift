@@ -13,4 +13,12 @@ class NetworkDataTransferTests: XCTestCase {
         XCTAssertNotNil(result)
         XCTAssertEqual(result!.id, 2)
     }
+    
+    func test_getProductPage가_정상작동_하는지() {
+        let result = NetworkDataTransfer().getProductPage(pageNumber: 1, itemsPerPage: 10)
+        
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result!.pageNumber, 1)
+        XCTAssertEqual(result!.itemsPerPage, 20)
+    }
 }

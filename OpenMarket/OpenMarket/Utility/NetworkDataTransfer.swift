@@ -64,4 +64,41 @@ struct NetworkDataTransfer {
         
         return product
     }
+    
+    func getProductPage(pageNumber: Int, itemsPerPage: Int) -> ProductPage? {
+        guard isConnected else {
+            return nil
+        }
+        
+        var urlComponents = URLComponents(string: "\(self.url)api/products?")
+        let pageNumberQuery = URLQueryItem(name: "page_no", value: "\(pageNumber)")
+        let itemsPerPageQuery = URLQueryItem(name: "items_per_page", value: "\(itemsPerPage)")
+        urlComponents?.queryItems?.append(pageNumberQuery)
+        urlComponents?.queryItems?.append(itemsPerPageQuery)
+        
+        guard let url: URL = urlComponents?.url else {
+            return nil
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "GET"
+        
+        var productPage: ProductPage?
+        let dataTask = URLSession.shared.dataTask(with: urlRequest) { data, response, _ in
+            let successStatusCode = 200...299
+            
+            guard let httpResponse = response as? HTTPURLResponse,
+                  successStatusCode.contains(httpResponse.statusCode) else {
+                      semaphore.signal()
+                      return
+                  }
+            
+            productPage = JSONParser<ProductPage>().decode(from: data)
+            semaphore.signal()
+        }
+        dataTask.resume()
+        semaphore.wait()
+        
+        return productPage
+    }
 }
