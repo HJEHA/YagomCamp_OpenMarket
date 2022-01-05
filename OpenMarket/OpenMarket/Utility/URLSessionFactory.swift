@@ -14,23 +14,19 @@ struct URLSessionFactory {
         self.session = session
     }
     
-    private func dataTask(request: URLRequest) -> Data {
-        var resultData = Data()
+    private func dataTask(request: URLRequest) -> Data? {
+        var resultData: Data?
         
         let task = session.dataTask(with: request) { data, response, _ in
-            let successStatusCode = 200
+            let successStatusCode = 200..<300
             
             guard let httpResponse = response as? HTTPURLResponse,
-                  httpResponse.statusCode == successStatusCode else {
+                  successStatusCode.contains(httpResponse.statusCode) else {
                       semaphore.signal()
                       return
                   }
             
-            if let data = data {
-                resultData = data
-                semaphore.signal()
-                return
-            }
+            resultData = data
             semaphore.signal()
         }
         task.resume()
@@ -47,8 +43,50 @@ struct URLSessionFactory {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         
-        let data = dataTask(request: urlRequest)
+        guard let data = dataTask(request: urlRequest) else {
+            return false
+        }
         let successResponse = "\"OK\""
+        
         return String(data: data, encoding: .utf8) == successResponse
+    }
+    
+    func getProductDetail(id: Int) -> Product? {
+        guard isConnected,
+              let url = URL(string: "\(self.baseURL)api/products/\(id)") else {
+                  return nil
+              }
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "GET"
+        
+        let data = dataTask(request: urlRequest)
+        let product = JSONParser<Product>().decode(from: data)
+        
+        return product
+    }
+    
+    func getProductPage(pageNumber: Int, itemsPerPage: Int) -> ProductPage? {
+        guard isConnected else {
+            return nil
+        }
+        
+        var urlComponents = URLComponents(string: "\(self.baseURL)api/products?")
+        let pageNumberQuery = URLQueryItem(name: "page_no", value: "\(pageNumber)")
+        let itemsPerPageQuery = URLQueryItem(name: "items_per_page", value: "\(itemsPerPage)")
+        urlComponents?.queryItems?.append(pageNumberQuery)
+        urlComponents?.queryItems?.append(itemsPerPageQuery)
+        
+        guard let url: URL = urlComponents?.url else {
+            return nil
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "GET"
+        
+        let data = dataTask(request: urlRequest)
+        let productPage = JSONParser<ProductPage>().decode(from: data)
+        
+        return productPage
     }
 }
