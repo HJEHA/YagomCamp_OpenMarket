@@ -19,6 +19,6 @@ class NetworkDataTransferTests: XCTestCase {
         
         XCTAssertNotNil(result)
         XCTAssertEqual(result!.pageNumber, 1)
-        XCTAssertEqual(result!.itemsPerPage, 20)
+        XCTAssertEqual(result!.itemsPerPage, 10)
     }
 }

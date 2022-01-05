@@ -101,4 +101,37 @@ struct NetworkDataTransfer {
         
         return productPage
     }
+    
+    enum CustomError: Error {
+        case statusCodeError
+        case unknownError
+    }
+
+    func dataTask(request: URLRequest, completionHandler: @escaping (Result<Data, CustomError>) -> Void) {
+        
+        let task = URLSession.shared.dataTask(with: request) { data, urlResponse, error in
+            
+            guard let httpResponse = urlResponse as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                      return completionHandler(.failure(.statusCodeError))
+                  }
+            
+            if let data = data {
+                return completionHandler(.success(data))
+            }
+            
+            completionHandler(.failure(.unknownError))
+        }
+        task.resume()
+    }
+    
+    func getUser(id: Int, completionHandler: @escaping (Result<Data, CustomError>) -> Void) {
+        
+        guard let url = URL(string: self.url) else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        dataTask(request: request, completionHandler: completionHandler)
+    }
 }
