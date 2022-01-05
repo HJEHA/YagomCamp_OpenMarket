@@ -1,13 +1,13 @@
 import Foundation
 
 struct NetworkDataTransfer {
-    private let session: URLSession
-    private var semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
+    private let session: URLSessionProtocol
+    private(set) var semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
     var isConnected: Bool {
         return getHealthChecker()
     }
     
-    init(session: URLSession = URLSession.shared) {
+    init(session: URLSessionProtocol = URLSession.shared) {
         self.session = session
     }
     
