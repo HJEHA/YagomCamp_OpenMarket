@@ -1,68 +1,59 @@
 import Foundation
 
+enum NetworkError: Error {
+    case statusCodeError
+    case unknownError
+}
+
 struct NetworkDataTransfer {
     private let session: URLSessionProtocol
-    private(set) var semaphore: DispatchSemaphore = DispatchSemaphore(value: 0)
-    var isConnected: Bool {
-        return getHealthChecker()
-    }
-    
+        
     init(session: URLSessionProtocol = URLSession.shared) {
         self.session = session
     }
     
-    private func dataTask(request: URLRequest) -> Data? {
-        var resultData: Data?
-        
+    private func loadData(request: URLRequest, completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
         let task = session.dataTask(with: request) { data, response, _ in
             let successStatusCode = 200..<300
-            
             guard let httpResponse = response as? HTTPURLResponse,
                   successStatusCode.contains(httpResponse.statusCode) else {
-                      semaphore.signal()
+                      completionHandler(.failure(.statusCodeError))
                       return
                   }
             
-            resultData = data
-            semaphore.signal()
+            if let data = data {
+                completionHandler(.success(data))
+                return
+            }
+            
+            completionHandler(.failure(.unknownError))
         }
         task.resume()
-        semaphore.wait()
-        
-        return resultData
     }
     
-    func getHealthChecker() -> Bool {
-        guard let urlRequest = URLRequest(url: OpenMarketURL.healthChecker, method: .get),
-              let data = dataTask(request: urlRequest) else {
-            return false
+    func getHealthChecker(completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
+        guard let urlRequest = URLRequest(url: OpenMarketURL.healthChecker, method: .get) else {
+            return
         }
-        let successResponse = "\"OK\""
-        
-        return String(data: data, encoding: .utf8) == successResponse
+        loadData(request: urlRequest, completionHandler: completionHandler)
     }
     
-    func getProductDetail(id: Int) -> Product? {
-        guard isConnected,
-              let urlRequest = URLRequest(url: OpenMarketURL.productDetail(id: id), method: .get) else {
-                  return nil
-              }
-        
-        let data = dataTask(request: urlRequest)
-        let product = JSONParser<Product>().decode(from: data)
-        
-        return product
-    }
-    
-    func getProductPage(pageNumber: Int, itemsPerPage: Int) -> ProductPage? {
-        guard isConnected,
-              let urlRequest = URLRequest(url: OpenMarketURL.productPage(pageNumber, itemsPerPage), method: .get) else {
-            return nil
+    func getProductDetail(id: Int, completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
+        guard let urlRequest = URLRequest(url: OpenMarketURL.productDetail(id: id), method: .get) else {
+            return
         }
-        
-        let data = dataTask(request: urlRequest)
-        let productPage = JSONParser<ProductPage>().decode(from: data)
-        
-        return productPage
+
+        loadData(request: urlRequest, completionHandler: completionHandler)
+    }
+
+    func getProductPage(pageNumber: Int,
+                        itemsPerPage: Int,
+                        completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
+        guard let urlRequest = URLRequest(url: OpenMarketURL.productPage(pageNumber, itemsPerPage),
+                                          method: .get) else {
+            return
+        }
+
+        loadData(request: urlRequest, completionHandler: completionHandler)
     }
 }

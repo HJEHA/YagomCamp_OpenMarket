@@ -12,7 +12,6 @@ class MockURLSessionDataTask: URLSessionDataTask {
 class MockURLSession: URLSessionProtocol {
     var isRequestSuccess: Bool
     var sessionDataTask: MockURLSessionDataTask?
-    var semaphore: DispatchSemaphore?
 
     init(isRequestSuccess: Bool = true) {
         self.isRequestSuccess = isRequestSuccess
@@ -43,7 +42,6 @@ class MockURLSession: URLSessionProtocol {
             }
         }
         self.sessionDataTask = sessionDataTask
-        semaphore?.signal()
         
         return sessionDataTask
     }
