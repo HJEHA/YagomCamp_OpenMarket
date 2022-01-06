@@ -8,9 +8,9 @@ class NetworkDataTransferTests: XCTestCase {
         NetworkDataTransfer().getHealthChecker { result in
             switch result {
             case .success(let data):
-                let rusultString = String(data: data, encoding: .utf8)
+                let resultString = String(data: data, encoding: .utf8)
                 let successString = #""OK""#
-                XCTAssertEqual(rusultString, successString)
+                XCTAssertEqual(resultString, successString)
             case .failure(_):
                 XCTFail()
             }
@@ -19,28 +19,75 @@ class NetworkDataTransferTests: XCTestCase {
         wait(for: [expectation], timeout: 10.0)
     }
     
-//    func test_getProductDetail가_정상작동_하는지() {
-//        let result = NetworkDataTransfer().getProductDetail(id: 2)
-//
-//        XCTAssertNotNil(result)
-//        XCTAssertEqual(result!.id, 2)
-//    }
-//
-//    func test_getProductPage가_정상작동_하는지() {
-//        let result = NetworkDataTransfer().getProductPage(pageNumber: 1, itemsPerPage: 10)
-//
-//        XCTAssertNotNil(result)
-//        XCTAssertEqual(result!.pageNumber, 1)
-//        XCTAssertEqual(result!.itemsPerPage, 10)
-//    }
-//
-//    func test_MockURLSession의_StatusCode가_200번이_아닐때_실패하는지() {
-//        let mockSession = MockURLSession(isRequestSuccess: false)
-//        let netWorkDataTransfer = NetworkDataTransfer(session: mockSession)
-//        mockSession.semaphore = netWorkDataTransfer.semaphore
-//
-//        let result = netWorkDataTransfer.isConnected
-//
-//        XCTAssertFalse(result)
-//    }
+    func test_getProductDetail가_정상작동_하는지() {
+        let expectation = XCTestExpectation(description: "getProductDetail 비동기 테스트")
+        
+        NetworkDataTransfer().getProductDetail(id: 2) { result in
+            switch result {
+            case .success(let data):
+                let product = JSONParser<Product>().decode(from: data)
+                XCTAssertEqual(product?.id, 2)
+                XCTAssertEqual(product?.name, "팥빙수")
+            case .failure(_):
+                XCTFail()
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 10.0)
+    }
+
+    func test_getProductPage가_정상작동_하는지() {
+        let expectation = XCTestExpectation(description: "getProductPage 비동기 테스트")
+        
+        NetworkDataTransfer().getProductPage(pageNumber: 1, itemsPerPage: 10) { result in
+            switch result {
+            case .success(let data):
+                let productPage = JSONParser<ProductPage>().decode(from: data)
+                XCTAssertEqual(productPage?.pageNumber, 1)
+                XCTAssertEqual(productPage?.itemsPerPage, 10)
+            case .failure(_):
+                XCTFail()
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 10.0)
+    }
+  
+    func test_MockURLSession의_StatusCode가_200번일때_정상동작_하는지() {
+        let mockSession = MockURLSession(isRequestSuccess: true)
+        let netWorkDataTransfer = NetworkDataTransfer(session: mockSession)
+
+        let expectation = XCTestExpectation(description: "MockURLSession의 getHealthChecker 비동기 테스트")
+        
+        netWorkDataTransfer.getHealthChecker { result in
+            switch result {
+            case .success(let data):
+                let resultString = String(data: data, encoding: .utf8)
+                let successString = #""OK""#
+                XCTAssertEqual(resultString, successString)
+            case .failure(_):
+                XCTFail()
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 10.0)
+    }
+    
+    func test_MockURLSession의_StatusCode가_200번이_아닐때_실패하는지() {
+        let mockSession = MockURLSession(isRequestSuccess: false)
+        let netWorkDataTransfer = NetworkDataTransfer(session: mockSession)
+
+        let expectation = XCTestExpectation(description: "MockURLSession의 getHealthChecker 비동기 테스트")
+
+        netWorkDataTransfer.getHealthChecker { result in
+            switch result {
+            case .success(_):
+                XCTFail()
+            case .failure(let error):
+                XCTAssertEqual(error, NetworkError.statusCodeError)
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 10.0)
+    }
 }
