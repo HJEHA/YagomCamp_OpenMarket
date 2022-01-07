@@ -1,10 +1,10 @@
 import Foundation
 
-protocol URLable {
+protocol URLProtocol {
     var url: URL? { get }
 }
 
-enum OpenMarketURL: URLable {
+enum OpenMarketURL: URLProtocol {
     private static let apiHost = "https://market-training.yagom-academy.kr/"
     case healthChecker
     case productDetail(id: Int)

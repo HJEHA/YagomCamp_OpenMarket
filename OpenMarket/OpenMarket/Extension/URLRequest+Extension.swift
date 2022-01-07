@@ -1,7 +1,7 @@
 import Foundation
 
 extension URLRequest {
-    init?(url: URLable, method: HttpMethod) {
+    init?(url: URLProtocol, method: HttpMethod) {
         guard let url = url.url else {
             return nil
         }
