@@ -6,14 +6,17 @@ extension URLRequest {
             return nil
         }
         self.init(url: url)
-        
-        switch method {
-        case .get:
-            self.httpMethod = "GET"
-        }
+        self.httpMethod = method.description
     }
 }
 
 enum HttpMethod {
     case get
+    
+    var description: String {
+        switch self {
+        case .get:
+            return "GET"
+        }
+    }
 }
