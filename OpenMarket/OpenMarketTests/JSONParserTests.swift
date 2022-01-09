@@ -9,7 +9,7 @@ class JSONParserTests: XCTestCase {
         }
         
         let data = jsonString.data(using: .utf8)
-        let result = JSONParser<Product>().decode(from: data)
+        let result = try? JSONParser<Product>().decode(from: data).get()
         
         XCTAssertNotNil(result)
         XCTAssertEqual(result?.id, 15)
@@ -22,7 +22,7 @@ class JSONParserTests: XCTestCase {
         }
         
         let data = jsonString.data(using: .utf8)
-        let result = JSONParser<ProductPage>().decode(from: data)
+        let result = try? JSONParser<ProductPage>().decode(from: data).get()
 
         XCTAssertNotNil(result)
         XCTAssertEqual(result?.pageNumber, 1)

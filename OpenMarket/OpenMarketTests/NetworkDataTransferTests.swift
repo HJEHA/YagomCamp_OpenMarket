@@ -25,7 +25,7 @@ class NetworkDataTransferTests: XCTestCase {
         NetworkDataTransfer().getProductDetail(id: 2) { result in
             switch result {
             case .success(let data):
-                let product = JSONParser<Product>().decode(from: data)
+                let product = try? JSONParser<Product>().decode(from: data).get()
                 XCTAssertEqual(product?.id, 2)
                 XCTAssertEqual(product?.name, "팥빙수")
             case .failure(_):
@@ -42,7 +42,7 @@ class NetworkDataTransferTests: XCTestCase {
         NetworkDataTransfer().getProductPage(pageNumber: 1, itemsPerPage: 10) { result in
             switch result {
             case .success(let data):
-                let productPage = JSONParser<ProductPage>().decode(from: data)
+                let productPage = try? JSONParser<ProductPage>().decode(from: data).get()
                 XCTAssertEqual(productPage?.pageNumber, 1)
                 XCTAssertEqual(productPage?.itemsPerPage, 10)
             case .failure(_):

@@ -1,16 +1,22 @@
 import Foundation
 
+enum JSONParserError: Error {
+    case decodingFail
+}
+
 struct JSONParser<Item: Codable> {
-    func decode(from json: Data?) -> Item? {
+    func decode(from json: Data?) -> Result<Item, JSONParserError> {
         guard let data = json else {
-            return nil
+            return .failure(.decodingFail)
         }
         
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         
-        let decodedData = try? decoder.decode(Item.self, from: data)
+        guard let decodedData = try? decoder.decode(Item.self, from: data) else {
+            return .failure(.decodingFail)
+        }
         
-        return decodedData
+        return .success(decodedData)
     }
 }
