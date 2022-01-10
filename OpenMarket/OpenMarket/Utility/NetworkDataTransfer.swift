@@ -31,7 +31,7 @@ struct NetworkDataTransfer {
         task.resume()
     }
     
-    func getRequest(api: APIProtocol, completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
+    func request(api: APIProtocol, completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
         guard let urlRequest = URLRequest(api: api) else {
             return
         }

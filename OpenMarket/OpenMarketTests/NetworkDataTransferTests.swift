@@ -5,7 +5,7 @@ class NetworkDataTransferTests: XCTestCase {
     func test_getHealthChecker가_정상작동_하는지() {
         let expectation = XCTestExpectation(description: "getHealthChecker 비동기 테스트")
         
-        NetworkDataTransfer().getRequest(api: HealthCheckerAPI()) { result in
+        NetworkDataTransfer().request(api: HealthCheckerAPI()) { result in
             switch result {
             case .success(let data):
                 let resultString = String(data: data, encoding: .utf8)
@@ -22,7 +22,7 @@ class NetworkDataTransferTests: XCTestCase {
     func test_getProductDetail가_정상작동_하는지() {
         let expectation = XCTestExpectation(description: "getProductDetail 비동기 테스트")
 
-        NetworkDataTransfer().getRequest(api: ProductDetailAPI(id: 2)) { result in
+        NetworkDataTransfer().request(api: ProductDetailAPI(id: 2)) { result in
             switch result {
             case .success(let data):
                 let product = try? JSONParser<Product>().decode(from: data).get()
@@ -39,7 +39,7 @@ class NetworkDataTransferTests: XCTestCase {
     func test_getProductPage가_정상작동_하는지() {
         let expectation = XCTestExpectation(description: "getProductPage 비동기 테스트")
 
-        NetworkDataTransfer().getRequest(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 10)) { result in
+        NetworkDataTransfer().request(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 10)) { result in
             switch result {
             case .success(let data):
                 let productPage = try? JSONParser<ProductPage>().decode(from: data).get()
@@ -59,7 +59,7 @@ class NetworkDataTransferTests: XCTestCase {
 
         let expectation = XCTestExpectation(description: "MockURLSession의 getHealthChecker 비동기 테스트")
 
-        netWorkDataTransfer.getRequest(api: HealthCheckerAPI()) { result in
+        netWorkDataTransfer.request(api: HealthCheckerAPI()) { result in
             switch result {
             case .success(let data):
                 let resultString = String(data: data, encoding: .utf8)
@@ -79,7 +79,7 @@ class NetworkDataTransferTests: XCTestCase {
 
         let expectation = XCTestExpectation(description: "MockURLSession의 getHealthChecker 비동기 테스트")
 
-        netWorkDataTransfer.getRequest(api: HealthCheckerAPI()) { result in
+        netWorkDataTransfer.request(api: HealthCheckerAPI()) { result in
             switch result {
             case .success(_):
                 XCTFail()
