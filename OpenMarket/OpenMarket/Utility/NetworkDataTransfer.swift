@@ -31,26 +31,8 @@ struct NetworkDataTransfer {
         task.resume()
     }
     
-    func getHealthChecker(completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
-        guard let urlRequest = URLRequest(url: HealthCheckerAPI(), method: .get) else {
-            return
-        }
-        loadData(request: urlRequest, completionHandler: completionHandler)
-    }
-    
-    func getProductDetail(id: Int, completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
-        guard let urlRequest = URLRequest(url: ProductDetailAPI(id), method: .get) else {
-            return
-        }
-
-        loadData(request: urlRequest, completionHandler: completionHandler)
-    }
-
-    func getProductPage(pageNumber: Int,
-                        itemsPerPage: Int,
-                        completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
-        guard let urlRequest = URLRequest(url: ProductPageAPI(pageNumber, itemsPerPage),
-                                          method: .get) else {
+    func getRequest(api: APIProtocol, completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
+        guard let urlRequest = URLRequest(api: api) else {
             return
         }
 

@@ -1,16 +1,22 @@
 import Foundation
 
+protocol APIProtocol {
+    var url: URL? { get }
+    var method: HttpMethod { get }
+}
+
 extension URLRequest {
-    init?(url: URLProtocol, method: HttpMethod) {
-        guard let url = url.url else {
+    init?(api: APIProtocol) {
+        guard let url = api.url else {
             return nil
         }
+        
         self.init(url: url)
-        self.httpMethod = method.description
+        self.httpMethod = "\(api.method)"
     }
 }
 
-enum HttpMethod {
+enum HttpMethod: CustomStringConvertible {
     case get
     
     var description: String {

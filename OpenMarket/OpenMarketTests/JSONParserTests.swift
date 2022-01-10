@@ -5,8 +5,9 @@ class JSONParserTests: XCTestCase {
     func test_Product타입_decode했을때_Nil이_아닌지_테스트() {
         guard let path = Bundle.main.path(forResource: "MockProduct", ofType: "json"),
               let jsonString = try? String(contentsOfFile: path) else {
-            return
-        }
+                  XCTFail()
+                  return
+              }
         
         let data = jsonString.data(using: .utf8)
         let result = try? JSONParser<Product>().decode(from: data).get()
@@ -18,12 +19,13 @@ class JSONParserTests: XCTestCase {
     func test_ProductPage타입_decode했을때_Nil이_아닌지_테스트() {
         guard let path = Bundle.main.path(forResource: "MockProductPage", ofType: "json"),
               let jsonString = try? String(contentsOfFile: path) else {
-            return
-        }
+                  XCTFail()
+                  return
+              }
         
         let data = jsonString.data(using: .utf8)
         let result = try? JSONParser<ProductPage>().decode(from: data).get()
-
+        
         XCTAssertNotNil(result)
         XCTAssertEqual(result?.pageNumber, 1)
     }
