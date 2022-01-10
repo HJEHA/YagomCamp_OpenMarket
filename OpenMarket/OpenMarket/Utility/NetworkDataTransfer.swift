@@ -32,14 +32,14 @@ struct NetworkDataTransfer {
     }
     
     func getHealthChecker(completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
-        guard let urlRequest = URLRequest(url: OpenMarketURL.healthChecker, method: .get) else {
+        guard let urlRequest = URLRequest(url: HealthCheckerAPI(), method: .get) else {
             return
         }
         loadData(request: urlRequest, completionHandler: completionHandler)
     }
     
     func getProductDetail(id: Int, completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
-        guard let urlRequest = URLRequest(url: OpenMarketURL.productDetail(id: id), method: .get) else {
+        guard let urlRequest = URLRequest(url: ProductDetailAPI(id), method: .get) else {
             return
         }
 
@@ -49,7 +49,7 @@ struct NetworkDataTransfer {
     func getProductPage(pageNumber: Int,
                         itemsPerPage: Int,
                         completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
-        guard let urlRequest = URLRequest(url: OpenMarketURL.productPage(pageNumber, itemsPerPage),
+        guard let urlRequest = URLRequest(url: ProductPageAPI(pageNumber, itemsPerPage),
                                           method: .get) else {
             return
         }

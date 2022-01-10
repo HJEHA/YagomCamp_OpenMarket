@@ -1,29 +1,35 @@
 import Foundation
 
-protocol URLProtocol {
-    var url: URL? { get }
+struct OpenMarketBaseURL: BaseURLProtocol {
+    var baseURL = "https://market-training.yagom-academy.kr/"
 }
 
-enum OpenMarketURL: URLProtocol {
-    private static let apiHost = "https://market-training.yagom-academy.kr/"
-    case healthChecker
-    case productDetail(id: Int)
-    case productPage(_ pageNumber: Int, _ itemsPerPage: Int)
+struct HealthCheckerAPI: URLProtocol {
+    var url: URL?
     
-    var url: URL? {
-        switch self {
-        case .healthChecker:
-            return URL(string: "\(OpenMarketURL.apiHost)healthChecker")
-        case .productDetail(let id):
-            return URL(string: "\(OpenMarketURL.apiHost)api/products/\(id)")
-        case .productPage(let pageNumber, let itemsPerPage):
-            var urlComponents = URLComponents(string: "\(OpenMarketURL.apiHost)api/products?")
-            let pageNumberQuery = URLQueryItem(name: "page_no", value: "\(pageNumber)")
-            let itemsPerPageQuery = URLQueryItem(name: "items_per_page", value: "\(itemsPerPage)")
-            urlComponents?.queryItems?.append(pageNumberQuery)
-            urlComponents?.queryItems?.append(itemsPerPageQuery)
-            
-            return urlComponents?.url
-        }
+    init(baseURL: BaseURLProtocol = OpenMarketBaseURL()) {
+        self.url = URL(string: "\(baseURL.baseURL)healthChecker")
+    }
+}
+
+struct ProductDetailAPI: URLProtocol {
+    var url: URL?
+    
+    init(_ id: Int, baseURL: BaseURLProtocol = OpenMarketBaseURL()) {
+        self.url = URL(string: "\(baseURL.baseURL)api/products/\(id)")
+    }
+}
+
+struct ProductPageAPI: URLProtocol {
+    var url: URL?
+    
+    init(_ pageNumber: Int, _ itemsPerPage: Int, baseURL: BaseURLProtocol = OpenMarketBaseURL()) {
+        var urlComponents = URLComponents(string: "\(baseURL.baseURL)api/products?")
+        let pageNumberQuery = URLQueryItem(name: "page_no", value: "\(pageNumber)")
+        let itemsPerPageQuery = URLQueryItem(name: "items_per_page", value: "\(itemsPerPage)")
+        urlComponents?.queryItems?.append(pageNumberQuery)
+        urlComponents?.queryItems?.append(itemsPerPageQuery)
+        
+        self.url = urlComponents?.url
     }
 }
