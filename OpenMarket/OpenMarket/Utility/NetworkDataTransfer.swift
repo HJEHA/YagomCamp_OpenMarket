@@ -3,6 +3,7 @@ import Foundation
 enum NetworkError: Error {
     case statusCodeError
     case unknownError
+    case urlIsNil
 }
 
 struct NetworkDataTransfer {
@@ -33,6 +34,7 @@ struct NetworkDataTransfer {
     
     func request(api: APIProtocol, completionHandler: @escaping ((Result<Data, NetworkError>) -> Void)) {
         guard let urlRequest = URLRequest(api: api) else {
+            completionHandler(.failure(.urlIsNil))
             return
         }
 
