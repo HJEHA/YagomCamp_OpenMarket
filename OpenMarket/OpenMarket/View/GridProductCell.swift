@@ -12,7 +12,7 @@ class GridProductCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+        setupBorderLine()
         setupStackView()
         setupLabels()
     }
@@ -61,6 +61,12 @@ class GridProductCell: UICollectionViewCell {
         stockLabel.font = .preferredFont(forTextStyle: .body)
         stockLabel.textColor = .lightGray
         stockLabel.textAlignment = .center
+    }
+    
+    private func setupBorderLine() {
+        layer.borderColor = UIColor.systemGray.cgColor
+        layer.cornerRadius = 10
+        layer.borderWidth = 1
     }
     
     func changeSoldOutStockLabel() {
