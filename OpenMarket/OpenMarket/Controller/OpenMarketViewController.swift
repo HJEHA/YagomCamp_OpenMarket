@@ -64,8 +64,21 @@ extension OpenMarketViewController {
         return gridFlowLayout
     }
     
+    private func setupListFlowLayout() -> UICollectionViewFlowLayout {
+        let listFlowLayout = UICollectionViewFlowLayout()
+        let inset: Double = 10
+        listFlowLayout.sectionInset = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
+        listFlowLayout.minimumLineSpacing = 2
+        listFlowLayout.scrollDirection = .vertical
+        let fullWidth = self.view.bounds.width
+        let customHeight = self.view.bounds.height / 13
+        listFlowLayout.itemSize = CGSize(width: fullWidth, height: customHeight)
+        return listFlowLayout
+    }
+    
     private func setupCollectionView() {
-        productCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: setupGridFlowLayout())
+//        productCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: setupGridFlowLayout())
+        productCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: setupListFlowLayout())
         self.view.addSubview(productCollectionView)
         
         productCollectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -83,6 +96,7 @@ extension OpenMarketViewController {
     
     private func registerCell() {
         productCollectionView.register(GridProductCell.self, forCellWithReuseIdentifier: GridProductCell.identifier)
+        productCollectionView.register(ListProductCell.self, forCellWithReuseIdentifier: ListProductCell.identifier)
     }
 }
 
@@ -94,7 +108,7 @@ extension OpenMarketViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withClass: GridProductCell.self, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withClass: ListProductCell.self, for: indexPath)
                 
         guard let product = products?[indexPath.item],
               let thumbnailURL = URL(string: product.thumbnail),
