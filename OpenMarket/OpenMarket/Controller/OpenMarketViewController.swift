@@ -49,7 +49,7 @@ extension OpenMarketViewController {
     }
 }
 
-// MARK: - NavigationBar
+// MARK: - CollectionView
 extension OpenMarketViewController {
     private func setupGridFlowLayout() -> UICollectionViewFlowLayout {
         let gridFlowLayout = UICollectionViewFlowLayout()
@@ -59,7 +59,8 @@ extension OpenMarketViewController {
         gridFlowLayout.minimumInteritemSpacing = 10
         gridFlowLayout.scrollDirection = .vertical
         let fullWidth = self.view.bounds.width / 2 - gridFlowLayout.minimumInteritemSpacing * 2
-        gridFlowLayout.itemSize = CGSize(width: fullWidth, height: 300)
+        let customHeight = self.view.bounds.height / 3 - gridFlowLayout.minimumLineSpacing * 2
+        gridFlowLayout.itemSize = CGSize(width: fullWidth, height: customHeight)
         return gridFlowLayout
     }
     
@@ -68,10 +69,14 @@ extension OpenMarketViewController {
         self.view.addSubview(productCollectionView)
         
         productCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        productCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        productCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        productCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        productCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        productCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor)
+            .isActive = true
+        productCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            .isActive = true
+        productCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+            .isActive = true
+        productCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            .isActive = true
         
         productCollectionView.dataSource = self
     }
@@ -89,11 +94,8 @@ extension OpenMarketViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GridProductCell.identifier,
-                                                            for: indexPath) as? GridProductCell else {
-            return GridProductCell()
-        }
-        
+        let cell = collectionView.dequeueReusableCell(withClass: GridProductCell.self, for: indexPath)
+                
         guard let product = products?[indexPath.item],
               let thumbnailURL = URL(string: product.thumbnail),
               let thumbnailData = try? Data(contentsOf: thumbnailURL) else {
@@ -105,10 +107,13 @@ extension OpenMarketViewController: UICollectionViewDataSource {
                 cell.productThumbnailView.image = UIImage(data: thumbnailData)
             }
         }
+  
         cell.nameLabel.text = product.name
-        cell.priceLabel.text = "\(product.price)"
-        cell.bargainPriceLabel.text = "\(product.bargainPrice)"
-        cell.stockLabel.text = "\(product.stock)"
+        cell.changePriceAnddiscountedPriceLabel(price: product.price,
+                                                discountedPrice: product.discountedPrice,
+                                                bargainPrice: product.bargainPrice,
+                                                currency: product.currency)
+        cell.changeStockLabel(by: product.stock)
         
         return cell
     }
