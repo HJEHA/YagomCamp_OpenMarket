@@ -41,11 +41,23 @@ class OpenMarketViewController: UIViewController {
     }
 }
 
-// MARK: - NavigationBar
+// MARK: - NavigationBar, Segmented Control
 extension OpenMarketViewController {
     func setupNavigationBar() {
-        let segmentedControl = ViewTypeSegmentedControl(items: ["List", "Grid"])
+        segmentedControl = ViewTypeSegmentedControl(items: ["List", "Grid"])
+        segmentedControl.addTarget(self, action: #selector(segmentedControlTouched(_:)), for: .valueChanged)
         self.navigationController?.navigationBar.topItem?.titleView = segmentedControl
+    }
+    
+    @objc func segmentedControlTouched(_ sender: UISegmentedControl) {
+        if sender.selectedSegmentIndex == 0 {
+            productCollectionView.collectionViewLayout = setupListFlowLayout()
+        } else {
+            productCollectionView.collectionViewLayout = setupGridFlowLayout()
+        }
+        
+        productCollectionView.reloadData()
+        productCollectionView.setContentOffset(CGPoint.zero, animated: false)
     }
 }
 
@@ -77,7 +89,6 @@ extension OpenMarketViewController {
     }
     
     private func setupCollectionView() {
-//        productCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: setupGridFlowLayout())
         productCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: setupListFlowLayout())
         self.view.addSubview(productCollectionView)
         
@@ -95,8 +106,8 @@ extension OpenMarketViewController {
     }
     
     private func registerCell() {
-        productCollectionView.register(GridProductCell.self, forCellWithReuseIdentifier: GridProductCell.identifier)
         productCollectionView.register(ListProductCell.self, forCellWithReuseIdentifier: ListProductCell.identifier)
+        productCollectionView.register(GridProductCell.self, forCellWithReuseIdentifier: GridProductCell.identifier)
     }
 }
 
@@ -108,8 +119,14 @@ extension OpenMarketViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withClass: ListProductCell.self, for: indexPath)
-                
+        var cell: ProductCellProtocol
+        
+        if segmentedControl.selectedSegmentIndex == 0 {
+            cell = collectionView.dequeueReusableCell(withClass: ListProductCell.self, for: indexPath)
+        } else {
+            cell = collectionView.dequeueReusableCell(withClass: GridProductCell.self, for: indexPath)
+        }
+        
         guard let product = products?[indexPath.item],
               let thumbnailURL = URL(string: product.thumbnail),
               let thumbnailData = try? Data(contentsOf: thumbnailURL) else {
@@ -117,7 +134,7 @@ extension OpenMarketViewController: UICollectionViewDataSource {
         }
         
         DispatchQueue.main.async {
-            if indexPath == collectionView.indexPath(for: cell) {
+            if indexPath == collectionView.indexPath(for: cell as? UICollectionViewCell ?? UICollectionViewCell()) {
                 cell.productThumbnailView.image = UIImage(data: thumbnailData)
             }
         }
@@ -129,6 +146,6 @@ extension OpenMarketViewController: UICollectionViewDataSource {
                                                 currency: product.currency)
         cell.changeStockLabel(by: product.stock)
         
-        return cell
+        return cell as? UICollectionViewCell ?? UICollectionViewCell()
     }
 }
