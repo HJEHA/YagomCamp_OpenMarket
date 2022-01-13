@@ -56,11 +56,15 @@ class OpenMarketViewController: UIViewController {
 extension OpenMarketViewController {
     func setupNavigationBar() {
         segmentedControl = ViewTypeSegmentedControl(items: ["List", "Grid"])
-        segmentedControl.addTarget(self, action: #selector(segmentedControlTouched(_:)), for: .valueChanged)
+        segmentedControl.addTarget(self, action: #selector(toggleViewTypeSegmentedControl), for: .valueChanged)
         self.navigationController?.navigationBar.topItem?.titleView = segmentedControl
+        
+        self.navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
+                                                                                               target: self,
+                                                                                               action: #selector(touchUpAddProductButton))
     }
     
-    @objc func segmentedControlTouched(_ sender: UISegmentedControl) {
+    @objc func toggleViewTypeSegmentedControl(_ sender: UISegmentedControl) {
         if sender.selectedSegmentIndex == 0 {
             cellIdentifier = ListProductCell.identifier
         } else {
@@ -69,6 +73,11 @@ extension OpenMarketViewController {
         
         productCollectionView.reloadData()
         productCollectionView.setContentOffset(CGPoint.zero, animated: false)
+    }
+    
+    @objc func touchUpAddProductButton() {
+        let addProductViewController = AddProductViewController()
+        self.present(addProductViewController, animated: true, completion: nil)
     }
 }
 
