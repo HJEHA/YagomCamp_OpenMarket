@@ -92,17 +92,21 @@ class GridProductCell: UICollectionViewCell, ProductCellProtocol {
         stockLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
     }
     
-    func changeStockLabel(by stock: Int) {  
-        if stock == 0 {
-            stockLabel.text = "품절"
-            stockLabel.textColor = .systemYellow
-        } else {
-            stockLabel.text = "잔여수량 : \(stock.formattedWithComma())"
-            stockLabel.textColor = .systemGray
-        }
+    func updateLabels(with data: Product) {
+        nameLabel.text = data.name
+        
+        changePriceAnddiscountedPriceLabel(price: data.price,
+                                           discountedPrice: data.discountedPrice,
+                                           bargainPrice: data.bargainPrice,
+                                           currency: data.currency)
+        changeStockLabel(by: data.stock)
     }
     
-    func changePriceAnddiscountedPriceLabel(price: Int, discountedPrice: Int, bargainPrice: Int, currency: Currency) {
+    func updateThumbnailView(with image: UIImage?) {
+        productThumbnailView.image = image
+    }
+    
+    private func changePriceAnddiscountedPriceLabel(price: Int, discountedPrice: Int, bargainPrice: Int, currency: Currency) {
         if discountedPrice == 0 {
             priceLabel.attributedText = nil
             priceLabel.textColor = .systemGray
@@ -115,6 +119,16 @@ class GridProductCell: UICollectionViewCell, ProductCellProtocol {
             
             bargainPriceLabel.isHidden = false
             bargainPriceLabel.text = "\(currency.rawValue) \(bargainPrice.formattedWithComma())"
+        }
+    }
+    
+    private func changeStockLabel(by stock: Int) {
+        if stock == 0 {
+            stockLabel.text = "품절"
+            stockLabel.textColor = .systemYellow
+        } else {
+            stockLabel.text = "잔여수량 : \(stock.formattedWithComma())"
+            stockLabel.textColor = .systemGray
         }
     }
 }

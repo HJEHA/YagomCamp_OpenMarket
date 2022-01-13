@@ -11,7 +11,7 @@ class OpenMarketViewController: UIViewController {
     private var productCollectionView: UICollectionView!
     
     private var products: [Product]?
-    
+    private var cellIdentifier: String = ListProductCell.identifier
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewController()
@@ -51,8 +51,10 @@ extension OpenMarketViewController {
     
     @objc func segmentedControlTouched(_ sender: UISegmentedControl) {
         if sender.selectedSegmentIndex == 0 {
+            cellIdentifier = ListProductCell.identifier
             productCollectionView.collectionViewLayout = setupListFlowLayout()
         } else {
+            cellIdentifier = GridProductCell.identifier
             productCollectionView.collectionViewLayout = setupGridFlowLayout()
         }
         
@@ -119,33 +121,29 @@ extension OpenMarketViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        var cell: ProductCellProtocol
-        
-        if segmentedControl.selectedSegmentIndex == 0 {
-            cell = collectionView.dequeueReusableCell(withClass: ListProductCell.self, for: indexPath)
-        } else {
-            cell = collectionView.dequeueReusableCell(withClass: GridProductCell.self, for: indexPath)
-        }
-        
-        guard let product = products?[indexPath.item],
-              let thumbnailURL = URL(string: product.thumbnail),
-              let thumbnailData = try? Data(contentsOf: thumbnailURL) else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier,
+                                                            for: indexPath) as? ProductCellProtocol
+        else {
             fatalError()
         }
         
-        DispatchQueue.main.async {
-            if indexPath == collectionView.indexPath(for: cell as? UICollectionViewCell ?? UICollectionViewCell()) {
-                cell.productThumbnailView.image = UIImage(data: thumbnailData)
+        guard let product = products?[indexPath.item] else {
+            fatalError()
+        }
+        
+        DispatchQueue.global().async {
+            guard let thumbnailURL = URL(string: product.thumbnail),
+                  let thumbnailData = try? Data(contentsOf: thumbnailURL),
+                  let thumbnailImage = UIImage(data: thumbnailData) else {
+                fatalError()
+            }
+            
+            DispatchQueue.main.async {
+                cell.updateThumbnailView(with: thumbnailImage)
             }
         }
-  
-        cell.nameLabel.text = product.name
-        cell.changePriceAnddiscountedPriceLabel(price: product.price,
-                                                discountedPrice: product.discountedPrice,
-                                                bargainPrice: product.bargainPrice,
-                                                currency: product.currency)
-        cell.changeStockLabel(by: product.stock)
+        cell.updateLabels(with: product)
         
-        return cell as? UICollectionViewCell ?? UICollectionViewCell()
+        return cell
     }
 }
