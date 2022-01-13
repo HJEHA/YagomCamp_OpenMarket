@@ -9,6 +9,7 @@ import UIKit
 class OpenMarketViewController: UIViewController {
     private var segmentedControl: ViewTypeSegmentedControl!
     private var productCollectionView: UICollectionView!
+    private var activityIndicator: UIActivityIndicatorView!
     
     private var products: [Product]?
     private var cellIdentifier: String = ListProductCell.identifier
@@ -17,6 +18,7 @@ class OpenMarketViewController: UIViewController {
         setupViewController()
         setupNavigationBar()
         setupCollectionView()
+        setupActivityIndicator()
         registerCell()
         
         fetchProductData()
@@ -27,16 +29,25 @@ class OpenMarketViewController: UIViewController {
     }
     
     private func fetchProductData() {
-        NetworkDataTransfer().request(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 100)) { result in
+        NetworkDataTransfer().request(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 100)) { [weak self] result in
             switch result {
             case .success(let data):
-                self.products = try? JSONParser<ProductPage>().decode(from: data).get().products
+                self?.products = try? JSONParser<ProductPage>().decode(from: data).get().products
                 DispatchQueue.main.async {
-                    self.productCollectionView.reloadData()
+                    self?.reloadDataWithActivityIndicator(at: self?.productCollectionView)
                 }
             case .failure(_):
                 print("에러")
             }
+        }
+    }
+    
+    private func reloadDataWithActivityIndicator(at collectionView: UICollectionView?) {
+        collectionView?.performBatchUpdates {
+            startActivityIndicator()
+            collectionView?.reloadData()
+        } completion: { [weak self] _ in
+            self?.endActivityIndicator()
         }
     }
 }
@@ -58,6 +69,31 @@ extension OpenMarketViewController {
         
         productCollectionView.reloadData()
         productCollectionView.setContentOffset(CGPoint.zero, animated: false)
+    }
+}
+
+// MARK: - ActivityIndicator
+extension OpenMarketViewController {
+    private func setupActivityIndicator() {
+        activityIndicator = UIActivityIndicatorView()
+        view.addSubview(activityIndicator)
+        activityIndicator.center = view.center
+        
+        startActivityIndicator()
+    }
+    
+    private func startActivityIndicator() {
+        DispatchQueue.main.async {
+            self.activityIndicator.isHidden = false
+            self.activityIndicator.startAnimating()
+        }
+    }
+    
+    private func endActivityIndicator() {
+        DispatchQueue.main.async {
+            self.activityIndicator.stopAnimating()
+            self.activityIndicator.isHidden = true
+        }
     }
 }
 
