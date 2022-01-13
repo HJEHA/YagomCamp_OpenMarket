@@ -3,12 +3,12 @@ import UIKit
 class GridProductCell: UICollectionViewCell, ProductCellProtocol {
     static let identifier = "GridProductCell"
     
-    let verticalStackView = UIStackView()
-    let productThumbnailView = UIImageView()
-    let nameLabel = UILabel()
-    let priceLabel = UILabel()
-    let bargainPriceLabel = UILabel()
-    let stockLabel = UILabel()
+    private let verticalStackView = UIStackView()
+    private let productThumbnailView = UIImageView()
+    private let nameLabel = UILabel()
+    private let priceLabel = UILabel()
+    private let bargainPriceLabel = UILabel()
+    private let stockLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -55,13 +55,13 @@ class GridProductCell: UICollectionViewCell, ProductCellProtocol {
         verticalStackView.addArrangedSubview(productThumbnailView)
         verticalStackView.addArrangedSubview(nameLabel)
         
-        let priceStackView = UIStackView()
-        priceStackView.axis = .vertical
-        priceStackView.alignment = .center
-        priceStackView.distribution = .fillEqually
-        priceStackView.addArrangedSubview(priceLabel)
-        priceStackView.addArrangedSubview(bargainPriceLabel)
-        verticalStackView.addArrangedSubview(priceStackView)
+        let pricesStackView = UIStackView()
+        pricesStackView.axis = .vertical
+        pricesStackView.alignment = .center
+        pricesStackView.distribution = .fillEqually
+        pricesStackView.addArrangedSubview(priceLabel)
+        pricesStackView.addArrangedSubview(bargainPriceLabel)
+        verticalStackView.addArrangedSubview(pricesStackView)
     
         verticalStackView.addArrangedSubview(stockLabel)
     }
@@ -95,7 +95,7 @@ class GridProductCell: UICollectionViewCell, ProductCellProtocol {
     func updateLabels(with data: Product) {
         nameLabel.text = data.name
         
-        changePriceAnddiscountedPriceLabel(price: data.price,
+        changePriceAndDiscountedPriceLabel(price: data.price,
                                            discountedPrice: data.discountedPrice,
                                            bargainPrice: data.bargainPrice,
                                            currency: data.currency)
@@ -106,7 +106,10 @@ class GridProductCell: UICollectionViewCell, ProductCellProtocol {
         productThumbnailView.image = image
     }
     
-    private func changePriceAnddiscountedPriceLabel(price: Int, discountedPrice: Int, bargainPrice: Int, currency: Currency) {
+    private func changePriceAndDiscountedPriceLabel(price: Int,
+                                                    discountedPrice: Int,
+                                                    bargainPrice: Int,
+                                                    currency: Currency) {
         if discountedPrice == 0 {
             priceLabel.attributedText = nil
             priceLabel.textColor = .systemGray

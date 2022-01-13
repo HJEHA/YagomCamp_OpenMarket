@@ -52,10 +52,8 @@ extension OpenMarketViewController {
     @objc func segmentedControlTouched(_ sender: UISegmentedControl) {
         if sender.selectedSegmentIndex == 0 {
             cellIdentifier = ListProductCell.identifier
-            productCollectionView.collectionViewLayout = setupListFlowLayout()
         } else {
             cellIdentifier = GridProductCell.identifier
-            productCollectionView.collectionViewLayout = setupGridFlowLayout()
         }
         
         productCollectionView.reloadData()
@@ -65,33 +63,8 @@ extension OpenMarketViewController {
 
 // MARK: - CollectionView
 extension OpenMarketViewController {
-    private func setupGridFlowLayout() -> UICollectionViewFlowLayout {
-        let gridFlowLayout = UICollectionViewFlowLayout()
-        let inset: Double = 10
-        gridFlowLayout.sectionInset = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
-        gridFlowLayout.minimumLineSpacing = 10
-        gridFlowLayout.minimumInteritemSpacing = 10
-        gridFlowLayout.scrollDirection = .vertical
-        let fullWidth = self.view.bounds.width / 2 - gridFlowLayout.minimumInteritemSpacing * 2
-        let customHeight = self.view.bounds.height / 3 - gridFlowLayout.minimumLineSpacing * 2
-        gridFlowLayout.itemSize = CGSize(width: fullWidth, height: customHeight)
-        return gridFlowLayout
-    }
-    
-    private func setupListFlowLayout() -> UICollectionViewFlowLayout {
-        let listFlowLayout = UICollectionViewFlowLayout()
-        let inset: Double = 10
-        listFlowLayout.sectionInset = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
-        listFlowLayout.minimumLineSpacing = 2
-        listFlowLayout.scrollDirection = .vertical
-        let fullWidth = self.view.bounds.width
-        let customHeight = self.view.bounds.height / 13
-        listFlowLayout.itemSize = CGSize(width: fullWidth, height: customHeight)
-        return listFlowLayout
-    }
-    
     private func setupCollectionView() {
-        productCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: setupListFlowLayout())
+        productCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
         self.view.addSubview(productCollectionView)
         
         productCollectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -105,6 +78,7 @@ extension OpenMarketViewController {
             .isActive = true
         
         productCollectionView.dataSource = self
+        productCollectionView.delegate = self
     }
     
     private func registerCell() {
@@ -122,8 +96,7 @@ extension OpenMarketViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier,
-                                                            for: indexPath) as? ProductCellProtocol
-        else {
+                                                            for: indexPath) as? ProductCellProtocol else {
             fatalError()
         }
         
@@ -145,5 +118,50 @@ extension OpenMarketViewController: UICollectionViewDataSource {
         cell.updateLabels(with: product)
         
         return cell
+    }
+}
+
+extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if self.cellIdentifier == ListProductCell.identifier {
+            let listCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width, view.frame.height * 0.077)
+            return CGSize(width: listCellSize.width, height: listCellSize.height)
+        } else {
+            let gridCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width * 0.45, view.frame.height * 0.32)
+            return CGSize(width: gridCellSize.width, height: gridCellSize.height)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        let inset: Double = 10
+        return UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        if self.cellIdentifier == ListProductCell.identifier {
+            let listCellLineSpacing: CGFloat = 2
+            return listCellLineSpacing
+        } else {
+            let gridCellLineSpacing: CGFloat = 10
+            return gridCellLineSpacing
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        if self.cellIdentifier == ListProductCell.identifier {
+            let listCellIteritemSpacing: CGFloat = 0
+            return listCellIteritemSpacing
+        } else {
+            let gridCellIteritemSpacing: CGFloat = 10
+            return gridCellIteritemSpacing
+        }
     }
 }

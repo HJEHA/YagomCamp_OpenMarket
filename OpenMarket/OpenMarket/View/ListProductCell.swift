@@ -3,19 +3,19 @@ import UIKit
 class ListProductCell: UICollectionViewCell, ProductCellProtocol {
     static let identifier = "ListProductCell"
     
-    let horizontalStackView = UIStackView()
-    let productThumbnailView = UIImageView()
-    let nameLabel = UILabel()
-    let priceLabel = UILabel()
-    let bargainPriceLabel = UILabel()
-    let stockLabel = UILabel()
-    let accessoryImageView = UIImageView()
+    private let horizontalStackView = UIStackView()
+    private let productThumbnailView = UIImageView()
+    private let nameLabel = UILabel()
+    private let priceLabel = UILabel()
+    private let bargainPriceLabel = UILabel()
+    private let stockLabel = UILabel()
+    private let accessoryImageView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUnderLine()
         setupStackView()
-        setupSubviewsOfVerticalStackView()
+        setupSubviewsOfHorizontalStackView()
         setupThumbnailView()
         setupAccessoryImageView()
         setupLabels()
@@ -57,7 +57,7 @@ class ListProductCell: UICollectionViewCell, ProductCellProtocol {
             .isActive = true
     }
     
-    private func setupSubviewsOfVerticalStackView() {
+    private func setupSubviewsOfHorizontalStackView() {
         horizontalStackView.addArrangedSubview(productThumbnailView)
         
         let nameAndStockStackView = UIStackView()
@@ -69,28 +69,28 @@ class ListProductCell: UICollectionViewCell, ProductCellProtocol {
         nameAndStockStackView.addArrangedSubview(stockLabel)
         nameAndStockStackView.setContentHuggingPriority(.defaultLow, for: .horizontal)
         
-        let priceStackView = UIStackView()
-        priceStackView.axis = .horizontal
-        priceStackView.alignment = .center
-        priceStackView.distribution = .fillEqually
-        priceStackView.spacing = 4
-        priceStackView.addArrangedSubview(priceLabel)
-        priceStackView.addArrangedSubview(bargainPriceLabel)
+        let pricesStackView = UIStackView()
+        pricesStackView.axis = .horizontal
+        pricesStackView.alignment = .center
+        pricesStackView.distribution = .fillEqually
+        pricesStackView.spacing = 4
+        pricesStackView.addArrangedSubview(priceLabel)
+        pricesStackView.addArrangedSubview(bargainPriceLabel)
     
-        let nameAndPriceStackView = UIStackView()
-        nameAndPriceStackView.axis = .vertical
-        nameAndPriceStackView.alignment = .leading
-        nameAndPriceStackView.distribution = .fillEqually
-        nameAndPriceStackView.addArrangedSubview(nameAndStockStackView)
-        nameAndPriceStackView.addArrangedSubview(priceStackView)
-        nameAndPriceStackView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        let nameAndPricesStackView = UIStackView()
+        nameAndPricesStackView.axis = .vertical
+        nameAndPricesStackView.alignment = .leading
+        nameAndPricesStackView.distribution = .fillEqually
+        nameAndPricesStackView.addArrangedSubview(nameAndStockStackView)
+        nameAndPricesStackView.addArrangedSubview(pricesStackView)
+        nameAndPricesStackView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
-        nameAndStockStackView.widthAnchor.constraint(equalTo: nameAndPriceStackView.widthAnchor)
+        nameAndStockStackView.widthAnchor.constraint(equalTo: nameAndPricesStackView.widthAnchor)
             .isActive = true
-        horizontalStackView.addArrangedSubview(nameAndPriceStackView)
+        horizontalStackView.addArrangedSubview(nameAndPricesStackView)
         horizontalStackView.addArrangedSubview(accessoryImageView)
         
-        nameAndPriceStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+        nameAndPricesStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
             .isActive = true
     }
     
@@ -133,7 +133,7 @@ class ListProductCell: UICollectionViewCell, ProductCellProtocol {
     func updateLabels(with data: Product) {
         nameLabel.text = data.name
         
-        changePriceAnddiscountedPriceLabel(price: data.price,
+        changePriceAndDiscountedPriceLabel(price: data.price,
                                            discountedPrice: data.discountedPrice,
                                            bargainPrice: data.bargainPrice,
                                            currency: data.currency)
@@ -144,7 +144,10 @@ class ListProductCell: UICollectionViewCell, ProductCellProtocol {
         productThumbnailView.image = image
     }
     
-    private func changePriceAnddiscountedPriceLabel(price: Int, discountedPrice: Int, bargainPrice: Int, currency: Currency) {
+    private func changePriceAndDiscountedPriceLabel(price: Int,
+                                                    discountedPrice: Int,
+                                                    bargainPrice: Int,
+                                                    currency: Currency) {
         if discountedPrice == 0 {
             priceLabel.attributedText = nil
             priceLabel.textColor = .systemGray
