@@ -1,9 +1,20 @@
 import Foundation
 
-enum NetworkError: Error {
+enum NetworkError: Error, LocalizedError {
     case statusCodeError
     case unknownError
     case urlIsNil
+
+    var errorDescription: String? {
+        switch self {
+        case .statusCodeError:
+            return "정상적인 StatusCode가 아닙니다."
+        case .unknownError:
+            return "알수 없는 에러가 발생했습니다."
+        case .urlIsNil:
+            return "정상적인 URL이 아닙니다."
+        }
+    }
 }
 
 struct NetworkDataTransfer {

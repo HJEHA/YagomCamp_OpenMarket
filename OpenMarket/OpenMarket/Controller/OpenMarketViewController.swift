@@ -32,12 +32,20 @@ class OpenMarketViewController: UIViewController {
         NetworkDataTransfer().request(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 100)) { [weak self] result in
             switch result {
             case .success(let data):
-                self?.products = try? JSONParser<ProductPage>().decode(from: data).get().products
-                DispatchQueue.main.async {
-                    self?.reloadDataWithActivityIndicator(at: self?.productCollectionView)
+                let decodedData = JSONParser<ProductPage>().decode(from: data)
+                
+                switch decodedData {
+                case .success(let data):
+                    self?.products = data.products
+                    DispatchQueue.main.async {
+                        self?.reloadDataWithActivityIndicator(at: self?.productCollectionView)
+                    }
+                case .failure(let error):
+                    print(error.localizedDescription)
                 }
-            case .failure(_):
-                print("에러")
+                
+            case .failure(let error):
+                print(error.localizedDescription)
             }
         }
     }
@@ -57,11 +65,12 @@ extension OpenMarketViewController {
     func setupNavigationBar() {
         segmentedControl = ViewTypeSegmentedControl(items: ["List", "Grid"])
         segmentedControl.addTarget(self, action: #selector(toggleViewTypeSegmentedControl), for: .valueChanged)
-        self.navigationController?.navigationBar.topItem?.titleView = segmentedControl
         
-        self.navigationController?.navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
-                                                                                               target: self,
-                                                                                               action: #selector(touchUpAddProductButton))
+        let navigationBarItem = navigationController?.navigationBar.topItem
+        navigationBarItem?.titleView = segmentedControl        
+        navigationBarItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
+                                                                target: self,
+                                                                action: #selector(touchUpAddProductButton))
     }
     
     @objc func toggleViewTypeSegmentedControl(_ sender: UISegmentedControl) {

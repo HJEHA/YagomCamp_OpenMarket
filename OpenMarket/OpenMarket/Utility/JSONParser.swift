@@ -1,7 +1,14 @@
 import Foundation
 
-enum JSONParserError: Error {
+enum JSONParserError: Error, LocalizedError {
     case decodingFail
+    
+    var errorDescription: String? {
+        switch self {
+        case .decodingFail:
+            return "디코딩에 실패했습니다."
+        }
+    }
 }
 
 struct JSONParser<Item: Codable> {
