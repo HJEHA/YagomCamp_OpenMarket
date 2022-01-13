@@ -7,12 +7,14 @@
 import UIKit
 
 class OpenMarketViewController: UIViewController {
+    // MARK: - Properties
     private var segmentedControl: ViewTypeSegmentedControl!
     private var productCollectionView: UICollectionView!
     private var activityIndicator: UIActivityIndicatorView!
     
     private var products: [Product]?
     private var cellIdentifier: String = ListProductCell.identifier
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewController()
@@ -74,14 +76,28 @@ extension OpenMarketViewController {
     }
     
     @objc func toggleViewTypeSegmentedControl(_ sender: UISegmentedControl) {
+        let currentScrollRatio: CGFloat = currentScrollRatio()
+        
         if sender.selectedSegmentIndex == 0 {
             cellIdentifier = ListProductCell.identifier
         } else {
             cellIdentifier = GridProductCell.identifier
         }
         
-        productCollectionView.reloadData()
-        productCollectionView.setContentOffset(CGPoint.zero, animated: false)
+        productCollectionView.performBatchUpdates {
+            productCollectionView.reloadData()
+        } completion: { [weak self] _ in
+            DispatchQueue.main.async {
+                if let nextViewMaxHeight = self?.productCollectionView.contentSize.height {
+                    self?.productCollectionView.setContentOffset(CGPoint(x: 0, y: nextViewMaxHeight * currentScrollRatio),
+                                                                 animated: false)
+                }
+            }
+        }
+    }
+    
+    func currentScrollRatio() -> CGFloat {
+        return productCollectionView.contentOffset.y / productCollectionView.contentSize.height
     }
     
     @objc func touchUpAddProductButton() {
@@ -175,6 +191,7 @@ extension OpenMarketViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - CollectionView Delegate FlowLayout
 extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
