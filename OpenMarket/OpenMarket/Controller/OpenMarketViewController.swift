@@ -84,13 +84,12 @@ extension OpenMarketViewController {
             cellIdentifier = GridProductCell.identifier
         }
         
-        productCollectionView.performBatchUpdates {
-            productCollectionView.reloadData()
-        } completion: { [weak self] _ in
+        productCollectionView.performBatchUpdates(nil) { [weak self] _ in
             DispatchQueue.main.async {
                 if let nextViewMaxHeight = self?.productCollectionView.contentSize.height {
-                    self?.productCollectionView.setContentOffset(CGPoint(x: 0, y: nextViewMaxHeight * currentScrollRatio),
-                                                                 animated: false)
+                    let offset = CGPoint(x: 0, y: nextViewMaxHeight * currentScrollRatio)
+                    self?.productCollectionView.setContentOffset(offset, animated: false)
+                    self?.productCollectionView.reloadData()
                 }
             }
         }
