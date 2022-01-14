@@ -21,6 +21,8 @@
 		08B2CE8D2782E0D4009295F2 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B2CE8C2782E0D4009295F2 /* Currency.swift */; };
 		08B2CE8F2782E7B1009295F2 /* ProductPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B2CE8E2782E7B1009295F2 /* ProductPage.swift */; };
 		08B2CE972782EE56009295F2 /* JSONParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B2CE962782EE56009295F2 /* JSONParserTests.swift */; };
+		08BB9A7E27915BE800D95A82 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BB9A7D27915BE800D95A82 /* ImageCacheManager.swift */; };
+		08BB9A8027917C2300D95A82 /* UIImageView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BB9A7F27917C2300D95A82 /* UIImageView+Extension.swift */; };
 		3637AE1F278D8801009003B7 /* GridProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3637AE1E278D8801009003B7 /* GridProductCell.swift */; };
 		3637AE21278D8FE6009003B7 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3637AE20278D8FE6009003B7 /* String+Extension.swift */; };
 		3637AE25278EA8E7009003B7 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3637AE24278EA8E7009003B7 /* Int+Extension.swift */; };
@@ -66,6 +68,8 @@
 		08B2CE8E2782E7B1009295F2 /* ProductPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPage.swift; sourceTree = "<group>"; };
 		08B2CE942782EE56009295F2 /* OpenMarketTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenMarketTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		08B2CE962782EE56009295F2 /* JSONParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONParserTests.swift; sourceTree = "<group>"; };
+		08BB9A7D27915BE800D95A82 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
+		08BB9A7F27917C2300D95A82 /* UIImageView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extension.swift"; sourceTree = "<group>"; };
 		3637AE1E278D8801009003B7 /* GridProductCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridProductCell.swift; sourceTree = "<group>"; };
 		3637AE20278D8FE6009003B7 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		3637AE24278EA8E7009003B7 /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
@@ -119,6 +123,7 @@
 				3637AE20278D8FE6009003B7 /* String+Extension.swift */,
 				3637AE24278EA8E7009003B7 /* Int+Extension.swift */,
 				08AF0B5E278EFEF4005FF21D /* CALayer+Extension.swift */,
+				08BB9A7F27917C2300D95A82 /* UIImageView+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -189,6 +194,7 @@
 			children = (
 				369126282782EAC1002304D4 /* JSONParser.swift */,
 				08A5B0D7278589C2002E1ABE /* NetworkDataTransfer.swift */,
+				08BB9A7D27915BE800D95A82 /* ImageCacheManager.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -434,6 +440,7 @@
 				C70FB0FF25BEF61C00C9924E /* OpenMarketViewController.swift in Sources */,
 				08A5B0DC27859A4A002E1ABE /* URLRequest+Extension.swift in Sources */,
 				08AF0B5F278EFEF4005FF21D /* CALayer+Extension.swift in Sources */,
+				08BB9A8027917C2300D95A82 /* UIImageView+Extension.swift in Sources */,
 				3637AE25278EA8E7009003B7 /* Int+Extension.swift in Sources */,
 				08A5B0DE27859DBD002E1ABE /* OpenMarketURL.swift in Sources */,
 				369126292782EAC1002304D4 /* JSONParser.swift in Sources */,
@@ -450,6 +457,7 @@
 				08AF0B59278D0ED8005FF21D /* APIProtocol.swift in Sources */,
 				08AF0B5D278EB4DC005FF21D /* ListProductCell.swift in Sources */,
 				C70FB0FD25BEF61C00C9924E /* SceneDelegate.swift in Sources */,
+				08BB9A7E27915BE800D95A82 /* ImageCacheManager.swift in Sources */,
 				08AF0B5B278D6227005FF21D /* ViewTypeSegmentedControl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

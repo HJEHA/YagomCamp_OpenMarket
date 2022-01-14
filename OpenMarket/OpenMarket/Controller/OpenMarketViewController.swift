@@ -197,18 +197,18 @@ extension OpenMarketViewController: UICollectionViewDataSource {
             fatalError()
         }
         
-        DispatchQueue.global().async {
-            guard let thumbnailURL = URL(string: product.thumbnail),
-                  let thumbnailData = try? Data(contentsOf: thumbnailURL),
-                  let thumbnailImage = UIImage(data: thumbnailData) else {
-                fatalError()
-            }
-            
-            DispatchQueue.main.async {
-                cell.updateThumbnailView(with: thumbnailImage)
-            }
-        }
-        cell.updateLabels(with: product)
+//        DispatchQueue.global().async {
+//            guard let thumbnailURL = URL(string: product.thumbnail),
+//                  let thumbnailData = try? Data(contentsOf: thumbnailURL),
+//                  let thumbnailImage = UIImage(data: thumbnailData) else {
+//                fatalError()
+//            }
+//
+//            DispatchQueue.main.async {
+//                cell.updateThumbnailView(with: thumbnailImage)
+//            }
+//        }
+        cell.updateView(with: product)        
         
         return cell
     }

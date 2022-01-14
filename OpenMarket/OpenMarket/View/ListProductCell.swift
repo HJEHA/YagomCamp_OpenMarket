@@ -130,18 +130,14 @@ class ListProductCell: UICollectionViewCell, ProductCellProtocol {
         stockLabel.numberOfLines = 0
     }
     
-    func updateLabels(with data: Product) {
+    func updateView(with data: Product) {
+        productThumbnailView.loadImage(of: data.thumbnail)
         nameLabel.text = data.name
-        
         changePriceAndDiscountedPriceLabel(price: data.price,
                                            discountedPrice: data.discountedPrice,
                                            bargainPrice: data.bargainPrice,
                                            currency: data.currency)
         changeStockLabel(by: data.stock)
-    }
-    
-    func updateThumbnailView(with image: UIImage?) {
-        productThumbnailView.image = image
     }
     
     private func changePriceAndDiscountedPriceLabel(price: Int,
