@@ -8,13 +8,40 @@ import UIKit
 
 class OpenMarketViewController: UIViewController {
     // MARK: - Properties
+    enum LayoutKind: String, CaseIterable, CustomStringConvertible {
+        case list = "LIST"
+        case grid = "GRID"
+        
+        var description: String {
+            return self.rawValue
+        }
+        
+        var cellIdentifier: String {
+            switch self {
+            case .list:
+                return ListProductCell.identifier
+            case .grid:
+                return GridProductCell.identifier
+            }
+        }
+        
+        var cellType: ProductCellProtocol.Type {
+            switch self {
+            case .list:
+                return ListProductCell.self
+            case .grid:
+                return GridProductCell.self
+            }
+        }
+    }
+    
+    var currentLayoutKind: LayoutKind = .list
+    private var products: [Product]?
+    
     private var segmentedControl: ViewTypeSegmentedControl!
     private var productCollectionView: UICollectionView!
     private var activityIndicator: UIActivityIndicatorView!
-    
-    private var products: [Product]?
-    private var cellIdentifier: String = ListProductCell.identifier
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewController()
@@ -65,7 +92,8 @@ class OpenMarketViewController: UIViewController {
 // MARK: - NavigationBar, Segmented Control
 extension OpenMarketViewController {
     func setupNavigationBar() {
-        segmentedControl = ViewTypeSegmentedControl(items: ["List", "Grid"])
+        let itemsOfsegmentedControl = LayoutKind.allCases.map { $0.description }
+        segmentedControl = ViewTypeSegmentedControl(items: itemsOfsegmentedControl)
         segmentedControl.addTarget(self, action: #selector(toggleViewTypeSegmentedControl), for: .valueChanged)
         
         let navigationBarItem = navigationController?.navigationBar.topItem
@@ -77,12 +105,7 @@ extension OpenMarketViewController {
     
     @objc func toggleViewTypeSegmentedControl(_ sender: UISegmentedControl) {
         let currentScrollRatio: CGFloat = currentScrollRatio()
-        
-        if sender.selectedSegmentIndex == 0 {
-            cellIdentifier = ListProductCell.identifier
-        } else {
-            cellIdentifier = GridProductCell.identifier
-        }
+        currentLayoutKind = LayoutKind.allCases[sender.selectedSegmentIndex]
         
         productCollectionView.performBatchUpdates(nil) { [weak self] _ in
             DispatchQueue.main.async {
@@ -151,8 +174,9 @@ extension OpenMarketViewController {
     }
     
     private func registerCell() {
-        productCollectionView.register(ListProductCell.self, forCellWithReuseIdentifier: ListProductCell.identifier)
-        productCollectionView.register(GridProductCell.self, forCellWithReuseIdentifier: GridProductCell.identifier)
+        LayoutKind.allCases.forEach {
+            productCollectionView.register($0.cellType, forCellWithReuseIdentifier: $0.cellIdentifier)
+        }
     }
 }
 
@@ -164,7 +188,7 @@ extension OpenMarketViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier,
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: currentLayoutKind.cellIdentifier,
                                                             for: indexPath) as? ProductCellProtocol else {
             fatalError()
         }
@@ -195,10 +219,11 @@ extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if self.cellIdentifier == ListProductCell.identifier {
+        switch currentLayoutKind {
+        case .list:
             let listCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width, view.frame.height * 0.077)
             return CGSize(width: listCellSize.width, height: listCellSize.height)
-        } else {
+        case .grid:
             let gridCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width * 0.45, view.frame.height * 0.32)
             return CGSize(width: gridCellSize.width, height: gridCellSize.height)
         }
@@ -214,10 +239,11 @@ extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        if self.cellIdentifier == ListProductCell.identifier {
+        switch currentLayoutKind {
+        case .list:
             let listCellLineSpacing: CGFloat = 2
             return listCellLineSpacing
-        } else {
+        case .grid:
             let gridCellLineSpacing: CGFloat = 10
             return gridCellLineSpacing
         }
@@ -226,10 +252,11 @@ extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        if self.cellIdentifier == ListProductCell.identifier {
+        switch currentLayoutKind {
+        case .list:
             let listCellIteritemSpacing: CGFloat = 0
             return listCellIteritemSpacing
-        } else {
+        case .grid:
             let gridCellIteritemSpacing: CGFloat = 10
             return gridCellIteritemSpacing
         }
