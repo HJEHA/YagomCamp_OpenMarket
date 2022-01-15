@@ -178,11 +178,11 @@ extension OpenMarketViewController: UICollectionViewDataSource {
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: currentLayoutKind.cellIdentifier,
                                                             for: indexPath) as? ProductCellProtocol else {
-            fatalError()
+            return UICollectionViewCell()
         }
         
         guard let product = products?[indexPath.item] else {
-            fatalError()
+            return UICollectionViewCell()
         }
         
         cell.updateView(with: product)        
