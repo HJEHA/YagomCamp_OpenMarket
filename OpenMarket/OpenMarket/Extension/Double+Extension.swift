@@ -1,6 +1,6 @@
 import Foundation
 
-extension Int {
+extension Double {
     func formattedWithComma() -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal

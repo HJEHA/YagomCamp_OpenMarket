@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		08A4E45D2792B90D000C9AD9 /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A4E45C2792B90D000C9AD9 /* Double+Extension.swift */; };
 		08A5B0D427843617002E1ABE /* MockProduct.json in Resources */ = {isa = PBXBuildFile; fileRef = 08A5B0D327843617002E1ABE /* MockProduct.json */; };
 		08A5B0D62784362C002E1ABE /* MockProductPage.json in Resources */ = {isa = PBXBuildFile; fileRef = 08A5B0D52784362C002E1ABE /* MockProductPage.json */; };
 		08A5B0D8278589C2002E1ABE /* NetworkDataTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A5B0D7278589C2002E1ABE /* NetworkDataTransfer.swift */; };
@@ -53,6 +54,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		08A4E45C2792B90D000C9AD9 /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		08A5B0D327843617002E1ABE /* MockProduct.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MockProduct.json; sourceTree = "<group>"; };
 		08A5B0D52784362C002E1ABE /* MockProductPage.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MockProductPage.json; sourceTree = "<group>"; };
 		08A5B0D7278589C2002E1ABE /* NetworkDataTransfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDataTransfer.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				3691266C2785B563002304D4 /* URLSession+Extension.swift */,
 				3637AE20278D8FE6009003B7 /* String+Extension.swift */,
 				3637AE24278EA8E7009003B7 /* Int+Extension.swift */,
+				08A4E45C2792B90D000C9AD9 /* Double+Extension.swift */,
 				08AF0B5E278EFEF4005FF21D /* CALayer+Extension.swift */,
 				08BB9A7F27917C2300D95A82 /* UIImageView+Extension.swift */,
 			);
@@ -456,6 +459,7 @@
 				C70FB0FB25BEF61C00C9924E /* AppDelegate.swift in Sources */,
 				08AF0B59278D0ED8005FF21D /* APIProtocol.swift in Sources */,
 				08AF0B5D278EB4DC005FF21D /* ListProductCell.swift in Sources */,
+				08A4E45D2792B90D000C9AD9 /* Double+Extension.swift in Sources */,
 				C70FB0FD25BEF61C00C9924E /* SceneDelegate.swift in Sources */,
 				08BB9A7E27915BE800D95A82 /* ImageCacheManager.swift in Sources */,
 				08AF0B5B278D6227005FF21D /* ViewTypeSegmentedControl.swift in Sources */,
