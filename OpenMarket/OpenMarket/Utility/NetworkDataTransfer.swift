@@ -51,4 +51,25 @@ struct NetworkDataTransfer {
 
         loadData(request: urlRequest, completionHandler: completionHandler)
     }
+    
+    func fetchData<T: Codable>(api: APIProtocol,
+                               decodingType: T.Type,
+                               completionHandler: @escaping ((_ data: T) -> Void)) {
+        request(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 100)) { result in
+            switch result {
+            case .success(let data):
+                let decodedData = JSONParser<T>().decode(from: data)
+                
+                switch decodedData {
+                case .success(let data):
+                    completionHandler(data)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
 }

@@ -50,33 +50,11 @@ final class OpenMarketViewController: UIViewController {
         setupActivityIndicator()
         registerCell()
         
-        fetchProductData()
+        setupProducts()
     }
     
     private func setupViewController() {
         view.backgroundColor = .white
-    }
-    
-    private func fetchProductData() {
-        NetworkDataTransfer().request(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 100)) { [weak self] result in
-            switch result {
-            case .success(let data):
-                let decodedData = JSONParser<ProductPage>().decode(from: data)
-                
-                switch decodedData {
-                case .success(let data):
-                    self?.products = data.products
-                    DispatchQueue.main.async {
-                        self?.reloadDataWithActivityIndicator(at: self?.productCollectionView)
-                    }
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-                
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
     }
     
     private func reloadDataWithActivityIndicator(at collectionView: UICollectionView?) {
@@ -85,6 +63,16 @@ final class OpenMarketViewController: UIViewController {
             collectionView?.reloadData()
         } completion: { [weak self] _ in
             self?.endActivityIndicator()
+        }
+    }
+    
+    private func setupProducts() {
+        NetworkDataTransfer().fetchData(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 100),
+                  decodingType: ProductPage.self) { [weak self] data in
+            self?.products = data.products
+            DispatchQueue.main.async {
+                self?.reloadDataWithActivityIndicator(at: self?.productCollectionView)
+            }
         }
     }
 }
