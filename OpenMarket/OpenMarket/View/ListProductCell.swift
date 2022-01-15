@@ -140,9 +140,9 @@ class ListProductCell: UICollectionViewCell, ProductCellProtocol {
         changeStockLabel(by: data.stock)
     }
     
-    private func changePriceAndDiscountedPriceLabel(price: Int,
-                                                    discountedPrice: Int,
-                                                    bargainPrice: Int,
+    private func changePriceAndDiscountedPriceLabel(price: Double,
+                                                    discountedPrice: Double,
+                                                    bargainPrice: Double,
                                                     currency: Currency) {
         if discountedPrice == 0 {
             priceLabel.attributedText = nil
