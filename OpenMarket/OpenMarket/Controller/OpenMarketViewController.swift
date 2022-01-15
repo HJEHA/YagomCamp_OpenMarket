@@ -127,16 +127,16 @@ extension OpenMarketViewController {
     }
     
     private func startActivityIndicator() {
-        DispatchQueue.main.async {
-            self.activityIndicator.isHidden = false
-            self.activityIndicator.startAnimating()
+        DispatchQueue.main.async { [weak self] in
+            self?.activityIndicator.isHidden = false
+            self?.activityIndicator.startAnimating()
         }
     }
     
-    private func endActivityIndicator() {
-        DispatchQueue.main.async {
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.isHidden = true
+    private func endActivityIndicator() { 
+        DispatchQueue.main.async { [weak self] in
+            self?.activityIndicator.stopAnimating()
+            self?.activityIndicator.isHidden = true
         }
     }
 }
