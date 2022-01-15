@@ -6,9 +6,9 @@
 
 import UIKit
 
-class OpenMarketViewController: UIViewController {
+final class OpenMarketViewController: UIViewController {
     // MARK: - Properties
-    enum LayoutKind: String, CaseIterable, CustomStringConvertible {
+    private enum LayoutKind: String, CaseIterable, CustomStringConvertible {
         case list = "LIST"
         case grid = "GRID"
         
@@ -35,7 +35,7 @@ class OpenMarketViewController: UIViewController {
         }
     }
     
-    var currentLayoutKind: LayoutKind = .list
+    private var currentLayoutKind: LayoutKind = .list
     private var products: [Product]?
     
     private var segmentedControl: ViewTypeSegmentedControl!
@@ -91,7 +91,7 @@ class OpenMarketViewController: UIViewController {
 
 // MARK: - NavigationBar, Segmented Control
 extension OpenMarketViewController {
-    func setupNavigationBar() {
+    private func setupNavigationBar() {
         let itemsOfsegmentedControl = LayoutKind.allCases.map { $0.description }
         segmentedControl = ViewTypeSegmentedControl(items: itemsOfsegmentedControl)
         segmentedControl.addTarget(self, action: #selector(toggleViewTypeSegmentedControl), for: .valueChanged)
@@ -103,7 +103,7 @@ extension OpenMarketViewController {
                                                                 action: #selector(touchUpAddProductButton))
     }
     
-    @objc func toggleViewTypeSegmentedControl(_ sender: UISegmentedControl) {
+    @objc private func toggleViewTypeSegmentedControl(_ sender: UISegmentedControl) {
         let currentScrollRatio: CGFloat = currentScrollRatio()
         currentLayoutKind = LayoutKind.allCases[sender.selectedSegmentIndex]
         
@@ -118,11 +118,11 @@ extension OpenMarketViewController {
         }
     }
     
-    func currentScrollRatio() -> CGFloat {
+    private func currentScrollRatio() -> CGFloat {
         return productCollectionView.contentOffset.y / productCollectionView.contentSize.height
     }
     
-    @objc func touchUpAddProductButton() {
+    @objc private func touchUpAddProductButton() {
         let addProductViewController = AddProductViewController()
         self.present(addProductViewController, animated: true, completion: nil)
     }

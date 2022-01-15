@@ -1,6 +1,6 @@
 import UIKit
 
-class AddProductViewController: UIViewController {
+final class AddProductViewController: UIViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "상품 등록"

@@ -1,6 +1,6 @@
 import UIKit
 
-class GridProductCell: UICollectionViewCell, ProductCellProtocol {
+final class GridProductCell: UICollectionViewCell, ProductCellProtocol {
     static let identifier = "GridProductCell"
     
     private let verticalStackView = UIStackView()

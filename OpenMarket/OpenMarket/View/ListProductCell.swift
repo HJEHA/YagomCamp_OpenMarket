@@ -1,6 +1,6 @@
 import UIKit
 
-class ListProductCell: UICollectionViewCell, ProductCellProtocol {
+final class ListProductCell: UICollectionViewCell, ProductCellProtocol {
     static let identifier = "ListProductCell"
     
     private let horizontalStackView = UIStackView()
