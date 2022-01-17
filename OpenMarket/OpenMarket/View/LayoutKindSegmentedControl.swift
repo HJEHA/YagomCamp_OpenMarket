@@ -1,6 +1,6 @@
 import UIKit
 
-final class ViewTypeSegmentedControl: UISegmentedControl {
+final class LayoutKindSegmentedControl: UISegmentedControl {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

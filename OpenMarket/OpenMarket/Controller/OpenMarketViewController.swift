@@ -38,10 +38,11 @@ final class OpenMarketViewController: UIViewController {
     private var currentLayoutKind: LayoutKind = .list
     private var products: [Product]?
     
-    private var segmentedControl: ViewTypeSegmentedControl!
+    private var segmentedControl: LayoutKindSegmentedControl!
     private var productCollectionView: UICollectionView!
     private var activityIndicator: UIActivityIndicatorView!
 
+    // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewController()
@@ -81,7 +82,7 @@ final class OpenMarketViewController: UIViewController {
 extension OpenMarketViewController {
     private func setupNavigationBar() {
         let itemsOfsegmentedControl = LayoutKind.allCases.map { $0.description }
-        segmentedControl = ViewTypeSegmentedControl(items: itemsOfsegmentedControl)
+        segmentedControl = LayoutKindSegmentedControl(items: itemsOfsegmentedControl)
         segmentedControl.addTarget(self, action: #selector(toggleViewTypeSegmentedControl), for: .valueChanged)
         
         let navigationBarItem = navigationController?.navigationBar.topItem
@@ -112,7 +113,7 @@ extension OpenMarketViewController {
     
     @objc private func touchUpAddProductButton() {
         let addProductViewController = AddProductViewController()
-        self.present(addProductViewController, animated: true, completion: nil)
+        present(addProductViewController, animated: true, completion: nil)
     }
 }
 
