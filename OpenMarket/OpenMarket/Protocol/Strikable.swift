@@ -1,11 +1,15 @@
 import UIKit
 
-extension String {
-    func strikeThrough() -> NSAttributedString {
-        let attributeString = NSMutableAttributedString(string: self)
+protocol Strikable: UILabel {
+    func strikeThrough(text: String)
+}
+
+extension Strikable {
+    func strikeThrough(text: String) {
+        let attributeString = NSMutableAttributedString(string: text)
         attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle,
                                      value: NSUnderlineStyle.single.rawValue,
                                      range: NSMakeRange(0, attributeString.length))
-        return attributeString
+        self.attributedText = attributeString
     }
 }

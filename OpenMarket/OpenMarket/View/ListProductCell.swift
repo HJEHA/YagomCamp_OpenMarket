@@ -6,7 +6,7 @@ final class ListProductCell: UICollectionViewCell, ProductCellProtocol {
     private let horizontalStackView = UIStackView()
     private let productThumbnailView = UIImageView()
     private let nameLabel = UILabel()
-    private let priceLabel = UILabel()
+    private let priceLabel = StrikableUILabel()
     private let bargainPriceLabel = UILabel()
     private let stockLabel = UILabel()
     private let accessoryImageView = UIImageView()
@@ -151,7 +151,8 @@ final class ListProductCell: UICollectionViewCell, ProductCellProtocol {
             
             bargainPriceLabel.isHidden = true
         } else {
-            priceLabel.attributedText = "\(currency.rawValue) \(price.formattedWithComma())".strikeThrough()
+            let priceText = "\(currency.rawValue) \(price.formattedWithComma())"
+            priceLabel.strikeThrough(text: priceText)
             priceLabel.textColor = .systemRed
             
             bargainPriceLabel.isHidden = false

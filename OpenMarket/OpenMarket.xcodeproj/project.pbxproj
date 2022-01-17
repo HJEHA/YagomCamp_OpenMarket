@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		089C36BC27953F5A00EDE2B6 /* Strikable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C36BB27953F5A00EDE2B6 /* Strikable.swift */; };
+		089C36BE2795421B00EDE2B6 /* StrikableUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C36BD2795421B00EDE2B6 /* StrikableUILabel.swift */; };
 		08A4E45D2792B90D000C9AD9 /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A4E45C2792B90D000C9AD9 /* Double+Extension.swift */; };
 		08A5B0D427843617002E1ABE /* MockProduct.json in Resources */ = {isa = PBXBuildFile; fileRef = 08A5B0D327843617002E1ABE /* MockProduct.json */; };
 		08A5B0D62784362C002E1ABE /* MockProductPage.json in Resources */ = {isa = PBXBuildFile; fileRef = 08A5B0D52784362C002E1ABE /* MockProductPage.json */; };
@@ -25,7 +27,6 @@
 		08BB9A7E27915BE800D95A82 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BB9A7D27915BE800D95A82 /* ImageCacheManager.swift */; };
 		08BB9A8027917C2300D95A82 /* UIImageView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BB9A7F27917C2300D95A82 /* UIImageView+Extension.swift */; };
 		3637AE1F278D8801009003B7 /* GridProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3637AE1E278D8801009003B7 /* GridProductCell.swift */; };
-		3637AE21278D8FE6009003B7 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3637AE20278D8FE6009003B7 /* String+Extension.swift */; };
 		3637AE25278EA8E7009003B7 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3637AE24278EA8E7009003B7 /* Int+Extension.swift */; };
 		3637AE27278F191A009003B7 /* ProductCellProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3637AE26278F191A009003B7 /* ProductCellProtocol.swift */; };
 		3637AE292790287E009003B7 /* AddProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3637AE282790287E009003B7 /* AddProductViewController.swift */; };
@@ -54,6 +55,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		089C36BB27953F5A00EDE2B6 /* Strikable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strikable.swift; sourceTree = "<group>"; };
+		089C36BD2795421B00EDE2B6 /* StrikableUILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrikableUILabel.swift; sourceTree = "<group>"; };
 		08A4E45C2792B90D000C9AD9 /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		08A5B0D327843617002E1ABE /* MockProduct.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MockProduct.json; sourceTree = "<group>"; };
 		08A5B0D52784362C002E1ABE /* MockProductPage.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MockProductPage.json; sourceTree = "<group>"; };
@@ -73,7 +76,6 @@
 		08BB9A7D27915BE800D95A82 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
 		08BB9A7F27917C2300D95A82 /* UIImageView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extension.swift"; sourceTree = "<group>"; };
 		3637AE1E278D8801009003B7 /* GridProductCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridProductCell.swift; sourceTree = "<group>"; };
-		3637AE20278D8FE6009003B7 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		3637AE24278EA8E7009003B7 /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
 		3637AE26278F191A009003B7 /* ProductCellProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCellProtocol.swift; sourceTree = "<group>"; };
 		3637AE282790287E009003B7 /* AddProductViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductViewController.swift; sourceTree = "<group>"; };
@@ -122,7 +124,6 @@
 			children = (
 				08A5B0DB27859A4A002E1ABE /* URLRequest+Extension.swift */,
 				3691266C2785B563002304D4 /* URLSession+Extension.swift */,
-				3637AE20278D8FE6009003B7 /* String+Extension.swift */,
 				3637AE24278EA8E7009003B7 /* Int+Extension.swift */,
 				08A4E45C2792B90D000C9AD9 /* Double+Extension.swift */,
 				08AF0B5E278EFEF4005FF21D /* CALayer+Extension.swift */,
@@ -137,6 +138,7 @@
 				08AF854C278C003100392FC1 /* BaseURLProtocol.swift */,
 				08AF0B58278D0ED8005FF21D /* APIProtocol.swift */,
 				3637AE26278F191A009003B7 /* ProductCellProtocol.swift */,
+				089C36BB27953F5A00EDE2B6 /* Strikable.swift */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -179,6 +181,7 @@
 				08AF0B5A278D6227005FF21D /* LayoutKindSegmentedControl.swift */,
 				3637AE1E278D8801009003B7 /* GridProductCell.swift */,
 				08AF0B5C278EB4DC005FF21D /* ListProductCell.swift */,
+				089C36BD2795421B00EDE2B6 /* StrikableUILabel.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -439,9 +442,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3637AE21278D8FE6009003B7 /* String+Extension.swift in Sources */,
 				C70FB0FF25BEF61C00C9924E /* OpenMarketViewController.swift in Sources */,
 				08A5B0DC27859A4A002E1ABE /* URLRequest+Extension.swift in Sources */,
+				089C36BC27953F5A00EDE2B6 /* Strikable.swift in Sources */,
 				08AF0B5F278EFEF4005FF21D /* CALayer+Extension.swift in Sources */,
 				08BB9A8027917C2300D95A82 /* UIImageView+Extension.swift in Sources */,
 				3637AE25278EA8E7009003B7 /* Int+Extension.swift in Sources */,
@@ -450,6 +453,7 @@
 				08B2CE8F2782E7B1009295F2 /* ProductPage.swift in Sources */,
 				3637AE292790287E009003B7 /* AddProductViewController.swift in Sources */,
 				08A5B0D8278589C2002E1ABE /* NetworkDataTransfer.swift in Sources */,
+				089C36BE2795421B00EDE2B6 /* StrikableUILabel.swift in Sources */,
 				08B2CE8D2782E0D4009295F2 /* Currency.swift in Sources */,
 				08B2CE8B2782DEAD009295F2 /* Product.swift in Sources */,
 				3691266D2785B563002304D4 /* URLSession+Extension.swift in Sources */,
