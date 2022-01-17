@@ -1,10 +1,6 @@
 import UIKit
 
-protocol Strikable: UILabel {
-    func strikeThrough(text: String)
-}
-
-extension Strikable {
+extension UILabel {  
     func strikeThrough(text: String) {
         let attributeString = NSMutableAttributedString(string: text)
         attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle,

@@ -6,7 +6,7 @@ final class GridProductCell: UICollectionViewCell, ProductCellProtocol {
     private let verticalStackView = UIStackView()
     private let productThumbnailView = UIImageView()
     private let nameLabel = UILabel()
-    private let priceLabel = StrikableUILabel()
+    private let priceLabel = UILabel()
     private let bargainPriceLabel = UILabel()
     private let stockLabel = UILabel()
     
