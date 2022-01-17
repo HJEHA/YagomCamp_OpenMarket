@@ -39,7 +39,7 @@ final class OpenMarketViewController: UIViewController {
     private var products: [Product]?
     
     private var segmentedControl: LayoutKindSegmentedControl!
-    private var productCollectionView: UICollectionView!
+    private var productCollectionView: ProductsCollectionView!
     private var activityIndicator: UIActivityIndicatorView!
 
     // MARK: - Methods
@@ -58,11 +58,9 @@ final class OpenMarketViewController: UIViewController {
         view.backgroundColor = .white
     }
     
-    private func reloadDataWithActivityIndicator(at collectionView: UICollectionView?) {
-        collectionView?.performBatchUpdates {
-            startActivityIndicator()
-            collectionView?.reloadData()
-        } completion: { [weak self] _ in
+    private func reloadDataWithActivityIndicator(at collectionView: ProductsCollectionView?) {
+        startActivityIndicator()
+        collectionView?.reloadDataCompletion { [weak self] in
             self?.endActivityIndicator()
         }
     }
@@ -96,19 +94,22 @@ extension OpenMarketViewController {
         let currentScrollRatio: CGFloat = currentScrollRatio()
         currentLayoutKind = LayoutKind.allCases[sender.selectedSegmentIndex]
         
-        productCollectionView.performBatchUpdates(nil) { [weak self] _ in
-            DispatchQueue.main.async {
-                if let nextViewMaxHeight = self?.productCollectionView.contentSize.height {
-                    let offset = CGPoint(x: 0, y: nextViewMaxHeight * currentScrollRatio)
-                    self?.productCollectionView.setContentOffset(offset, animated: false)
-                    self?.productCollectionView.reloadData()
-                }
+        productCollectionView.fadeOut { _ in
+            self.productCollectionView.reloadDataCompletion { [weak self] in
+                self?.syncScrollIndicator(with: currentScrollRatio)
+                self?.productCollectionView.fadeIn()
             }
         }
     }
     
     private func currentScrollRatio() -> CGFloat {
         return productCollectionView.contentOffset.y / productCollectionView.contentSize.height
+    }
+    
+    private func syncScrollIndicator(with currentScrollRatio: CGFloat) {
+        let nextViewMaxHeight = productCollectionView.contentSize.height
+        let offset = CGPoint(x: 0, y: nextViewMaxHeight * currentScrollRatio)
+        productCollectionView.setContentOffset(offset, animated: false)
     }
     
     @objc private func touchUpAddProductButton() {
@@ -145,7 +146,8 @@ extension OpenMarketViewController {
 // MARK: - CollectionView
 extension OpenMarketViewController {
     private func setupCollectionView() {
-        productCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: UICollectionViewFlowLayout())
+        productCollectionView = ProductsCollectionView(frame: view.bounds,
+                                                       collectionViewLayout: UICollectionViewFlowLayout())
         self.view.addSubview(productCollectionView)
         
         productCollectionView.translatesAutoresizingMaskIntoConstraints = false
