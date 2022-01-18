@@ -1,10 +1,16 @@
 import UIKit
 
 final class AddProductViewController: UIViewController {
+    private var productManagementView = ProductManagementView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewController()
         setupNavigationBar()
+        
+        view.addSubview(productManagementView)
+        productManagementView.setupConstraints(with: view)
+        productManagementView.setupSubviews()
     }
     
     private func setupViewController() {
