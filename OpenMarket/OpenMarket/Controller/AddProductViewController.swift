@@ -1,28 +1,35 @@
 import UIKit
 
 final class AddProductViewController: UIViewController {
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "상품 등록"
-        label.textAlignment = .center
-        label.font = .preferredFont(forTextStyle: .title1)
-        return label
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewController()
-        setupTitleLabel()
+        setupNavigationBar()
     }
     
     private func setupViewController() {
         view.backgroundColor = .white
+        title = "상품등록"
+    }
+}
+
+// MARK: - NavigationBar, Segmented Control
+extension AddProductViewController {
+    func setupNavigationBar() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                                target: self,
+                                                                action: #selector(touchUpCancelButton))
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
+                                                                target: self,
+                                                                action: #selector(touchUpDoneButton))
     }
     
-    private func setupTitleLabel() {
-        view.addSubview(titleLabel)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 20).isActive = true
-        titleLabel.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+    @objc private func touchUpCancelButton() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func touchUpDoneButton() {
+        navigationController?.popViewController(animated: true)
     }
 }

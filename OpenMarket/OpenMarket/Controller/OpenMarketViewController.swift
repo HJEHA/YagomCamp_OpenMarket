@@ -82,10 +82,9 @@ extension OpenMarketViewController {
         let itemsOfsegmentedControl = LayoutKind.allCases.map { $0.description }
         segmentedControl = LayoutKindSegmentedControl(items: itemsOfsegmentedControl)
         segmentedControl.addTarget(self, action: #selector(toggleViewTypeSegmentedControl), for: .valueChanged)
-        
-        let navigationBarItem = navigationController?.navigationBar.topItem
-        navigationBarItem?.titleView = segmentedControl        
-        navigationBarItem?.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
+
+        navigationItem.titleView = segmentedControl
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
                                                                 target: self,
                                                                 action: #selector(touchUpAddProductButton))
     }
@@ -114,7 +113,7 @@ extension OpenMarketViewController {
     
     @objc private func touchUpAddProductButton() {
         let addProductViewController = AddProductViewController()
-        present(addProductViewController, animated: true, completion: nil)
+        navigationController?.pushViewController(addProductViewController, animated: true)
     }
 }
 
