@@ -1,7 +1,19 @@
 import UIKit
 
-class ProductsCollectionView: UICollectionView {
+final class ProductsCollectionView: UICollectionView {
     var reloadDataCompletionHandler: (() -> Void)?
+    
+    func setupConstraints(with superview: UIView) {
+        translatesAutoresizingMaskIntoConstraints = false
+        leadingAnchor.constraint(equalTo: superview.safeAreaLayoutGuide.leadingAnchor)
+            .isActive = true
+        trailingAnchor.constraint(equalTo: superview.safeAreaLayoutGuide.trailingAnchor)
+            .isActive = true
+        topAnchor.constraint(equalTo: superview.safeAreaLayoutGuide.topAnchor)
+            .isActive = true
+        bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            .isActive = true
+    }
     
     func reloadDataCompletion(_ completion: @escaping () -> Void) {
         reloadDataCompletionHandler = completion

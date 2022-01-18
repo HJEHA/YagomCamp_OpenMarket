@@ -148,17 +148,8 @@ extension OpenMarketViewController {
     private func setupCollectionView() {
         productCollectionView = ProductsCollectionView(frame: view.bounds,
                                                        collectionViewLayout: UICollectionViewFlowLayout())
-        self.view.addSubview(productCollectionView)
-        
-        productCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        productCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor)
-            .isActive = true
-        productCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
-            .isActive = true
-        productCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
-            .isActive = true
-        productCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-            .isActive = true
+        view.addSubview(productCollectionView)
+        productCollectionView.setupConstraints(with: view)
         
         productCollectionView.dataSource = self
         productCollectionView.delegate = self
@@ -201,7 +192,8 @@ extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         switch currentLayoutKind {
         case .list:
-            let listCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width, view.frame.height * 0.077)
+            let inset: Double = 10
+            let listCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width - inset * 2, view.frame.height * 0.077)
             return CGSize(width: listCellSize.width, height: listCellSize.height)
         case .grid:
             let gridCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width * 0.45, view.frame.height * 0.32)

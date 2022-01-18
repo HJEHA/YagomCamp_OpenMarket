@@ -26,11 +26,11 @@ final class ListProductCell: UICollectionViewCell, ProductCellProtocol {
     }
     
     private func setupUnderLine() {
-        let underLinePositionX: CGFloat = 10
+        let inset: CGFloat = 10
         let underLine = layer.addBorder([.bottom], color: UIColor.systemGray, width: 0.5)
-        underLine.frame = CGRect(x: underLinePositionX,
+        underLine.frame = CGRect(x: 0,
                                  y: layer.frame.height,
-                                 width: underLine.frame.width - underLinePositionX,
+                                 width: underLine.frame.width + inset,
                                  height: underLine.frame.height)
         layer.addSublayer(underLine)
     }
@@ -44,7 +44,9 @@ final class ListProductCell: UICollectionViewCell, ProductCellProtocol {
         contentView.addSubview(horizontalStackView)
         horizontalStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        horizontalStackView.layoutMargins = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
+        let sideInset: Double = 0
+        let topBottomInset: Double = 10
+        horizontalStackView.layoutMargins = UIEdgeInsets(top: topBottomInset, left: sideInset, bottom: topBottomInset, right: sideInset)
         horizontalStackView.isLayoutMarginsRelativeArrangement = true
         
         horizontalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)
