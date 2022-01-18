@@ -141,3 +141,153 @@ class NetworkDataTransferTests: XCTestCase {
 ```
 
 ### 1-5 피드백 반영
+**1. URLProtocol / OpenMarketURL 관련**
+기존 방식은 아래의 문제점을 가질 수 있습니다.
+* API가 추가될 경우 열거형의 크기가 점점 비대해집니다.
+* 여러 개발자가 동시에 OpenMarketURL 파일을 수정할 때 충돌이 발생할 수 있습니다.
+* 새로운 API가 추가될 경우 case를 계속 생성하고 switch문을 매번 수정해야 합니다.
+
+```swift
+// 개선 전 코드
+protocol URLProtocol {  
+    var url: URL? { get }
+}
+
+extension URLRequest {
+    init?(url: URLProtocol, method: HttpMethod) {
+        guard let url = url.url else {
+            return nil
+        }
+        self.init(url: url)
+        self.httpMethod = method.description
+    }
+}
+
+enum OpenMarketURL: URLProtocol {   
+    private static let apiHost = "https://market-training.yagom-academy.kr/"
+    case healthChecker
+    case productDetail(id: Int)
+    case productPage(_ pageNumber: Int, _ itemsPerPage: Int)
+    
+    var url: URL? {
+        switch self {
+        case .healthChecker:
+            return URL(string: "\(OpenMarketURL.apiHost)healthChecker")
+        case .productDetail(let id):
+            return URL(string: "\(OpenMarketURL.apiHost)api/products/\(id)")
+        case .productPage(let pageNumber, let itemsPerPage):
+            var urlComponents = URLComponents(string: "\(OpenMarketURL.apiHost)api/products?")
+            let pageNumberQuery = URLQueryItem(name: "page_no", value: "\(pageNumber)")
+            let itemsPerPageQuery = URLQueryItem(name: "items_per_page", value: "\(itemsPerPage)")
+            urlComponents?.queryItems?.append(pageNumberQuery)
+            urlComponents?.queryItems?.append(itemsPerPageQuery)
+            
+            return urlComponents?.url
+        }
+    }
+}
+```
+
+**개선 방향**   
+기존 URL 프로퍼티만 가지던 URLProtocol을 HttpMethod까지 가진 APIProtocol로 변경했습니다.
+서버와 통신하기 위한 API 별로 구조체 타입을 새로 생성하고 APIProtocol을 채택했습니다.
+이렇게 개선하게 되면 새로운 API가 추가되더라도 기존의 코드를 수정할 필요가 없어집니다.
+또, 여러 개발자들이 각자 맞은 API 구조체 타입만 만들면 되기 때문에 충돌이 일어날 확률도 줄어듭니다.
+```swift 
+// 개선 후 코드
+protocol APIProtocol {
+    var url: URL? { get }
+    var method: HttpMethod { get }
+}
+
+extension URLRequest {
+    init?(api: APIProtocol) {
+        guard let url = api.url else {
+            return nil
+        }
+        
+        self.init(url: url) 
+        self.httpMethod = "\(api.method)"
+    }
+}
+
+struct HealthCheckerAPI: APIProtocol {
+    var url: URL?
+    var method: HttpMethod = .get
+    
+    init(baseURL: BaseURLProtocol = OpenMarketBaseURL()) {
+        self.url = URL(string: "\(baseURL.baseURL)healthChecker")
+    }
+}
+
+struct ProductDetailAPI: APIProtocol {
+    var url: URL?
+    var method: HttpMethod = .get
+    
+    init(_ id: Int, baseURL: BaseURLProtocol = OpenMarketBaseURL()) {
+        self.url = URL(string: "\(baseURL.baseURL)api/products/\(id)")
+    }
+}
+```
+
+**2. decode 메서드 반환타입 개선**   
+decoding 결과를 명확히 나타내기 위해 `decode` 메서드의 반환타입을 옵셔널 `Item?`에서 `Result<Item, JSONParserError>`로 개선했습니다. Result는 `제네릭 열거형`으로 구현되어 있으며, decoding 성공 시 `Item` 타입의 decoding된 데이터를 반환하고, 실패 시 열거형으로 구현한 `Error` 타입을 반환합니다.
+
+```swift  
+// 개선 전 코드
+func decode(from json: Data?) -> Item? {
+    guard let data = json else {
+        return nil
+    }
+
+    let decoder = JSONDecoder()
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
+
+    let decodedData = try? decoder.decode(Item.self, from: data)
+
+    return decodedData
+}
+
+// 개선 후 코드
+func decode(from json: Data?) -> Result<Item, JSONParserError> {
+    guard let data = json else {
+        return .failure(.decodingFail)
+    }
+
+    let decoder = JSONDecoder()
+    decoder.keyDecodingStrategy = .convertFromSnakeCase
+
+    guard let decodedData = try? decoder.decode(Item.self, from: data) else {
+        return .failure(.decodingFail)
+    }
+
+    return .success(decodedData)
+}
+```
+
+**3. JSONParserTests의 Bundle.main.path 관련 문제 해결**   
+decode 메서드에 대한 테스트를 진행하기 위해 `Bundle.main.path`를 통해 MockProduct JSON 데이터에 접근하도록 했는데, path에 nil이 반환되며 Bundle에 접근하지 못하는 문제가 발생했습니다. LLDB 확인 결과 JSON 파일이 포함된 Bundle은 `OpenMarketTests.xctest`이며, 테스트 코드를 실행하는 주체는 OpenMarket `App Bundle`임을 파악했습니다. (LLDB 내용: `OpenMarket.app/PlugIns/OpenMarketTests.xctest`)
+따라서 현재 executable의 Bundle 개체를 반환하는 `Bundle.main` (즉, App Bundle)이 아니라, 테스트 코드를 실행하는 주체를 가르키는 `Bundle(for: type(of: self))` (즉, XCTests Bundle)로 path를 수정하여 JSON 파일에 접근할 수 있었습니다.
+
+```swift
+// 개선 전 코드
+func test_Product타입_decode했을때_Nil이_아닌지_테스트() {
+    guard let path = Bundle.main.path(forResource: "MockProduct", ofType: "json"),  // path에 nil이 반환되는 문제 발생
+          let jsonString = try? String(contentsOfFile: path) else {
+        return
+    }
+    //...
+}
+
+// 개선 후 코드
+func test_Product타입_decode했을때_Nil이_아닌지_테스트() {
+    guard let path = Bundle(for: type(of: self)).path(forResource: "MockProduct", ofType: "json"),
+          let jsonString = try? String(contentsOfFile: path) else {
+              XCTFail()
+              return
+          }
+    //...
+}
+```
+
+이외에도 테스트 코드 내부에서 옵셔널 바인딩을 하는 경우 else문 내부에 `XCTFail()`을 추가하여 예상 결과값이 반환되지 않았음에도 테스트를 Pass 하는 문제를 방지했습니다.
