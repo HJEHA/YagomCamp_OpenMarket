@@ -291,3 +291,209 @@ func test_Product타입_decode했을때_Nil이_아닌지_테스트() {
 ```
 
 이외에도 테스트 코드 내부에서 옵셔널 바인딩을 하는 경우 else문 내부에 `XCTFail()`을 추가하여 예상 결과값이 반환되지 않았음에도 테스트를 Pass 하는 문제를 방지했습니다.
+
+## STEP2 상품 목록 화면 구현
+### 2-1 키워드
+* Collection View : FlowLayout (List/Grid), DataSource/Delegate, Custom Cell, reloadData(), reloadDataWithCompletion()
+* View : Navigation Bar, Segmented Control, CALayer, NSAttributedString 
+* Indicator : Activity Indicator, Scroll Indicator
+* Interface Builder 없이 View 구성하기
+* Cache : Memory Cache, NSCache, didReceiveMemoryWarningNotification
+   
+### 2-2 구현 내용
+API 서버에 요청한 상품 목록 데이터를 받아서 화면을 구성했습니다. 상품 보기 모드를 List (목록형) 또는 Grid (격자형)로 변경할 수 있고, 상품명, (할인)가격, 썸네일 이미지 등의 상품 정보를 확인 가능합니다. Acticity Indicator를 통해 사용자는 데이터가 Loading 중임을 알 수 있습니다.
+   
+**OpenMarket 프로젝트 구조**
++ Protocol
+    + BaseURLProtocol : baseURL을 가지는 프로토콜
+    + APIProtocol : Requset보낼 URL과 HttpMethod를 가지는 프로토콜
+    + ProductCellProtocol : List/Grid 형태의 ProductCell이 가져야 하는 메서드를 정의한 프로토콜. UICollectionViewCell을 상속받음.
++ Extension
+    + URLRequest+Extension : URL을 만들 때 HttpMethod까지 지정할 수 있도록 init() 추가
+    + URLSession+Extension : 네트워크 없이 테스트를 진행하기 위한 URLSessionProtocol을 정의하고 URLSession 확장하여 채택함.
+    + UILabel+Extension : 취소선이 적용된 NSAttributedString으로 반환하는 메서드 확장
+    + Int+Extension : Int 타입의 천자리 단위마다 ,를 넣어주는 메서드 확장
+    + CALayer+Extension : Layer에 borderLine을 설정할 수 있는 메서드 확장
++ Utility
+    + JSONParser : JSON 데이터를 사용자 정의 타입으로 decode하기 위한 구조체 타입
+    + NetworkDataTransfer : 서버와 데이터 통신을 하기 위한 구조체 타입
++ Model
+    + OpenMarketURL : OpenMarket 프로젝트에서 사용하는 URL별 구조체들을 담는 파일
++ View
+    + ViewTypeSegmentedControl : 오픈 마켓 디자인을 반영한 Custom SegmentedControl View
+    + GridProductCell : 그리드 형식의 Custom ProductCell View. ProductCell 프로토콜 채택
+    + ListProductCell : 리스트 형식의 Custom ProductCell View. ProductCell 프로토콜 채택
++ Controller
+    + OpenMarketViewController : 오픈 마켓 프로젝트의 메인화면을 관리하는 ViewController
+        + Collection View : 서버에서 받아온 상품 정보를 ListProductCell, GridProductCell 두 가지 형태의 Cell로 보여줌.
+            + cellForItemAt 메서드 내부에서 GCD를 사용하여 Cell를 원할하게 가져올 수 있도록 처리함.
+            + UICollectionViewDataSource, CollectionViewDelegateFlowLayout 프로토콜 채택
+            + Segmented Control의 선택된 세그먼트에 따라서 Cell의 크기에 맞춰 레이아웃을 유동적으로 변환해줌.
+        + Segmented Control : 선택된 세그먼트에 따라 Collection View의 형식을 변환해줌.
+        + Activity Indicator : 데이터가 로드 중임을 알리는 UI요소
+    + AddProductViewController : 상품 등록 화면을 관리하는 ViewController. STEP 3 이후 진행 예정
+   
+### 2-3 고민한 점 
+**1. List(목록형), Grid(격자형) 두가지 형태의 Cell을 대응하는 방법**   
+여러 가지 방법을 찾아봤습니다.
++ Modern Collection View : iOS 14이상에서 사용할 수 있는 방법으로 프로젝트 최소 빌드 타켓이 iOS 13.2이기 때문에 사용하지 못했습니다.
++ 컬렉션 뷰 레이아웃을 두개 구성하고 스위치하는 방법 (기존 Flow Layout 사용)
++ 두 가지 형태의 커스텀 셀을 구성하고 cellForItemAt 메서드에서 셀을 스위치하는 방법
++ 리스트 형태는 테이블 뷰, 그리드 형태는 콜렉션 뷰로 구현
+두 가지 형태의 커스텀 셀을 구성하고 셀의 크기에 따라 UICollectionViewDelegateFlowLayout를 사용해 두 가지 형태의 셀을 전부 대응할 수 있도록 구현했습니다.
+
+**2. fetch한 데이터를 Cell에 반영하는 역할의 주체**   
+기존에는 cellForItemAt 메서드에서 Cell View를 업데이트하도록 했지만, Custom Cell 타입이 해당 역할을 맡는 것이 적절하다고 판단되어 수정했습니다. cellForItemAt 메서드가 비대해지는 것을 방지할 수 있었고, 단일책임원칙에 부합하도록 개선했습니다.
+
+```swift 
+// 개선 전 - CollectionView의 CellForItemAt 메서드로 구현
+func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier,
+                                                        for: indexPath) as? ProductCellProtocol else {
+        fatalError()
+    }
+
+    cell.productThumbnailView.image = UIImage(data: thumbnailData)  // fetch한 이미지를 Cell에 반영
+    //...
+}
+
+// 개선 후 - Custom Cell 내부 메서드로 구현
+func updateThumbnailView(with image: UIImage?) {  // 매개변수로 fetch한 이미지를 전달받아 Cell에 반영
+    productThumbnailView.image = image  
+}
+```
+**3. Image Cache**   
+상품의 Thumbnail을 매번 서버에서 요청받아 화면에 띄우는건 비효율적이고 비용도 크다는 생각을 했습니다.
+따라서 NSCache를 이용한 메모리 캐시를 도입했습니다.
+Thumbnail의 URL을 key로 하고 먼저 메모리에 해당 키를 가진 Thumbnail이 있는지 확인합니다.
+메모리에 이미지가 존재한다면 이미지를 반환해주고, 존재하지 않는다면 서버에 요청해 이미지를 받아옵니다. 
+이때 성공적으로 이미지를 받아왔다면 메모리에 이미지를 캐시에 저장해서 다음번에 이미지를 사용하는 경우 캐시에서 이미지를 받아올 수 있도록 했습니다.
+   
+### 2-4 Trouble Shooting
+**1. 화면 전환 시 Scroll 위치 유지**   
+사용자가 최근 확인한 상품을 화면 전환 시 그대로 볼 수 있게 하기 위해 Scroll 위치를 유지하도록 구현하고자 했습니다. 하지만 List 화면에서 Grid 화면으로 전환 시, Grid 화면의 `Scroll Indicator`가 다소 아래로 내려가 있는 문제가 발생했습니다. 이를 해결하기 위해 List/Gird 화면 각각의 전체 높이에 대한 화면 전환 이전의 `Scroll Indicator`의 상대적인 위치를 고려하여 Scroll Offset을 지정하도록 개선했습니다. (수식 `화면전환 이후의 Scroll Indicator의 위치 = 화면전환 이후의 화면 높이 * 현재 Scroll Indicator의 상대적인 위치`을 활용)
+   
+```swift 
+private func currentScrollRatio() -> CGFloat {
+    return productCollectionView.contentOffset.y / productCollectionView.contentSize.height  // 현재 화면 전체 높이에 대한 Scroll Indicator의 상대적인 위치
+}
+
+private func syncScrollIndicator(with currentScrollRatio: CGFloat) {
+    let nextViewMaxHeight = productCollectionView.contentSize.height
+    let offset = CGPoint(x: 0, y: nextViewMaxHeight * currentScrollRatio)  // 화면전환 이후의 Scroll Indicator의 위치 = 화면전환 이후의 화면 높이 * 현재 Scroll Indicator의 상대적인 위치
+    productCollectionView.setContentOffset(offset, animated: false)
+}
+```
+   
+**2. 화면 전환 시 애니메이션 버그**   
+화면이 전환될 때 아래 gif처럼 스크롤 과정의 잔상이 보이는 문제가 발생했습니다.  
+|개선 전|개선 후|
+|-|-|
+|![](https://i.imgur.com/AjHBJhJ.gif)|![](https://i.imgur.com/0CK2D01.gif)|
+
+reloadData() 메서드는 completion을 별도로 지니고 있지 않기 때문에 기존에는 performBatchUpdates 메서드를 사용했습니다. 하지만
+performBatchUpdates 메서드를 잘못 사용한 것이 원인이었습니다. 
+performBatchUpdates 메서드는 Collection View의 여러 애니메이션들을 수행하고, 그에 따른 Completion을 동작시켜주는 메서드입니다.
+기존 방법으로 performBatchUpdates의 매개변수인 updates 클로저 내부에서 reloadData() 메서드를 호출했고, completion 클로저에서 스크롤을 움직이라는 코드를 배치했습니다.
+하지만 위와 같은 버그가 발생했습니다.
+
+개선 방법   
+performBatchUpdates 메서드 대신 reloadData() 메서드의 완료를 알 수 있는 또 다른 방법을 활용했습니다.
+reloadData가 호출되면 아래 순서에 따라 코드가 실행됩니다.
+1. numberOfItemsInSection 메서드에서 Cell의 개수를 결정
+2. cellForItemAt 메서드에서 화면에 보여질 만큼의 Cell을 생성
+3. collection View의 layoutSubViews 호출
+
+즉, reloadData 메서드가 완료되면 layoutSubViews 메서드가 호출됩니다. 이에 따라 커스텀 Collection View 클래스를 만들고 아래의 메서드와 프로퍼티를 추가했습니다. 
+또한 UX 개선을 위해 Fade in/out 기능을 추가적으로 구현했습니다.
+```swift
+var reloadDataCompletionHandler: (() -> Void)?
+    
+func reloadDataCompletion(_ completion: @escaping () -> Void) {
+    reloadDataCompletionHandler = completion
+    super.reloadData()
+}
+   
+override func layoutSubviews() {
+    super.layoutSubviews()
+    if let handler = reloadDataCompletionHandler {
+        handler()
+        reloadDataCompletionHandler = nil
+    }
+}
+    
+func fadeIn(withDuration: TimeInterval = 0.5, completion: ((Bool) -> Void)? = nil) {
+    UIView.animate(withDuration: 0.5, animations: {
+        self.alpha = 1
+    }, completion: completion)
+}
+
+func fadeOut(withDuration: TimeInterval = 0.5, completion: ((Bool) -> Void)? = nil) {
+    UIView.animate(withDuration: 0.5, animations: {
+        self.alpha = 0
+    }, completion: completion)
+}
+```   
+### 2-5 피드백 반영!
+
+**1. Data fetching 메서드의 확장성 개선**   
+ViewController의 `fetchProductData` 메서드의 확장성 개선하기 위해 매개변수로 api, decoding model 타입, completion handler를 전달받도록 수정했습니다. 또한 Data fetching의 주체를 NetworkDataTransfer 타입으로 변경하여 단일책임역할을 준수하도록 했습니다.
+```swift
+// 개선 전 - ViewController
+private func fetchProductData() {
+    NetworkDataTransfer().request(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 100)) { [weak self] result in
+        switch result {
+        case .success(let data):
+            let decodedData = JSONParser<ProductPage>().decode(from: data)
+
+            switch decodedData {
+            case .success(let data):
+                self?.products = data.products
+                DispatchQueue.main.async {
+                    self?.reloadDataWithActivityIndicator(at: self?.productCollectionView)
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+
+        case .failure(let error):
+            print(error.localizedDescription)
+        }
+    }
+}
+
+// 개선 후 
+// ViewController
+private func setupProducts() {
+    NetworkDataTransfer().fetchData(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 100),  // fetchData 메서드 호출
+              decodingType: ProductPage.self) { [weak self] data in
+        self?.products = data.products
+        DispatchQueue.main.async {
+            self?.reloadDataWithActivityIndicator(at: self?.productCollectionView)
+        }
+    }
+}
+
+// NetworkDataTransfer
+func fetchData<T: Codable>(api: APIProtocol,
+                           decodingType: T.Type,
+                           completionHandler: @escaping ((_ data: T) -> Void)) {
+    request(api: api) { result in
+        switch result {
+        case .success(let data):
+            let decodedData = JSONParser<T>().decode(from: data)
+
+            switch decodedData {
+            case .success(let data):
+                completionHandler(data)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+
+        case .failure(let error):
+            print(error.localizedDescription)
+        }
+    }
+}
+```
