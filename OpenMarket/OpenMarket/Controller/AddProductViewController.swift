@@ -1,7 +1,9 @@
 import UIKit
 
 final class AddProductViewController: UIViewController {
-    private var productManagementView = ProductManagementView()
+    private let productManagementView = ProductManagementView()
+    private var imageCollectionView: UICollectionView!
+    private var descriptionTextView: UITextView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -11,17 +13,29 @@ final class AddProductViewController: UIViewController {
         view.addSubview(productManagementView)
         productManagementView.setupConstraints(with: view)
         productManagementView.setupSubviews()
+        
+        setupImageCollectionView()
+        setupDescriptionTextView()
     }
     
     private func setupViewController() {
         view.backgroundColor = .white
         title = "상품등록"
     }
+    
+    private func setupImageCollectionView() {
+        imageCollectionView = productManagementView.imageCollectionView
+    }
+    
+    private func setupDescriptionTextView() {
+        descriptionTextView = productManagementView.descriptionTextView
+        descriptionTextView.delegate = self
+    }
 }
 
 // MARK: - NavigationBar, Segmented Control
 extension AddProductViewController {
-    func setupNavigationBar() {
+    private func setupNavigationBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
                                                                 target: self,
                                                                 action: #selector(touchUpCancelButton))
@@ -37,5 +51,21 @@ extension AddProductViewController {
     
     @objc private func touchUpDoneButton() {
         navigationController?.popViewController(animated: true)
+    }
+}
+
+extension AddProductViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {  
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = ProductPlaceholder.description.text
+            textView.textColor = UIColor.lightGray
+        }
     }
 }

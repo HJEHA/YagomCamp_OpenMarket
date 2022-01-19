@@ -1,35 +1,26 @@
 import UIKit
 
 final class ProductManagementView: UIScrollView {
-    private enum PlaceholderText: String {
-        case name = "상품명"
-        case price = "상품가격"
-        case discountedPrice = "할인금액"
-        case stock = "재고수량"
-        
-        var description: String {
-            return self.rawValue
-        }
-    }
-    
-    private var verticalStackView = UIStackView()
+    private let verticalStackView = UIStackView()
     private(set) var imageCollectionView = UICollectionView(frame: CGRect.zero,
                                                             collectionViewLayout: UICollectionViewFlowLayout())
-    private var nameTextField = RoundedRectTextField()
-    private var priceTextField = RoundedRectTextField()
+    private let nameTextField = RoundedRectTextField()
+    private let priceTextField = RoundedRectTextField()
     private var currencySegmentedControl: UISegmentedControl {
         let items = Currency.allCases.map { $0.description }
         let segmentedControl = UISegmentedControl(items: items)
         segmentedControl.selectedSegmentIndex = 0
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         segmentedControl.selectedSegmentTintColor = .white
+        segmentedControl.setTitleTextAttributes([.font: UIFont.preferredFont(forTextStyle: .body)], for: .normal)
+        segmentedControl.setTitleTextAttributes([.font: UIFont.preferredFont(forTextStyle: .headline)], for: .selected)
         segmentedControl.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
         return segmentedControl
     }
-    private var discountedPriceTextField = RoundedRectTextField()
-    private var stockTextField = RoundedRectTextField()
-    private var descriptionTextView = UITextView()
+    private let discountedPriceTextField = RoundedRectTextField()
+    private let stockTextField = RoundedRectTextField()
+    private(set) var descriptionTextView = UITextView()
     
     func setupConstraints(with superview: UIView) {
         translatesAutoresizingMaskIntoConstraints = false
@@ -91,7 +82,7 @@ final class ProductManagementView: UIScrollView {
         
     private func setupNameTextField() {
         verticalStackView.addArrangedSubview(nameTextField)
-        let namePlaceholder = PlaceholderText.name.description
+        let namePlaceholder = ProductPlaceholder.name.text
         nameTextField.placeholder = namePlaceholder
     }
 
@@ -102,7 +93,7 @@ final class ProductManagementView: UIScrollView {
         horizontalStackView.distribution = .fill
         horizontalStackView.spacing = 8
         
-        let pricePlaceholder = PlaceholderText.price.description
+        let pricePlaceholder = ProductPlaceholder.price.text
         priceTextField.placeholder = pricePlaceholder
         
         horizontalStackView.addArrangedSubview(priceTextField)
@@ -112,22 +103,22 @@ final class ProductManagementView: UIScrollView {
     
     private func setupDiscountedPriceTextField() {
         verticalStackView.addArrangedSubview(discountedPriceTextField)
-        let discountedPricePlaceholder = PlaceholderText.discountedPrice.description
+        let discountedPricePlaceholder = ProductPlaceholder.discountedPrice.text
         discountedPriceTextField.placeholder = discountedPricePlaceholder
     }
 
     private func setupStockTextField() {
         verticalStackView.addArrangedSubview(stockTextField)
-        let stockPlaceholder = PlaceholderText.stock.description
+        let stockPlaceholder = ProductPlaceholder.stock.text
         stockTextField.placeholder = stockPlaceholder
     }
 
     private func setupDescriptionTextView() {
         verticalStackView.addArrangedSubview(descriptionTextView)
-        descriptionTextView.text = "아름답고 열정 TESTTESTTEST\n\n\n\n\n\n\n\n\n\n\n\nTESTTESTTEST\nTESTTESTTESTTESTTEST"
-        descriptionTextView.backgroundColor = .cyan
+        descriptionTextView.text = ProductPlaceholder.description.text
+        descriptionTextView.textColor = UIColor.lightGray
         descriptionTextView.isScrollEnabled = false
-        descriptionTextView.font = .preferredFont(forTextStyle: .subheadline)
+        descriptionTextView.font = .preferredFont(forTextStyle: .body)
         descriptionTextView.setContentHuggingPriority(.defaultLow, for: .vertical)
     }
 }

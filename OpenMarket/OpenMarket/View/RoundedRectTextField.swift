@@ -1,6 +1,6 @@
 import UIKit
 
-class RoundedRectTextField: UITextField {
+final class RoundedRectTextField: UITextField {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -12,6 +12,6 @@ class RoundedRectTextField: UITextField {
     
     private func setup() {
         borderStyle = .roundedRect
-        font = .preferredFont(forTextStyle: .subheadline)
+        font = .preferredFont(forTextStyle: .body)
     }
 }
