@@ -73,7 +73,7 @@ final class ProductManagementView: UIScrollView {
         verticalStackView.addArrangedSubview(imageCollectionView)
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
-        flowLayout.minimumLineSpacing = 10
+        flowLayout.minimumLineSpacing = 14
         flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width * 0.3, height: UIScreen.main.bounds.width * 0.3)
         imageCollectionView.collectionViewLayout = flowLayout
         

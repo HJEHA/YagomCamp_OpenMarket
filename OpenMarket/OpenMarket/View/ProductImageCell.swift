@@ -4,7 +4,8 @@ final class ProductImageCell: UICollectionViewCell {
     static let identifier = "ProductImageCell"
     
     private let imageView = UIImageView()
-    let removeButton = UIButton()
+    private(set) var removeButton = UIButton()
+    private(set) var indexPath: IndexPath?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,18 +32,27 @@ final class ProductImageCell: UICollectionViewCell {
         imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
             .isActive = true
         
-        removeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+        removeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 10)
             .isActive = true
-        removeButton.topAnchor.constraint(equalTo: contentView.topAnchor)
+        removeButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: -10)
             .isActive = true
+        removeButton.widthAnchor.constraint(equalToConstant: 26).isActive = true
+        removeButton.heightAnchor.constraint(equalToConstant: 26).isActive = true
     }
     
     private func setupButton() {
-        let image = UIImage(systemName: "xmark.circle.fill")
+        let image = UIImage(systemName: "minus.circle.fill")
         removeButton.setImage(image, for: .normal)
+        removeButton.backgroundColor = .white
+        removeButton.layer.cornerRadius = 13
+        removeButton.tintColor = .systemRed
     }
     
     func setupProductImage(with image: UIImage?) {
         imageView.image = image
+    }
+    
+    func setIndexPath(at indexPath: IndexPath) {
+        self.indexPath = indexPath
     }
 }

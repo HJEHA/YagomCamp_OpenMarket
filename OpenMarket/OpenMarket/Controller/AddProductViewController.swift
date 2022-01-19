@@ -21,7 +21,9 @@ final class AddProductViewController: UIViewController {
     private let imagePickerController = UIImagePickerController()
     
     private var productImages: [UIImage] = []
-
+    private var isEditingImage = false
+    private var currentImageCellIndexPath = IndexPath()
+    
     // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,7 +94,27 @@ extension AddProductViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         cell.setupProductImage(with: productImages[indexPath.item])
+        cell.removeButton.addTarget(self, action: #selector(removeImage), for: .touchUpInside)
+        cell.setIndexPath(at: indexPath)
         return cell
+    }
+    
+    @objc func removeImage(_ sender: UIButton) {
+        guard let productImageCell = sender.superview?.superview as? ProductImageCell,
+              let indexPath = productImageCell.indexPath else {
+            return
+        }
+        
+        imageCollectionView.deleteItems(at: [indexPath])
+        productImages.remove(at: indexPath.item)
+    }
+}
+
+extension AddProductViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        isEditingImage = true
+        currentImageCellIndexPath = indexPath
+        touchUpAddProductImageButton()
     }
 }
 
@@ -114,7 +136,7 @@ extension AddProductViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForFooterInSection section: Int) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width * 0.35, height: UIScreen.main.bounds.width * 0.35)
+        return CGSize(width: UIScreen.main.bounds.width * 0.36, height: UIScreen.main.bounds.width * 0.35)
     }
 }
 
@@ -134,7 +156,9 @@ extension AddProductViewController {
         let camera =  UIAlertAction(title: AddProductImageActionSheetText.camera.description, style: .default) { _ in
             self.openCamera()
         }
-        let cancel = UIAlertAction(title: AddProductImageActionSheetText.cancel.description, style: .cancel)
+        let cancel = UIAlertAction(title: AddProductImageActionSheetText.cancel.description, style: .cancel) { _ in
+            self.isEditingImage = false
+        }
         alert.addAction(library)
         alert.addAction(camera)
         alert.addAction(cancel)
@@ -171,14 +195,21 @@ extension AddProductViewController {
 extension AddProductViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        guard let image = info[.editedImage] as? UIImage else {
+            isEditingImage = false
+            return
+        }
         
-        if let image = info[.editedImage] as? UIImage {
+        if isEditingImage {
+            productImages[currentImageCellIndexPath.item] = image
+        } else {
             productImages.append(image)
         }
         
         dismiss(animated: true) {
             DispatchQueue.main.async { [weak self] in
                 self?.imageCollectionView.reloadData()
+                self?.isEditingImage = false
             }
         }
     }
