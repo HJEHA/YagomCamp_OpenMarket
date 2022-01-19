@@ -46,7 +46,10 @@ final class ListProductCell: UICollectionViewCell, ProductCellProtocol {
         
         let sideInset: Double = 0
         let topBottomInset: Double = 10
-        horizontalStackView.layoutMargins = UIEdgeInsets(top: topBottomInset, left: sideInset, bottom: topBottomInset, right: sideInset)
+        horizontalStackView.layoutMargins = UIEdgeInsets(top: topBottomInset,
+                                                         left: sideInset,
+                                                         bottom: topBottomInset,
+                                                         right: sideInset)
         horizontalStackView.isLayoutMarginsRelativeArrangement = true
         
         horizontalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)

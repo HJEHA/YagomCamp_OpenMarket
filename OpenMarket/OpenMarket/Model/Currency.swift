@@ -1,6 +1,6 @@
 import Foundation
 
-enum Currency: String, Codable, CustomStringConvertible {
+enum Currency: String, Codable, CustomStringConvertible, CaseIterable {
     case koreanWon = "KRW"
     case unitedStatesDollar = "USD"
     

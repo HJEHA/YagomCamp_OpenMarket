@@ -1,15 +1,34 @@
 import UIKit
 
 final class ProductManagementView: UIScrollView {
+    private enum PlaceholderText: String {
+        case name = "상품명"
+        case price = "상품가격"
+        case discountedPrice = "할인금액"
+        case stock = "재고수량"
+        
+        var description: String {
+            return self.rawValue
+        }
+    }
+    
     private var verticalStackView = UIStackView()
     private(set) var imageCollectionView = UICollectionView(frame: CGRect.zero,
                                                             collectionViewLayout: UICollectionViewFlowLayout())
-    private var nameTextField = UITextField()
-    private var priceTextField = UITextField()
-    private var currencySegmentedControl = UISegmentedControl(items: ["1", "2"])
-    
-    private var discountedPriceTextField = UITextField()
-    private var stockTextField = UITextField()
+    private var nameTextField = RoundedRectTextField()
+    private var priceTextField = RoundedRectTextField()
+    private var currencySegmentedControl: UISegmentedControl {
+        let items = Currency.allCases.map { $0.description }
+        let segmentedControl = UISegmentedControl(items: items)
+        segmentedControl.selectedSegmentIndex = 0
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        segmentedControl.selectedSegmentTintColor = .white
+        segmentedControl.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        
+        return segmentedControl
+    }
+    private var discountedPriceTextField = RoundedRectTextField()
+    private var stockTextField = RoundedRectTextField()
     private var descriptionTextView = UITextView()
     
     func setupConstraints(with superview: UIView) {
@@ -25,7 +44,7 @@ final class ProductManagementView: UIScrollView {
         widthAnchor.constraint(equalToConstant: superview.frame.width).isActive = true
     }
     
-    func setupSubviews() {        
+    func setupSubviews() {
         setupVerticalStackView()
         setupImageCollectionView()
         setupNameTextField()
@@ -33,6 +52,13 @@ final class ProductManagementView: UIScrollView {
         setupDiscountedPriceTextField()
         setupStockTextField()
         setupDescriptionTextView()
+        setupSubviewsAutoresizingMask()
+    }
+    
+    private func setupSubviewsAutoresizingMask() {
+        subviews.forEach { subview in
+            subview.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
 
     private func setupVerticalStackView() {
@@ -45,11 +71,10 @@ final class ProductManagementView: UIScrollView {
         verticalStackView.layoutMargins = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
         verticalStackView.isLayoutMarginsRelativeArrangement = true
         
-        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
         verticalStackView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         verticalStackView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         verticalStackView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        verticalStackView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        verticalStackView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor).isActive = true
         verticalStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
     }
     
@@ -61,18 +86,13 @@ final class ProductManagementView: UIScrollView {
         flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width * 0.3, height: UIScreen.main.bounds.width * 0.3)
         imageCollectionView.collectionViewLayout = flowLayout
         
-        imageCollectionView.translatesAutoresizingMaskIntoConstraints = false
         imageCollectionView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.35).isActive = true
     }
         
     private func setupNameTextField() {
         verticalStackView.addArrangedSubview(nameTextField)
-        let namePlaceholder = "상품명"
+        let namePlaceholder = PlaceholderText.name.description
         nameTextField.placeholder = namePlaceholder
-        nameTextField.borderStyle = .roundedRect
-        nameTextField.font = .preferredFont(forTextStyle: .subheadline)
-        
-        nameTextField.translatesAutoresizingMaskIntoConstraints = false
     }
 
     private func setupPriceAndCurrencyStackView() {
@@ -82,54 +102,32 @@ final class ProductManagementView: UIScrollView {
         horizontalStackView.distribution = .fill
         horizontalStackView.spacing = 8
         
-        horizontalStackView.addArrangedSubview(priceTextField)
-        let pricePlaceholder = "상품가격"
+        let pricePlaceholder = PlaceholderText.price.description
         priceTextField.placeholder = pricePlaceholder
-        priceTextField.borderStyle = .roundedRect
-        priceTextField.font = .preferredFont(forTextStyle: .subheadline)
         
-        priceTextField.translatesAutoresizingMaskIntoConstraints = false
-        
+        horizontalStackView.addArrangedSubview(priceTextField)
         horizontalStackView.addArrangedSubview(currencySegmentedControl)
-        currencySegmentedControl.setTitle("\(Currency.koreanWon.description)", forSegmentAt: 0)
-        currencySegmentedControl.setTitle("\(Currency.unitedStatesDollar.description)", forSegmentAt: 1)
-        currencySegmentedControl.selectedSegmentIndex = 0
-        
-        currencySegmentedControl.translatesAutoresizingMaskIntoConstraints = false
-        currencySegmentedControl.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        
         verticalStackView.addArrangedSubview(horizontalStackView)
-        horizontalStackView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func setupDiscountedPriceTextField() {
         verticalStackView.addArrangedSubview(discountedPriceTextField)
-        let discountedPricePlaceholder = "할인금액"
+        let discountedPricePlaceholder = PlaceholderText.discountedPrice.description
         discountedPriceTextField.placeholder = discountedPricePlaceholder
-        discountedPriceTextField.borderStyle = .roundedRect
-        discountedPriceTextField.font = .preferredFont(forTextStyle: .subheadline)
-        
-        discountedPriceTextField.translatesAutoresizingMaskIntoConstraints = false
     }
 
     private func setupStockTextField() {
         verticalStackView.addArrangedSubview(stockTextField)
-        let stockPlaceholder = "재고수량"
+        let stockPlaceholder = PlaceholderText.stock.description
         stockTextField.placeholder = stockPlaceholder
-        stockTextField.borderStyle = .roundedRect
-        stockTextField.font = .preferredFont(forTextStyle: .subheadline)
-        
-        stockTextField.translatesAutoresizingMaskIntoConstraints = false
     }
 
     private func setupDescriptionTextView() {
         verticalStackView.addArrangedSubview(descriptionTextView)
-        descriptionTextView.text = "아름답고 열정 TESTTESTTEST\nTESTTESTTEST\nTESTTESTTESTTESTTEST"
+        descriptionTextView.text = "아름답고 열정 TESTTESTTEST\n\n\n\n\n\n\n\n\n\n\n\nTESTTESTTEST\nTESTTESTTESTTESTTEST"
         descriptionTextView.backgroundColor = .cyan
         descriptionTextView.isScrollEnabled = false
-        descriptionTextView.heightAnchor.constraint(equalToConstant: 1000.0).isActive = true
         descriptionTextView.font = .preferredFont(forTextStyle: .subheadline)
-        
-        descriptionTextView.translatesAutoresizingMaskIntoConstraints = false
+        descriptionTextView.setContentHuggingPriority(.defaultLow, for: .vertical)
     }
 }
