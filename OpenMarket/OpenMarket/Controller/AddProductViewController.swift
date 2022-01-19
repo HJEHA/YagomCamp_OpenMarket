@@ -1,10 +1,28 @@
 import UIKit
 
+enum AddProductImageActionSheetText: String {
+    case optionAlertTitle = "업로드할 사진을 선택해주세요"
+    case library = "앨범에서 가져오기"
+    case camera = "사진 촬영"
+    case cancel = "취소"
+    case cameraDisableAlertTitle = "카메라를 사용할 수 없음"
+    case confirm = "확인"
+    
+    fileprivate var description: String {
+        return self.rawValue
+    }
+}
+
 final class AddProductViewController: UIViewController {
+    // MARK: - Properties
     private let productManagementView = ProductManagementView()
     private var imageCollectionView: UICollectionView!
     private var descriptionTextView: UITextView!
+    private let imagePickerController = UIImagePickerController()
     
+    private var productImages: [UIImage] = []
+
+    // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewController()
@@ -16,6 +34,7 @@ final class AddProductViewController: UIViewController {
         
         setupImageCollectionView()
         setupDescriptionTextView()
+        setupImagePickerViewController()
     }
     
     private func setupViewController() {
@@ -26,7 +45,11 @@ final class AddProductViewController: UIViewController {
     private func setupImageCollectionView() {
         imageCollectionView = productManagementView.imageCollectionView
         imageCollectionView.register(ProductImageCell.self, forCellWithReuseIdentifier: ProductImageCell.identifier)
+        imageCollectionView.register(AddProductImageFooterView.self,
+                                     forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+                                     withReuseIdentifier: AddProductImageFooterView.identifier)
         imageCollectionView.dataSource = self
+        imageCollectionView.delegate = self
     }
     
     private func setupDescriptionTextView() {
@@ -39,12 +62,12 @@ final class AddProductViewController: UIViewController {
 extension AddProductViewController {
     private func setupNavigationBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
-                                                                target: self,
-                                                                action: #selector(touchUpCancelButton))
+                                                           target: self,
+                                                           action: #selector(touchUpCancelButton))
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
-                                                                target: self,
-                                                                action: #selector(touchUpDoneButton))
+                                                            target: self,
+                                                            action: #selector(touchUpDoneButton))
     }
     
     @objc private func touchUpCancelButton() {
@@ -56,10 +79,10 @@ extension AddProductViewController {
     }
 }
 
-// MARK: - ImageCollectionViwe DataSource
+// MARK: - ImageCollectionView DataSource
 extension AddProductViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return productImages.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -68,17 +91,102 @@ extension AddProductViewController: UICollectionViewDataSource {
                                                             for: indexPath) as? ProductImageCell else {
             return UICollectionViewCell()
         }
-        
-        let image = UIImage(systemName: "xmark.circle.fill")
-        cell.setupProductImage(with: image)
-        
+        cell.setupProductImage(with: productImages[indexPath.item])
         return cell
+    }
+}
+
+// MARK: - ImageCollectionView Delegate
+extension AddProductViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView,
+                        viewForSupplementaryElementOfKind kind: String,
+                        at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let footerView = collectionView
+                .dequeueReusableSupplementaryView(ofKind: kind,
+                                                  withReuseIdentifier: AddProductImageFooterView.identifier,
+                                                  for: indexPath) as? AddProductImageFooterView else {
+            return UICollectionReusableView()
+        }
+        footerView.addButton.addTarget(self, action: #selector(touchUpAddProductImageButton), for: .touchUpInside)
+        return footerView
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        referenceSizeForFooterInSection section: Int) -> CGSize {
+        return CGSize(width: UIScreen.main.bounds.width * 0.35, height: UIScreen.main.bounds.width * 0.35)
+    }
+}
+
+// MARK: - ImagePicker Methods
+extension AddProductViewController {
+    private func setupImagePickerViewController() {
+        imagePickerController.delegate = self
+        imagePickerController.allowsEditing = true
+    }
+    
+    @objc private func touchUpAddProductImageButton() {
+        let alert =  UIAlertController(title: AddProductImageActionSheetText.optionAlertTitle.description,
+                                       message: nil,
+                                       preferredStyle: .actionSheet)
+        let library =  UIAlertAction(title: AddProductImageActionSheetText.library.description, style: .default) { _ in
+            self.openLibrary() }
+        let camera =  UIAlertAction(title: AddProductImageActionSheetText.camera.description, style: .default) { _ in
+            self.openCamera()
+        }
+        let cancel = UIAlertAction(title: AddProductImageActionSheetText.cancel.description, style: .cancel)
+        alert.addAction(library)
+        alert.addAction(camera)
+        alert.addAction(cancel)
+        
+        present(alert, animated: true)
+    }
+    
+    private func openLibrary() {
+        imagePickerController.sourceType = .photoLibrary
+        present(imagePickerController, animated: true)
+    }
+    
+    private func openCamera() {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            imagePickerController.sourceType = .camera
+            present(imagePickerController, animated: true)
+        } else {
+            showCameraDisableAlert()
+        }
+    }
+    
+    private func showCameraDisableAlert() {
+        let alert = UIAlertController(title: AddProductImageActionSheetText.cameraDisableAlertTitle.description,
+                                      message: nil,
+                                      preferredStyle: .alert)
+        let okButton = UIAlertAction(title: AddProductImageActionSheetText.confirm.description, style: .default)
+        alert.addAction(okButton)
+        
+        present(alert, animated: true)
+    }
+}
+
+// MARK: - ImagePickerController Delegate
+extension AddProductViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        
+        if let image = info[.editedImage] as? UIImage {
+            productImages.append(image)
+        }
+        
+        dismiss(animated: true) {
+            DispatchQueue.main.async { [weak self] in
+                self?.imageCollectionView.reloadData()
+            }
+        }
     }
 }
 
 // MARK: - TextView Delegate
 extension AddProductViewController: UITextViewDelegate {
-    func textViewDidBeginEditing(_ textView: UITextView) {  
+    func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.textColor == UIColor.lightGray {
             textView.text = nil
             textView.textColor = UIColor.black
