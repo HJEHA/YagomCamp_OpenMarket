@@ -25,6 +25,8 @@ final class AddProductViewController: UIViewController {
     
     private func setupImageCollectionView() {
         imageCollectionView = productManagementView.imageCollectionView
+        imageCollectionView.register(ProductImageCell.self, forCellWithReuseIdentifier: ProductImageCell.identifier)
+        imageCollectionView.dataSource = self
     }
     
     private func setupDescriptionTextView() {
@@ -54,6 +56,27 @@ extension AddProductViewController {
     }
 }
 
+// MARK: - ImageCollectionViwe DataSource
+extension AddProductViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductImageCell.identifier,
+                                                            for: indexPath) as? ProductImageCell else {
+            return UICollectionViewCell()
+        }
+        
+        let image = UIImage(systemName: "xmark.circle.fill")
+        cell.setupProductImage(with: image)
+        
+        return cell
+    }
+}
+
+// MARK: - TextView Delegate
 extension AddProductViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {  
         if textView.textColor == UIColor.lightGray {

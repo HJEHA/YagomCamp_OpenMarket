@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0893F0C42797EB7A00457C61 /* ProductImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0893F0C32797EB7A00457C61 /* ProductImageCell.swift */; };
 		089C36BC27953F5A00EDE2B6 /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 089C36BB27953F5A00EDE2B6 /* UILabel+Extension.swift */; };
 		08A4E45D2792B90D000C9AD9 /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A4E45C2792B90D000C9AD9 /* Double+Extension.swift */; };
 		08A5B0D427843617002E1ABE /* MockProduct.json in Resources */ = {isa = PBXBuildFile; fileRef = 08A5B0D327843617002E1ABE /* MockProduct.json */; };
@@ -58,6 +59,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0893F0C32797EB7A00457C61 /* ProductImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageCell.swift; sourceTree = "<group>"; };
 		089C36BB27953F5A00EDE2B6 /* UILabel+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
 		08A4E45C2792B90D000C9AD9 /* Double+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extension.swift"; sourceTree = "<group>"; };
 		08A5B0D327843617002E1ABE /* MockProduct.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MockProduct.json; sourceTree = "<group>"; };
@@ -191,6 +193,7 @@
 				08CA13EE279588E6005552A9 /* ProductsCollectionView.swift */,
 				36D617B62796C70000F7A9AB /* ProductManagementView.swift */,
 				08BC39892796E7AA002B5C7C /* RoundedRectTextField.swift */,
+				0893F0C32797EB7A00457C61 /* ProductImageCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -466,6 +469,7 @@
 				08B2CE8D2782E0D4009295F2 /* Currency.swift in Sources */,
 				08B2CE8B2782DEAD009295F2 /* Product.swift in Sources */,
 				3691266D2785B563002304D4 /* URLSession+Extension.swift in Sources */,
+				0893F0C42797EB7A00457C61 /* ProductImageCell.swift in Sources */,
 				08CA13EF279588E6005552A9 /* ProductsCollectionView.swift in Sources */,
 				3637AE1F278D8801009003B7 /* GridProductCell.swift in Sources */,
 				08BC398A2796E7AA002B5C7C /* RoundedRectTextField.swift in Sources */,
