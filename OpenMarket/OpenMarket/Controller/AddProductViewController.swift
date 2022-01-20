@@ -1,7 +1,8 @@
 import UIKit
 
 enum AddProductImageActionSheetText: String {
-    case optionAlertTitle = "업로드할 사진을 선택해주세요"
+    case addImageAlertTitle = "업로드할 사진을 선택해주세요"
+    case editImageAlertTitle = "수정할 사진을 선택해주세요"
     case library = "앨범에서 가져오기"
     case camera = "사진 촬영"
     case cancel = "취소"
@@ -13,10 +14,25 @@ enum AddProductImageActionSheetText: String {
     }
 }
 
+private extension UIView {
+    func findSuperview<T>(ofType: T.Type) -> T? {
+        var currentView = self
+        var resultView: T?
+        while let currentSuperview = currentView.superview {
+            if currentSuperview is T {
+                resultView = currentSuperview as? T
+                break
+            }
+            currentView = currentSuperview
+        }
+        return resultView
+    }
+}
+
 final class AddProductViewController: UIViewController {
     // MARK: - Properties
     private let productManagementView = ProductManagementView()
-    private var imageCollectionView: UICollectionView!
+    private var imageCollectionView: ProductImageCollectionView!
     private var descriptionTextView: UITextView!
     private let imagePickerController = UIImagePickerController()
     
@@ -100,13 +116,13 @@ extension AddProductViewController: UICollectionViewDataSource {
     }
     
     @objc func removeImage(_ sender: UIButton) {
-        guard let productImageCell = sender.superview?.superview as? ProductImageCell,
+        guard let productImageCell = sender.findSuperview(ofType: ProductImageCell.self),
               let indexPath = productImageCell.indexPath else {
             return
         }
         
-        imageCollectionView.deleteItems(at: [indexPath])
         productImages.remove(at: indexPath.item)
+        imageCollectionView.reloadData()
     }
 }
 
@@ -148,7 +164,8 @@ extension AddProductViewController {
     }
     
     @objc private func touchUpAddProductImageButton() {
-        let alert =  UIAlertController(title: AddProductImageActionSheetText.optionAlertTitle.description,
+        let alertTitle = setProductImageAlertTitle()
+        let alert =  UIAlertController(title: alertTitle,
                                        message: nil,
                                        preferredStyle: .actionSheet)
         let library =  UIAlertAction(title: AddProductImageActionSheetText.library.description, style: .default) { _ in
@@ -164,6 +181,14 @@ extension AddProductViewController {
         alert.addAction(cancel)
         
         present(alert, animated: true)
+    }
+    
+    private func setProductImageAlertTitle() -> String {
+        if isEditingImage {
+            return AddProductImageActionSheetText.editImageAlertTitle.description
+        } else {
+            return AddProductImageActionSheetText.addImageAlertTitle.description
+        }
     }
     
     private func openLibrary() {
@@ -208,9 +233,20 @@ extension AddProductViewController: UIImagePickerControllerDelegate, UINavigatio
         
         dismiss(animated: true) {
             DispatchQueue.main.async { [weak self] in
-                self?.imageCollectionView.reloadData()
+                self?.imageCollectionView.reloadDataCompletion { [weak self] in
+                    self?.scrollToRightMost()
+                }
                 self?.isEditingImage = false
             }
+        }
+    }
+    
+    private func scrollToRightMost() {
+        var rightMostOffsetX = imageCollectionView.contentSize.width
+        if rightMostOffsetX > imageCollectionView.frame.width {
+            rightMostOffsetX -= imageCollectionView.frame.width
+            let offset = CGPoint(x: rightMostOffsetX, y: 0)
+            imageCollectionView.setContentOffset(offset, animated: true)
         }
     }
 }

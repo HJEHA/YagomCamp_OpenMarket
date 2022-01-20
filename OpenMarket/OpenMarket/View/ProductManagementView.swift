@@ -2,7 +2,7 @@ import UIKit
 
 final class ProductManagementView: UIScrollView {
     private let verticalStackView = UIStackView()
-    private(set) var imageCollectionView = UICollectionView(frame: CGRect.zero,
+    private(set) var imageCollectionView = ProductImageCollectionView(frame: CGRect.zero,
                                                             collectionViewLayout: UICollectionViewFlowLayout())
     private let nameTextField = RoundedRectTextField()
     private let priceTextField = RoundedRectTextField()
