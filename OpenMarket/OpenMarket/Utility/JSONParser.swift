@@ -2,12 +2,16 @@ import Foundation
 
 enum JSONParserError: Error, LocalizedError {
     case decodingFail
+    case encodingFail
     
     var errorDescription: String? {
         switch self {
         case .decodingFail:
             return "디코딩에 실패했습니다."
+        case .encodingFail:
+            return "인코딩에 실패했습니다."
         }
+        
     }
 }
 
@@ -25,5 +29,20 @@ struct JSONParser<Item: Codable> {
         }
         
         return .success(decodedData)
+    }
+    
+    func encode(from item: Item?) -> Result<Data, JSONParserError> {
+        guard let item = item else {
+            return .failure(.encodingFail)
+        }
+        
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        
+        guard let encodedData = try? encoder.encode(item) else {
+            return .failure(.encodingFail)
+        }
+        
+        return .success(encodedData)
     }
 }
