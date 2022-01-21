@@ -52,7 +52,7 @@ struct NetworkDataTransfer {
         loadData(request: urlRequest, completionHandler: completionHandler)
     }
     
-    func fetchData<T: Codable>(api: APIProtocol,
+    func fetchData<T: Codable>(api: Gettable,
                                decodingType: T.Type,
                                completionHandler: @escaping ((_ data: T) -> Void)) {
         request(api: api) { result in

@@ -1,19 +1,20 @@
-import Foundation
+import UIKit
 
 struct MultipartFormData {
-    private let boundary: String
+    private(set) var boundary: String
     let contentType: String
-    var body: Data = Data()
+    private(set) var body: Data = Data()
+    
     init() {
-        let uuid = UUID()
-        self.boundary = "Boundary-\(uuid.uuidString)"
+        let uuid = UUID().uuidString
+        self.boundary = "Boundary-\(uuid)"
         self.contentType = "multipart/form-data; boundary=\(self.boundary)"
     }
     
     mutating func appendToBody(from data: Data) {
         self.body.append(data)
     }
-    
+      
     func createFormData<Item: Codable>(params: String, item: Item) -> Data {
         var data = Data()
         data.append(BoundaryGenerator.boundaryData(forBoundaryType: .startSymbol, boundary: boundary))
@@ -30,12 +31,46 @@ struct MultipartFormData {
         
         return data
     }
+    
+    func createImageFormData(name: String, filename: String, contentType: ImageContentType, image: UIImage) -> Data {
+        var data = Data()
+        data.append(BoundaryGenerator.boundaryData(forBoundaryType: .startSymbol, boundary: boundary))
+        data.append(ContentDisposition.imageFormData(name: name, filename: filename).bodyComponent)
+        data.append(ContentDisposition.imageContentType(type: contentType).bodyComponent)
+        
+        switch contentType {
+        case .png:
+            if let imageData = image.pngData() {
+                data.append(imageData)
+            }
+        case .jpeg:
+            if let imageData = image.jpegData(compressionQuality: 1) {
+                data.append(imageData)
+            }
+        }
+        data.append(BoundaryGenerator.boundaryData(forBoundaryType: .endSymbol, boundary: boundary))
+        
+        return data
+    }
+    
+    mutating func closeBody() {
+        self.body.append(BoundaryGenerator.boundaryData(forBoundaryType: .terminator, boundary: boundary))
+    }
+}
+
+enum ImageContentType: String, CustomStringConvertible {
+    case png
+    case jpeg
+    
+    var description: String {
+        return "image/\(rawValue)"
+    }
 }
 
 enum ContentDisposition {
     case formData(params: String)
     case imageFormData(name: String, filename: String)
-    case imageContentType(type: String)
+    case imageContentType(type: ImageContentType)
     
     var bodyComponent: String {
         switch self {
@@ -46,7 +81,7 @@ enum ContentDisposition {
             return "Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(filename)\""
                     + EncodingCharacters.newLine
         case .imageContentType(let type):
-            return "Content-Type: \(type)" + EncodingCharacters.doubleNewLine
+            return "Content-Type: \(type.description)" + EncodingCharacters.doubleNewLine
         }
     }
 }
@@ -70,7 +105,7 @@ enum BoundaryGenerator {
         case .endSymbol:
             boundaryText = "\(EncodingCharacters.newLine)"
         case .terminator:
-            boundaryText = "\(EncodingCharacters.newLine)--\(boundary)--"
+            boundaryText = "--\(boundary)--"
         }
         
         return Data(boundaryText.utf8)

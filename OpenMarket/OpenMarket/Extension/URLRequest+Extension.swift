@@ -8,5 +8,11 @@ extension URLRequest {
         
         self.init(url: url)
         self.httpMethod = "\(api.method)"
+        
+        if let postablAPI = api as? Postable {
+            self.addValue(postablAPI.identifier, forHTTPHeaderField: "identifier")
+            self.addValue(postablAPI.contentType, forHTTPHeaderField: "Content-Type")
+            self.httpBody = postablAPI.body
+        }
     }
 }

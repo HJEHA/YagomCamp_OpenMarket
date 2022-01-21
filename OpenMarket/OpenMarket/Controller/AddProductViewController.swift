@@ -53,6 +53,17 @@ final class AddProductViewController: UIViewController {
         setupImageCollectionView()
         setupDescriptionTextView()
         setupImagePickerViewController()
+        
+        let product = ProductDetail()
+        let postAPI = ProductRegisterAPI(params: "params", item: product)
+        NetworkDataTransfer().request(api: postAPI) { result in
+            switch result {
+            case .success(_):
+                print("성공")
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     private func setupViewController() {
