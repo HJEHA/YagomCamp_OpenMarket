@@ -3,10 +3,10 @@ import UIKit
 final class ProductManagementView: UIScrollView {
     private let verticalStackView = UIStackView()
     private(set) var imageCollectionView = ProductImageCollectionView(frame: CGRect.zero,
-                                                            collectionViewLayout: UICollectionViewFlowLayout())
+                                                                      collectionViewLayout: UICollectionViewFlowLayout())
     private let nameTextField = RoundedRectTextField()
     private let priceTextField = RoundedRectTextField()
-    private var currencySegmentedControl: UISegmentedControl {
+    private lazy var currencySegmentedControl: UISegmentedControl = {
         let items = Currency.allCases.map { $0.description }
         let segmentedControl = UISegmentedControl(items: items)
         segmentedControl.selectedSegmentIndex = 0
@@ -17,10 +17,14 @@ final class ProductManagementView: UIScrollView {
         segmentedControl.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
         return segmentedControl
-    }
+    }()
     private let discountedPriceTextField = RoundedRectTextField()
     private let stockTextField = RoundedRectTextField()
     private(set) var descriptionTextView = UITextView()
+    
+    @objc func test(_ sender: UISegmentedControl) {
+        print(currencySegmentedControl.selectedSegmentIndex)
+    }
     
     func setupConstraints(with superview: UIView) {
         translatesAutoresizingMaskIntoConstraints = false
@@ -51,7 +55,7 @@ final class ProductManagementView: UIScrollView {
             subview.translatesAutoresizingMaskIntoConstraints = false
         }
     }
-
+    
     private func setupVerticalStackView() {
         addSubview(verticalStackView)
         verticalStackView.axis = .vertical
@@ -79,13 +83,13 @@ final class ProductManagementView: UIScrollView {
         
         imageCollectionView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * 0.35).isActive = true
     }
-        
+    
     private func setupNameTextField() {
         verticalStackView.addArrangedSubview(nameTextField)
         let namePlaceholder = ProductPlaceholder.name.text
         nameTextField.placeholder = namePlaceholder
     }
-
+    
     private func setupPriceAndCurrencyStackView() {
         let horizontalStackView = UIStackView()
         horizontalStackView.axis = .horizontal
@@ -106,13 +110,13 @@ final class ProductManagementView: UIScrollView {
         let discountedPricePlaceholder = ProductPlaceholder.discountedPrice.text
         discountedPriceTextField.placeholder = discountedPricePlaceholder
     }
-
+    
     private func setupStockTextField() {
         verticalStackView.addArrangedSubview(stockTextField)
         let stockPlaceholder = ProductPlaceholder.stock.text
         stockTextField.placeholder = stockPlaceholder
     }
-
+    
     private func setupDescriptionTextView() {
         verticalStackView.addArrangedSubview(descriptionTextView)
         descriptionTextView.text = ProductPlaceholder.description.text
@@ -120,5 +124,28 @@ final class ProductManagementView: UIScrollView {
         descriptionTextView.isScrollEnabled = false
         descriptionTextView.font = .preferredFont(forTextStyle: .body)
         descriptionTextView.setContentHuggingPriority(.defaultLow, for: .vertical)
+    }
+    
+    func createUserInputData() -> ProductDetailToRegister? {
+        guard let name = nameTextField.text,
+              let priceText = priceTextField.text,
+              let price = Double(priceText),
+              let discountPriceText = discountedPriceTextField.text,
+              let discountPrice = Double(discountPriceText),
+              let stockText = stockTextField.text,
+              let stock = Int(stockText),
+              let description = descriptionTextView.text else {
+                  return nil
+              }
+        
+        let currency = Currency.allCases[currencySegmentedControl.selectedSegmentIndex]
+        let productDetailToRegister = ProductDetailToRegister(name: name,
+                                                              descriptions: description,
+                                                              price: price,
+                                                              discountedPrice: discountPrice,
+                                                              currency: currency,
+                                                              stock: stock)
+        
+        return productDetailToRegister
     }
 }

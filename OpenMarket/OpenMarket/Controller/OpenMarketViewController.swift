@@ -50,7 +50,10 @@ final class OpenMarketViewController: UIViewController {
         setupCollectionView()
         setupActivityIndicator()
         registerCell()
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         setupProducts()
     }
     

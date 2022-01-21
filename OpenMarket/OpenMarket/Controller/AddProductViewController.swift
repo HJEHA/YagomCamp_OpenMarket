@@ -14,6 +14,19 @@ enum AddProductImageActionSheetText: String {
     }
 }
 
+enum ProductRegisterAlertText: String {
+    case successTitle = "상품 등록이 완료되었습니다"
+    case failTitle = "상품 등록에 실패했습니다"
+    case imageFailMessage = "이미지는 최소 1장 이상 추가해주세요."
+    case nameFailMessage = "상품명을 세글자 이상 입력해주세요"
+    case descriptionFailMessage = "상품 설명은 1000글자 이내로 작성해주세요."
+    case confirm = "확인"
+    
+    fileprivate var description: String {
+        return self.rawValue
+    }
+}
+
 private extension UIView {
     func findSuperview<T>(ofType: T.Type) -> T? {
         var currentView = self
@@ -78,7 +91,7 @@ final class AddProductViewController: UIViewController {
     private func postProductRegister() {
         var multipartFormData = MultipartFormData()
         
-        let product = ProductDetail()
+        let product = productManagementView.createUserInputData()
         let productRegisterData = multipartFormData.createFormData(params: "params", item: product)
         multipartFormData.appendToBody(from: productRegisterData)
         
@@ -92,14 +105,41 @@ final class AddProductViewController: UIViewController {
         multipartFormData.closeBody()
         
         let postAPI = ProductRegisterAPI(boundary: multipartFormData.boundary, body: multipartFormData.body)
-        NetworkDataTransfer().request(api: postAPI) { result in
+        NetworkDataTransfer().request(api: postAPI) { [weak self] result in
             switch result {
-            case .success(let data):
-                print("성공")
+            case .success(_):
+                DispatchQueue.main.async {
+                    self?.showRegisterSuccessAlert()
+                }
             case .failure(let error):
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    private func showRegisterSuccessAlert() {
+        let alert = UIAlertController(title: ProductRegisterAlertText.successTitle.description,
+                                      message: nil,
+                                      preferredStyle: .alert)
+        let okButton = UIAlertAction(title: ProductRegisterAlertText.confirm.description,
+                                     style: .default) { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }
+        alert.addAction(okButton)
+        
+        present(alert, animated: true)
+    }
+    
+    private func showRegisterFailAlert(message: String) {
+        let alert = UIAlertController(title: AddProductImageActionSheetText.cameraDisableAlertTitle.description,
+                                      message: message,
+                                      preferredStyle: .alert)
+        let okButton = UIAlertAction(title: ProductRegisterAlertText.confirm.description, style: .default)
+        alert.addAction(okButton)
+        
+        present(alert, animated: true)
     }
 }
 
