@@ -38,6 +38,7 @@
 		369126382784772A002304D4 /* NetworkDataTransferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369126372784772A002304D4 /* NetworkDataTransferTests.swift */; };
 		3691266D2785B563002304D4 /* URLSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3691266C2785B563002304D4 /* URLSession+Extension.swift */; };
 		3691266F2785B928002304D4 /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3691266E2785B928002304D4 /* MockURLSession.swift */; };
+		36D213A0279A8441003C6A77 /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D2139F279A8441003C6A77 /* UIImage+Extension.swift */; };
 		36D617B72796C70000F7A9AB /* ProductManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D617B62796C70000F7A9AB /* ProductManagementView.swift */; };
 		36D617C02797E6BD00F7A9AB /* ProductPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D617BF2797E6BD00F7A9AB /* ProductPlaceholder.swift */; };
 		36D617C42798299700F7A9AB /* AddProductImageFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D617C32798299700F7A9AB /* AddProductImageFooterView.swift */; };
@@ -95,6 +96,7 @@
 		369126372784772A002304D4 /* NetworkDataTransferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDataTransferTests.swift; sourceTree = "<group>"; };
 		3691266C2785B563002304D4 /* URLSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Extension.swift"; sourceTree = "<group>"; };
 		3691266E2785B928002304D4 /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
+		36D2139F279A8441003C6A77 /* UIImage+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
 		36D617B62796C70000F7A9AB /* ProductManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductManagementView.swift; sourceTree = "<group>"; };
 		36D617BF2797E6BD00F7A9AB /* ProductPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPlaceholder.swift; sourceTree = "<group>"; };
 		36D617C32798299700F7A9AB /* AddProductImageFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductImageFooterView.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				08AF0B5E278EFEF4005FF21D /* CALayer+Extension.swift */,
 				08BB9A7F27917C2300D95A82 /* UIImageView+Extension.swift */,
 				089C36BB27953F5A00EDE2B6 /* UILabel+Extension.swift */,
+				36D2139F279A8441003C6A77 /* UIImage+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -489,6 +492,7 @@
 				36D617C82799B3DF00F7A9AB /* ProductRegisterModel.swift in Sources */,
 				08BC398A2796E7AA002B5C7C /* RoundedRectTextField.swift in Sources */,
 				36D617C42798299700F7A9AB /* AddProductImageFooterView.swift in Sources */,
+				36D213A0279A8441003C6A77 /* UIImage+Extension.swift in Sources */,
 				3637AE27278F191A009003B7 /* ProductCellProtocol.swift in Sources */,
 				36D617B72796C70000F7A9AB /* ProductManagementView.swift in Sources */,
 				08AF854D278C003100392FC1 /* BaseURLProtocol.swift in Sources */,
@@ -698,7 +702,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = OpenMarket/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -707,6 +713,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.yagom.OpenMarket;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -718,7 +725,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XD7KFVM4LP;
 				INFOPLIST_FILE = OpenMarket/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -727,6 +736,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = net.yagom.OpenMarket;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

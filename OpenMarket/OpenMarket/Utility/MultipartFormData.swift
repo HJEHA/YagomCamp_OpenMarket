@@ -32,10 +32,10 @@ struct MultipartFormData {
         return data
     }
     
-    func createImageFormData(name: String, filename: String, contentType: ImageContentType, image: UIImage) -> Data {
+    func createImageFormData(name: String, fileName: String, contentType: ImageContentType, image: UIImage) -> Data {
         var data = Data()
         data.append(BoundaryGenerator.boundaryData(forBoundaryType: .startSymbol, boundary: boundary))
-        data.append(ContentDisposition.imageFormData(name: name, filename: filename).bodyComponent)
+        data.append(ContentDisposition.imageFormData(name: name, filename: fileName).bodyComponent)
         data.append(ContentDisposition.imageContentType(type: contentType).bodyComponent)
         
         switch contentType {

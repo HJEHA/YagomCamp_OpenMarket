@@ -53,10 +53,8 @@ final class AddProductViewController: UIViewController {
         setupImageCollectionView()
         setupDescriptionTextView()
         setupImagePickerViewController()
-        
-        postProductRegister()
     }
-    
+
     private func setupViewController() {
         view.backgroundColor = .white
         title = "상품등록"
@@ -77,9 +75,23 @@ final class AddProductViewController: UIViewController {
         descriptionTextView.delegate = self
     }
     
-    fileprivate func postProductRegister() {
+    private func postProductRegister() {
+        var multipartFormData = MultipartFormData()
+        
         let product = ProductDetail()
-        let postAPI = ProductRegisterAPI(params: "params", item: product)
+        let productRegisterData = multipartFormData.createFormData(params: "params", item: product)
+        multipartFormData.appendToBody(from: productRegisterData)
+        
+        productImages.forEach { image in
+            let imageData = multipartFormData.createImageFormData(name: "images",
+                                                                  fileName: "Test.png",
+                                                                  contentType: .png,
+                                                                  image: image)
+            multipartFormData.appendToBody(from: imageData)
+        }
+        multipartFormData.closeBody()
+        
+        let postAPI = ProductRegisterAPI(boundary: multipartFormData.boundary, body: multipartFormData.body)
         NetworkDataTransfer().request(api: postAPI) { result in
             switch result {
             case .success(let data):
@@ -108,7 +120,7 @@ extension AddProductViewController {
     }
     
     @objc private func touchUpDoneButton() {
-        navigationController?.popViewController(animated: true)
+        postProductRegister()
     }
 }
 
@@ -239,11 +251,12 @@ extension AddProductViewController: UIImagePickerControllerDelegate, UINavigatio
             isEditingImage = false
             return
         }
+        let resizedImage = image.compressImage()
         
         if isEditingImage {
-            productImages[currentImageCellIndexPath.item] = image
+            productImages[currentImageCellIndexPath.item] = resizedImage
         } else {
-            productImages.append(image)
+            productImages.append(resizedImage)
         }
         
         dismiss(animated: true) {
