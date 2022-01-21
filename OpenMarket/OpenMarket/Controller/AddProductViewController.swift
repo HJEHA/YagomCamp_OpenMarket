@@ -54,16 +54,7 @@ final class AddProductViewController: UIViewController {
         setupDescriptionTextView()
         setupImagePickerViewController()
         
-        let product = ProductDetail()
-        let postAPI = ProductRegisterAPI(params: "params", item: product)
-        NetworkDataTransfer().request(api: postAPI) { result in
-            switch result {
-            case .success(_):
-                print("성공")
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
+        postProductRegister()
     }
     
     private func setupViewController() {
@@ -84,6 +75,19 @@ final class AddProductViewController: UIViewController {
     private func setupDescriptionTextView() {
         descriptionTextView = productManagementView.descriptionTextView
         descriptionTextView.delegate = self
+    }
+    
+    fileprivate func postProductRegister() {
+        let product = ProductDetail()
+        let postAPI = ProductRegisterAPI(params: "params", item: product)
+        NetworkDataTransfer().request(api: postAPI) { result in
+            switch result {
+            case .success(let data):
+                print("성공")
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }
 
