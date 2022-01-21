@@ -18,8 +18,10 @@ enum ProductRegisterAlertText: String {
     case successTitle = "상품 등록이 완료되었습니다"
     case failTitle = "상품 등록에 실패했습니다"
     case imageFailMessage = "이미지는 최소 1장 이상 추가해주세요."
-    case nameFailMessage = "상품명을 세글자 이상 입력해주세요"
-    case descriptionFailMessage = "상품 설명은 1000글자 이내로 작성해주세요."
+    case nameFailMessage = "상품명을 3글자 이상, 100글자 이하로 입력해주세요."
+    case emptyPriceMessage = "상품가격을 입력해주세요."
+    case discountedPriceFailMessage = "할인가격이 상품가격보다 큽니다."
+    case descriptionFailMessage = "상품 설명은 10글자 이상, 1000글자 이하로 작성해주세요."
     case confirm = "확인"
     
     fileprivate var description: String {
@@ -90,8 +92,10 @@ final class AddProductViewController: UIViewController {
     
     private func postProductRegister() {
         var multipartFormData = MultipartFormData()
+        guard let product = validateUserInput() else {
+            return
+        }
         
-        let product = productManagementView.createUserInputData()
         let productRegisterData = multipartFormData.createFormData(params: "params", item: product)
         multipartFormData.appendToBody(from: productRegisterData)
         
@@ -117,6 +121,32 @@ final class AddProductViewController: UIViewController {
         }
     }
     
+    func validateUserInput() -> ProductDetailToRegister? {
+        guard UserInputChecker().checkImage(productImages) else {
+            showRegisterFailAlert(message: .imageFailMessage)
+            return nil
+        }
+        
+        let result = productManagementView.createUserInputData()
+        
+        switch result {
+        case .success(let generatedData):
+            return generatedData
+        case .failure(.inefficientNameCount):
+            showRegisterFailAlert(message: .nameFailMessage)
+        case .failure(.emptyPrice):
+            showRegisterFailAlert(message: .emptyPriceMessage)
+        case .failure(.invalidDiscountedPrice):
+            showRegisterFailAlert(message: .discountedPriceFailMessage)
+        case .failure(.invalidDescription):
+            showRegisterFailAlert(message: .descriptionFailMessage)
+        default:
+            print(GenerateUserInputError.unknownError)
+        }
+        
+        return nil
+    }
+    
     private func showRegisterSuccessAlert() {
         let alert = UIAlertController(title: ProductRegisterAlertText.successTitle.description,
                                       message: nil,
@@ -132,9 +162,9 @@ final class AddProductViewController: UIViewController {
         present(alert, animated: true)
     }
     
-    private func showRegisterFailAlert(message: String) {
-        let alert = UIAlertController(title: AddProductImageActionSheetText.cameraDisableAlertTitle.description,
-                                      message: message,
+    private func showRegisterFailAlert(message: ProductRegisterAlertText) {
+        let alert = UIAlertController(title: ProductRegisterAlertText.failTitle.description,
+                                      message: message.description,
                                       preferredStyle: .alert)
         let okButton = UIAlertAction(title: ProductRegisterAlertText.confirm.description, style: .default)
         alert.addAction(okButton)

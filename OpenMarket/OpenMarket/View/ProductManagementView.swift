@@ -125,20 +125,44 @@ final class ProductManagementView: UIScrollView {
         descriptionTextView.font = .preferredFont(forTextStyle: .body)
         descriptionTextView.setContentHuggingPriority(.defaultLow, for: .vertical)
     }
-    
-    func createUserInputData() -> ProductDetailToRegister? {
+
+    func createUserInputData() -> Result<ProductDetailToRegister, GenerateUserInputError> {
+        let userInputChecker = UserInputChecker()
         guard let name = nameTextField.text,
-              let priceText = priceTextField.text,
-              let price = Double(priceText),
-              let discountPriceText = discountedPriceTextField.text,
-              let discountPrice = Double(discountPriceText),
-              let stockText = stockTextField.text,
-              let stock = Int(stockText),
-              let description = descriptionTextView.text else {
-                  return nil
+              userInputChecker.checkName(name) else {
+            return .failure(.inefficientNameCount)
+        }
+        
+        guard let priceText = priceTextField.text,
+              let price = Double(priceText) else {
+            return .failure(.emptyPrice)
+        }
+        
+        var discountPrice: Double?
+        if let discountPriceText = discountedPriceTextField.text,
+           let discountPriceAsDouble = Double(discountPriceText) {
+            discountPrice = discountPriceAsDouble
+        } else {
+            discountPrice = 0
+        }
+        
+        guard let discountPrice = discountPrice,
+              userInputChecker.checkDiscountedPrice(discountedPrice: discountPrice, price: price) else {
+                  return .failure(.invalidDiscountedPrice)
               }
         
+        var stock: Int?
+        if let stockText = stockTextField.text,
+           let stockAsInt = Int(stockText) {
+            stock = stockAsInt
+        }
+        
+        guard userInputChecker.checkDescription(descriptionTextView.text) else {
+            return .failure(.invalidDescription)
+        }
+        
         let currency = Currency.allCases[currencySegmentedControl.selectedSegmentIndex]
+        
         let productDetailToRegister = ProductDetailToRegister(name: name,
                                                               descriptions: description,
                                                               price: price,
@@ -146,6 +170,14 @@ final class ProductManagementView: UIScrollView {
                                                               currency: currency,
                                                               stock: stock)
         
-        return productDetailToRegister
+        return .success(productDetailToRegister)
     }
+}
+
+enum GenerateUserInputError: Error {
+    case inefficientNameCount
+    case invalidDiscountedPrice
+    case emptyPrice
+    case invalidDescription
+    case unknownError
 }
