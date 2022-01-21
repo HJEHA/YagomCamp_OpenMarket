@@ -69,7 +69,7 @@ final class ProductManagementView: UIScrollView {
         verticalStackView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         verticalStackView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         verticalStackView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        verticalStackView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor).isActive = true
+        verticalStackView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         verticalStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
     }
     
@@ -99,6 +99,7 @@ final class ProductManagementView: UIScrollView {
         
         let pricePlaceholder = ProductPlaceholder.price.text
         priceTextField.placeholder = pricePlaceholder
+        priceTextField.keyboardType = .decimalPad
         
         horizontalStackView.addArrangedSubview(priceTextField)
         horizontalStackView.addArrangedSubview(currencySegmentedControl)
@@ -109,12 +110,14 @@ final class ProductManagementView: UIScrollView {
         verticalStackView.addArrangedSubview(discountedPriceTextField)
         let discountedPricePlaceholder = ProductPlaceholder.discountedPrice.text
         discountedPriceTextField.placeholder = discountedPricePlaceholder
+        discountedPriceTextField.keyboardType = .decimalPad
     }
     
     private func setupStockTextField() {
         verticalStackView.addArrangedSubview(stockTextField)
         let stockPlaceholder = ProductPlaceholder.stock.text
         stockTextField.placeholder = stockPlaceholder
+        stockTextField.keyboardType = .decimalPad
     }
     
     private func setupDescriptionTextView() {
@@ -164,7 +167,7 @@ final class ProductManagementView: UIScrollView {
         let currency = Currency.allCases[currencySegmentedControl.selectedSegmentIndex]
         
         let productDetailToRegister = ProductDetailToRegister(name: name,
-                                                              descriptions: description,
+                                                              descriptions: descriptionTextView.text.description,
                                                               price: price,
                                                               discountedPrice: discountPrice,
                                                               currency: currency,

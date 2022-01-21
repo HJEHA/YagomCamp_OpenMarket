@@ -50,14 +50,26 @@ final class AddProductViewController: UIViewController {
     private var imageCollectionView: ProductImageCollectionView!
     private var descriptionTextView: UITextView!
     private let imagePickerController = UIImagePickerController()
+    private var imageAddButtonSize = CGSize(width: UIScreen.main.bounds.width * 0.36,
+                                            height: UIScreen.main.bounds.width * 0.35)
     
-    private var productImages: [UIImage] = []
+    private var productImages: [UIImage] = [] {
+        didSet {
+            if productImages.count > 4 {
+                imageAddButtonSize = CGSize.zero
+            } else {
+                imageAddButtonSize = CGSize(width: UIScreen.main.bounds.width * 0.36,
+                                            height: UIScreen.main.bounds.width * 0.35)
+            }
+        }
+    }
     private var isEditingImage = false
     private var currentImageCellIndexPath = IndexPath()
     
     // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        addObserverKeyboard()
         setupViewController()
         setupNavigationBar()
         
@@ -69,7 +81,20 @@ final class AddProductViewController: UIViewController {
         setupDescriptionTextView()
         setupImagePickerViewController()
     }
-
+    
+    private func addObserverKeyboard() {
+        NotificationCenter.default.addObserver(self, selector: #selector(test), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(test2), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc private func test() {
+        productManagementView.contentInset.bottom = 300
+    }
+    
+    @objc private func test2() {
+        productManagementView.contentInset.bottom = 0
+    }
+    
     private func setupViewController() {
         view.backgroundColor = .white
         title = "상품등록"
@@ -249,7 +274,7 @@ extension AddProductViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForFooterInSection section: Int) -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width * 0.36, height: UIScreen.main.bounds.width * 0.35)
+        return imageAddButtonSize
     }
 }
 
@@ -362,6 +387,13 @@ extension AddProductViewController: UITextViewDelegate {
         if textView.text.isEmpty {
             textView.text = ProductPlaceholder.description.text
             textView.textColor = UIColor.lightGray
+        }
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        let maxDescriptionCount = 999
+        if textView.text.count > maxDescriptionCount {
+            showRegisterFailAlert(message: .descriptionFailMessage)
         }
     }
 }
