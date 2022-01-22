@@ -1,5 +1,13 @@
 import UIKit
 
+enum ViewTitle: String {
+    case productRegister = "상품등록"
+    
+    fileprivate var description: String {
+        return self.rawValue
+    }
+}
+
 final class AddProductViewController: UIViewController {
     // MARK: - Properties
     private(set) var productManagementScrollView = ProductManagementScrollView()
@@ -29,7 +37,7 @@ final class AddProductViewController: UIViewController {
     
     private func setupViewController() {
         view.backgroundColor = .white
-        title = "상품등록"
+        title = ViewTitle.productRegister.description
     }
     
     private func setupImageCollectionView() {

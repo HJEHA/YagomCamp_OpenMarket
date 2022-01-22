@@ -2,8 +2,10 @@ import UIKit
 
 final class ProductManagementScrollView: UIScrollView {
     private let verticalStackView = UIStackView()
-    private(set) var imageCollectionView = ProductImageCollectionView(frame: CGRect.zero,
-                                                                      collectionViewLayout: UICollectionViewFlowLayout())
+    private(set) var imageCollectionView = ProductImageCollectionView(
+                                             frame: CGRect.zero,
+                                             collectionViewLayout: UICollectionViewFlowLayout()
+                                           )
     private let nameTextField = RoundedRectTextField()
     private let priceTextField = RoundedRectTextField()
     private lazy var currencySegmentedControl: UISegmentedControl = {
