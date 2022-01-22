@@ -69,7 +69,9 @@ final class AddProductViewController: UIViewController {
     // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        addObserverKeyboard()
+        addObserverKeyboardNotification()
+        tapBehindViewToEndEdit()
+        
         setupViewController()
         setupNavigationBar()
         
@@ -80,19 +82,6 @@ final class AddProductViewController: UIViewController {
         setupImageCollectionView()
         setupDescriptionTextView()
         setupImagePickerViewController()
-    }
-    
-    private func addObserverKeyboard() {
-        NotificationCenter.default.addObserver(self, selector: #selector(test), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(test2), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    @objc private func test() {
-        productManagementView.contentInset.bottom = 300
-    }
-    
-    @objc private func test2() {
-        productManagementView.contentInset.bottom = 0
     }
     
     private func setupViewController() {
@@ -395,5 +384,42 @@ extension AddProductViewController: UITextViewDelegate {
         if textView.text.count > maxDescriptionCount {
             showRegisterFailAlert(message: .descriptionFailMessage)
         }
+    }
+}
+
+// MARK: - Keyboard
+extension AddProductViewController {
+    private func addObserverKeyboardNotification() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+    }
+    
+    @objc func keyboardWillShow(_ sender: Notification) {
+        guard let info = sender.userInfo else {
+            return
+        }
+        
+        let userInfo = info as NSDictionary
+        guard let keyboardFrame = userInfo.value(forKey: UIResponder.keyboardFrameEndUserInfoKey) as? NSValue else {
+            return
+        }
+        
+        let keyboardRect = keyboardFrame.cgRectValue
+        productManagementView.contentInset.bottom = keyboardRect.height
+    }
+    
+    @objc func keyboardWillHide(_ sender: Notification) {
+        productManagementView.contentInset.bottom = .zero
+    }
+    
+    func tapBehindViewToEndEdit() {
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        view.addGestureRecognizer(tap)
     }
 }
