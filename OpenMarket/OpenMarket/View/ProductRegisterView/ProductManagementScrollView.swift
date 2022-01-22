@@ -1,6 +1,6 @@
 import UIKit
 
-final class ProductManagementView: UIScrollView {
+final class ProductManagementScrollView: UIScrollView {
     private let verticalStackView = UIStackView()
     private(set) var imageCollectionView = ProductImageCollectionView(frame: CGRect.zero,
                                                                       collectionViewLayout: UICollectionViewFlowLayout())

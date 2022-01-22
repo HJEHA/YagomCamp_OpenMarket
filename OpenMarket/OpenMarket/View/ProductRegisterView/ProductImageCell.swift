@@ -4,6 +4,7 @@ final class ProductImageCell: UICollectionViewCell {
     static let identifier = "ProductImageCell"
     
     private let imageView = UIImageView()
+    private(set) var editButton = UIButton()
     private(set) var removeButton = UIButton()
     private(set) var indexPath: IndexPath?
     
@@ -19,8 +20,10 @@ final class ProductImageCell: UICollectionViewCell {
     
     private func setup() {
         contentView.addSubview(imageView)
+        contentView.addSubview(editButton)
         contentView.addSubview(removeButton)
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        editButton.translatesAutoresizingMaskIntoConstraints = false
         removeButton.translatesAutoresizingMaskIntoConstraints = false
         
         imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)
@@ -30,6 +33,15 @@ final class ProductImageCell: UICollectionViewCell {
         imageView.topAnchor.constraint(equalTo: contentView.topAnchor)
             .isActive = true
         imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            .isActive = true
+        
+        editButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor)
+            .isActive = true
+        editButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            .isActive = true
+        editButton.topAnchor.constraint(equalTo: contentView.topAnchor)
+            .isActive = true
+        editButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
             .isActive = true
         
         removeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 10)
