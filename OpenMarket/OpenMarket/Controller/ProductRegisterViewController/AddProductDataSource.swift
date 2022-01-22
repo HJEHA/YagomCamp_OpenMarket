@@ -136,7 +136,7 @@ extension AddProductViewController {
             return nil
         }
         
-        let result = productManagementView.createUserInputData()
+        let result = productManagementScrollView.createUserInputData()
         
         switch result {
         case .success(let generatedData):

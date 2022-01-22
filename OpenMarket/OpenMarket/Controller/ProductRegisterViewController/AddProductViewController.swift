@@ -2,7 +2,7 @@ import UIKit
 
 final class AddProductViewController: UIViewController {
     // MARK: - Properties
-    private(set) var productManagementView = ProductManagementScrollView()
+    private(set) var productManagementScrollView = ProductManagementScrollView()
     private(set) var imageCollectionView: ProductImageCollectionView!
     private var descriptionTextView: UITextView!
     private(set) var imagePickerController = UIImagePickerController()
@@ -18,9 +18,9 @@ final class AddProductViewController: UIViewController {
         setupViewController()
         setupNavigationBar()
         
-        view.addSubview(productManagementView)
-        productManagementView.setupConstraints(with: view)
-        productManagementView.setupSubviews()
+        view.addSubview(productManagementScrollView)
+        productManagementScrollView.setupConstraints(with: view)
+        productManagementScrollView.setupSubviews()
         
         setupImageCollectionView()
         setupDescriptionTextView()
@@ -33,7 +33,7 @@ final class AddProductViewController: UIViewController {
     }
     
     private func setupImageCollectionView() {
-        imageCollectionView = productManagementView.imageCollectionView
+        imageCollectionView = productManagementScrollView.imageCollectionView
         imageCollectionView.register(ProductImageCell.self, forCellWithReuseIdentifier: ProductImageCell.identifier)
         imageCollectionView.register(AddProductImageFooterView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
@@ -43,7 +43,7 @@ final class AddProductViewController: UIViewController {
     }
     
     private func setupDescriptionTextView() {
-        descriptionTextView = productManagementView.descriptionTextView
+        descriptionTextView = productManagementScrollView.descriptionTextView
         descriptionTextView.delegate = self
     }
 }
@@ -117,11 +117,11 @@ extension AddProductViewController {
         }
         
         let keyboardRect = keyboardFrame.cgRectValue
-        productManagementView.contentInset.bottom = keyboardRect.height
+        productManagementScrollView.contentInset.bottom = keyboardRect.height
     }
     
     @objc func keyboardWillHide(_ sender: Notification) {
-        productManagementView.contentInset.bottom = .zero
+        productManagementScrollView.contentInset.bottom = .zero
     }
     
     func tapBehindViewToEndEdit() {
