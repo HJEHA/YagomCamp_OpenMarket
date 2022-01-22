@@ -11,7 +11,6 @@ enum JSONParserError: Error, LocalizedError {
         case .encodingFail:
             return "인코딩에 실패했습니다."
         }
-        
     }
 }
 

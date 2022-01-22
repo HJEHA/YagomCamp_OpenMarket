@@ -96,6 +96,7 @@ extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: listCellSize.width, height: listCellSize.height)
         case .grid:
             let gridCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width * 0.45, view.frame.height * 0.32)
+            
             return CGSize(width: gridCellSize.width, height: gridCellSize.height)
         }
     }
@@ -104,6 +105,7 @@ extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
         let inset: Double = 10
+        
         return UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
     }
     
@@ -113,9 +115,11 @@ extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
         switch dataSource.currentLayoutKind {
         case .list:
             let listCellLineSpacing: CGFloat = 2
+            
             return listCellLineSpacing
         case .grid:
             let gridCellLineSpacing: CGFloat = 10
+            
             return gridCellLineSpacing
         }
     }
@@ -126,9 +130,11 @@ extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
         switch dataSource.currentLayoutKind {
         case .list:
             let listCellIteritemSpacing: CGFloat = 0
+            
             return listCellIteritemSpacing
         case .grid:
             let gridCellIteritemSpacing: CGFloat = 10
+            
             return gridCellIteritemSpacing
         }
     }

@@ -133,7 +133,7 @@ final class ProductManagementScrollView: UIScrollView {
         let userInputChecker = UserInputChecker()
         guard let name = nameTextField.text,
               userInputChecker.checkName(name) else {
-            return .failure(.inefficientNameCount)
+            return .failure(.invalidNameCount)
         }
         
         guard let priceText = priceTextField.text,
@@ -178,7 +178,7 @@ final class ProductManagementScrollView: UIScrollView {
 }
 
 enum GenerateUserInputError: Error {
-    case inefficientNameCount
+    case invalidNameCount
     case invalidDiscountedPrice
     case emptyPrice
     case invalidDescription

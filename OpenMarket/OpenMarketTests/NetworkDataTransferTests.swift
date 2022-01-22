@@ -65,26 +65,6 @@ class NetworkDataTransferTests: XCTestCase {
         wait(for: [expectation], timeout: 10.0)
     }
     
-//    func test_postProductRegisterAPI가_정상작동하는지() {
-//        let expectation = XCTestExpectation(description: "상품 등록 테스트")
-//
-//        let product = ProductDetail()
-//        let postAPI = ProductRegisterAPI(boundary: <#T##String#>, body: <#T##Data#> params: "params", item: product)
-//        
-//        NetworkDataTransfer().request(api: postAPI) { result in
-//            switch result {
-//            case .success(let data):
-//                print("성공")
-//                XCTAssertNotNil(data)
-//            case .failure(let error):
-//                print(error.localizedDescription)
-//                XCTFail()
-//            }
-//            expectation.fulfill()
-//        }
-//        wait(for: [expectation], timeout: 3.0)
-//    }
-    
     func test_URL이_유효하지않을때_statusCodeError가_나오는지() {
         struct TestAPI: APIProtocol {
             var url: URL? = URL(string: "www")
