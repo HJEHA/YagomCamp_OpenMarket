@@ -9,10 +9,6 @@ final class ProductsCollectionView: UICollectionView {
             .isActive = true
         trailingAnchor.constraint(equalTo: superview.safeAreaLayoutGuide.trailingAnchor)
             .isActive = true
-        topAnchor.constraint(equalTo: superview.safeAreaLayoutGuide.topAnchor)
-            .isActive = true
-        bottomAnchor.constraint(equalTo: superview.bottomAnchor)
-            .isActive = true
     }
     
     func reloadDataCompletion(_ completion: @escaping () -> Void) {

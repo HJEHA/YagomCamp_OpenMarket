@@ -30,6 +30,7 @@ final class OpenMarketDataSource {
     
     var currentLayoutKind: LayoutKind = .list
     var products: [Product]?
+    var currentProductID: Int = 0
 }
 
 // MARK: - SegmentControl
@@ -136,6 +137,12 @@ extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
             let gridCellIteritemSpacing: CGFloat = 10
             
             return gridCellIteritemSpacing
+        }
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
         }
     }
 }

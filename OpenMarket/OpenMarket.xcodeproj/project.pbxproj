@@ -33,6 +33,7 @@
 		08C21E9D279BDA2F00D704CF /* ProductRegisterAlertText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C21E9C279BDA2F00D704CF /* ProductRegisterAlertText.swift */; };
 		08C21E9F279BE68700D704CF /* AddProductImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C21E9E279BE68700D704CF /* AddProductImagePicker.swift */; };
 		08C21EA1279BE80500D704CF /* AddProductAlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C21EA0279BE80500D704CF /* AddProductAlertPresenter.swift */; };
+		08C21ED2279EBC2100D704CF /* ProductListStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C21ED1279EBC2100D704CF /* ProductListStackView.swift */; };
 		08CA13EF279588E6005552A9 /* ProductsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08CA13EE279588E6005552A9 /* ProductsCollectionView.swift */; };
 		3637AE1F278D8801009003B7 /* GridProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3637AE1E278D8801009003B7 /* GridProductCell.swift */; };
 		3637AE25278EA8E7009003B7 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3637AE24278EA8E7009003B7 /* Int+Extension.swift */; };
@@ -97,6 +98,7 @@
 		08C21E9C279BDA2F00D704CF /* ProductRegisterAlertText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRegisterAlertText.swift; sourceTree = "<group>"; };
 		08C21E9E279BE68700D704CF /* AddProductImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductImagePicker.swift; sourceTree = "<group>"; };
 		08C21EA0279BE80500D704CF /* AddProductAlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductAlertPresenter.swift; sourceTree = "<group>"; };
+		08C21ED1279EBC2100D704CF /* ProductListStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListStackView.swift; sourceTree = "<group>"; };
 		08CA13EE279588E6005552A9 /* ProductsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsCollectionView.swift; sourceTree = "<group>"; };
 		3637AE1E278D8801009003B7 /* GridProductCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridProductCell.swift; sourceTree = "<group>"; };
 		3637AE24278EA8E7009003B7 /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 		08C21E93279BCE9700D704CF /* ProductListView */ = {
 			isa = PBXGroup;
 			children = (
+				08C21ED1279EBC2100D704CF /* ProductListStackView.swift */,
 				3637AE1E278D8801009003B7 /* GridProductCell.swift */,
 				08AF0B5C278EB4DC005FF21D /* ListProductCell.swift */,
 				08CA13EE279588E6005552A9 /* ProductsCollectionView.swift */,
@@ -538,6 +541,7 @@
 				08A5B0DE27859DBD002E1ABE /* OpenMarketURL.swift in Sources */,
 				369126292782EAC1002304D4 /* JSONParser.swift in Sources */,
 				08B2CE8F2782E7B1009295F2 /* ProductPage.swift in Sources */,
+				08C21ED2279EBC2100D704CF /* ProductListStackView.swift in Sources */,
 				36D617C6279942E600F7A9AB /* ProductImageCollectionView.swift in Sources */,
 				3637AE292790287E009003B7 /* AddProductViewController.swift in Sources */,
 				08A5B0D8278589C2002E1ABE /* NetworkDataTransfer.swift in Sources */,
