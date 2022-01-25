@@ -120,7 +120,8 @@ final class ListProductCell: UICollectionViewCell, ProductCellProtocol {
     private func setupLabels() {
         nameLabel.font = .preferredFont(forTextStyle: .headline)
         nameLabel.textAlignment = .center
-        nameLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        nameLabel.setContentHuggingPriority(.required, for: .horizontal)
+        nameLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         
         priceLabel.font = .preferredFont(forTextStyle: .body)
         priceLabel.textAlignment = .center
@@ -133,6 +134,7 @@ final class ListProductCell: UICollectionViewCell, ProductCellProtocol {
         stockLabel.textAlignment = .right
         stockLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
         stockLabel.numberOfLines = 0
+        stockLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
     }
     
     func updateView(with data: Product) {
@@ -169,9 +171,11 @@ final class ListProductCell: UICollectionViewCell, ProductCellProtocol {
         if stock == 0 {
             stockLabel.text = "품절"
             stockLabel.textColor = .systemYellow
+            stockLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         } else {
             stockLabel.text = "잔여수량 : \(stock.formattedWithComma())"
             stockLabel.textColor = .systemGray
+            stockLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         }
     }
 }

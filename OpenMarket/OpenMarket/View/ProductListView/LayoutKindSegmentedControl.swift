@@ -12,6 +12,8 @@ final class LayoutKindSegmentedControl: UISegmentedControl {
     }
     
     private func setup() {
+        translatesAutoresizingMaskIntoConstraints = false
+        
         let width = UIScreen.main.bounds.size.width / 2.0
         widthAnchor.constraint(equalToConstant: width).isActive = true
         layer.addBorder([.all], color: UIColor.systemBlue, width: 2, radius: 1)
