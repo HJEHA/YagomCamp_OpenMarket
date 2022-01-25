@@ -8,6 +8,10 @@ import UIKit
 
 final class OpenMarketViewController: UIViewController {
     // MARK: - Properties
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
     var dataSource = OpenMarketDataSource()
     
     private var segmentedControl: LayoutKindSegmentedControl!

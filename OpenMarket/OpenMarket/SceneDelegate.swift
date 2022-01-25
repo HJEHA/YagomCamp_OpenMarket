@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         window = UIWindow(windowScene: windowScene)
         let mainViewController = OpenMarketViewController()
-        let navigationController = UINavigationController(rootViewController: mainViewController)
+        let navigationController = OpenMarketNavigationController(rootViewController: mainViewController)
         
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
