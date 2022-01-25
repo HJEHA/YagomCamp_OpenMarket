@@ -157,5 +157,6 @@ extension OpenMarketViewController {
     @objc private func didRefreshed() {
         setupProducts()
         productListStackView.hideRefreshButton()
+        productCollectionView.setContentOffset(CGPoint.zero, animated: true)
     }
 }
