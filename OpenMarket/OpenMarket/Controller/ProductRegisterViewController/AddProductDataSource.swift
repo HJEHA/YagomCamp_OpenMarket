@@ -16,15 +16,16 @@ private extension UIView {
 }
 
 final class AddProductDataSource {
-    var imageAddButtonSize = CGSize(width: UIScreen.main.bounds.width * 0.36,
-                                            height: UIScreen.main.bounds.width * 0.35)
+    static let defaultImageAddFooterViewSize = CGSize(width: UIScreen.main.bounds.width * 0.36,
+                                                      height: UIScreen.main.bounds.width * 0.35)
+    var imageAddFooterViewSize = AddProductDataSource.defaultImageAddFooterViewSize
+    
     var productImages: [UIImage] = [] {
         didSet {
             if productImages.count > 4 {
-                imageAddButtonSize = CGSize.zero
+                imageAddFooterViewSize = CGSize.zero
             } else {
-                imageAddButtonSize = CGSize(width: UIScreen.main.bounds.width * 0.36,
-                                            height: UIScreen.main.bounds.width * 0.35)
+                imageAddFooterViewSize = AddProductDataSource.defaultImageAddFooterViewSize
             }
         }
     }
@@ -50,7 +51,9 @@ extension AddProductViewController: UICollectionViewDataSource {
         cell.setIndexPath(at: indexPath)
         return cell
     }
-    
+}
+
+extension AddProductViewController {
     @objc func removeImage(_ sender: UIButton) {
         guard let productImageCell = sender.findSuperview(ofType: ProductImageCell.self),
               let indexPath = productImageCell.indexPath else {
@@ -60,9 +63,7 @@ extension AddProductViewController: UICollectionViewDataSource {
         dataSource.productImages.remove(at: indexPath.item)
         imageCollectionView.reloadData()
     }
-}
-
-extension AddProductViewController: UICollectionViewDelegate {
+    
     @objc func editImageOfSelectedItem(_ sender: UIButton) {
         guard let productImageCell = sender.findSuperview(ofType: ProductImageCell.self),
               let indexPath = productImageCell.indexPath else {
@@ -93,7 +94,7 @@ extension AddProductViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForFooterInSection section: Int) -> CGSize {
-        return dataSource.imageAddButtonSize
+        return dataSource.imageAddFooterViewSize
     }
 }
 

@@ -24,10 +24,6 @@ final class ProductManagementScrollView: UIScrollView {
     private let stockTextField = RoundedRectTextField()
     private(set) var descriptionTextView = UITextView()
     
-    @objc func test(_ sender: UISegmentedControl) {
-        print(currencySegmentedControl.selectedSegmentIndex)
-    }
-    
     func setupConstraints(with superview: UIView) {
         translatesAutoresizingMaskIntoConstraints = false
         leadingAnchor.constraint(equalTo: superview.safeAreaLayoutGuide.leadingAnchor)
@@ -72,7 +68,7 @@ final class ProductManagementScrollView: UIScrollView {
         verticalStackView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         verticalStackView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         verticalStackView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        verticalStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
+        verticalStackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true  
     }
     
     private func setupImageCollectionView() {
