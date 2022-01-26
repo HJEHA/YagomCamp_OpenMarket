@@ -77,7 +77,7 @@ final class ListProductCell: UICollectionViewCell, ProductCellProtocol {
         let pricesStackView = UIStackView()
         pricesStackView.axis = .horizontal
         pricesStackView.alignment = .center
-        pricesStackView.distribution = .fillEqually
+        pricesStackView.distribution = .fill
         pricesStackView.spacing = 4
         pricesStackView.addArrangedSubview(priceLabel)
         pricesStackView.addArrangedSubview(bargainPriceLabel)

@@ -5,8 +5,7 @@ struct MultipartFormData {
     let contentType: String
     private(set) var body: Data = Data()
     
-    init() {
-        let uuid = UUID().uuidString
+    init(uuid: String = UUID().uuidString) {
         self.boundary = "Boundary-\(uuid)"
         self.contentType = "multipart/form-data; boundary=\(self.boundary)"
     }
