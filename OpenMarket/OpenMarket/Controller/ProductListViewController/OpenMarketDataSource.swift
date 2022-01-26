@@ -92,11 +92,15 @@ extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
         switch dataSource.currentLayoutKind {
         case .list:
             let inset: Double = 10
+            let cellHeightRatio = 0.077
             let listCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width - inset * 2,
-                                                                   view.frame.height * 0.077)
+                                                                   view.frame.height * cellHeightRatio)
             return CGSize(width: listCellSize.width, height: listCellSize.height)
         case .grid:
-            let gridCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width * 0.45, view.frame.height * 0.32)
+            let cellWidthRatio = 0.45
+            let cellHeightRatio = 0.32
+            let gridCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width * cellWidthRatio,
+                                                                   view.frame.height * cellHeightRatio)
             
             return CGSize(width: gridCellSize.width, height: gridCellSize.height)
         }
