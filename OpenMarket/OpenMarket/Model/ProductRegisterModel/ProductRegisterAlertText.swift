@@ -21,6 +21,7 @@ enum ProductRegisterAlertText: String {
     case nameFailMessage = "상품명을 3글자 이상, 100글자 이하로 입력해주세요."
     case emptyPriceMessage = "상품가격을 입력해주세요."
     case discountedPriceFailMessage = "할인가격이 상품가격보다 큽니다."
+    case stockFailMessage = "상품 수량을 0 이상으로 입력해주세요."
     case descriptionFailMessage = "상품 설명은 10글자 이상, 1000글자 이하로 작성해주세요."
     case confirm = "확인"
     

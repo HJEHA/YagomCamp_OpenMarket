@@ -155,7 +155,11 @@ final class ProductManagementScrollView: UIScrollView {
         var stock: Int?
         if let stockText = stockTextField.text,
            let stockAsInt = Int(stockText) {
-            stock = stockAsInt
+            if userInputChecker.checkStock(stockAsInt) {
+                stock = stockAsInt
+            } else {
+                return .failure(.invalidStock)
+            }
         }
         
         guard userInputChecker.checkDescription(descriptionTextView.text) else {
@@ -179,6 +183,7 @@ enum GenerateUserInputError: Error {
     case invalidNameCount
     case invalidDiscountedPrice
     case emptyPrice
+    case invalidStock
     case invalidDescription
     
     var description: ProductRegisterAlertText {
@@ -189,6 +194,8 @@ enum GenerateUserInputError: Error {
             return ProductRegisterAlertText.discountedPriceFailMessage
         case .emptyPrice:
             return ProductRegisterAlertText.emptyPriceMessage
+        case .invalidStock:
+            return ProductRegisterAlertText.stockFailMessage
         case .invalidDescription:
             return ProductRegisterAlertText.descriptionFailMessage
         }
