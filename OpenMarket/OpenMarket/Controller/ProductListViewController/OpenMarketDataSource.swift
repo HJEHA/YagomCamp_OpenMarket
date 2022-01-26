@@ -1,6 +1,13 @@
 import UIKit
 
-final class OpenMarketDataSource {
+
+protocol OpenMarketDataSourceDelegate: AnyObject {
+    func openMarketDataSourceDidChangeLayout()
+    func openMarketDataSourceDidSetupProducts()
+    func openMarketDataSourceDidCheckNewProduct()
+}
+
+final class OpenMarketDataSource: NSObject {
     enum LayoutKind: String, CaseIterable, CustomStringConvertible {
         case list = "LIST"
         case grid = "GRID"
@@ -28,53 +35,69 @@ final class OpenMarketDataSource {
         }
     }
     
+    override init() {
+        super.init()
+        setupProducts()
+        autoCheckNewProduct()
+    }
+    
+    weak var delegate: OpenMarketDataSourceDelegate?
+    
     var currentLayoutKind: LayoutKind = .list
     var products: [Product]?
     var currentProductID: Int = 0
-}
-
-// MARK: - SegmentControl
-extension OpenMarketViewController {
-    @objc func toggleViewTypeSegmentedControl(_ sender: UISegmentedControl) {
-        let currentScrollRatio: CGFloat = currentScrollRatio()
-        dataSource.currentLayoutKind = OpenMarketDataSource.LayoutKind.allCases[sender.selectedSegmentIndex]
-        
-        productCollectionView.fadeOut { _ in
-            self.productCollectionView.reloadDataCompletion { [weak self] in
-                self?.syncScrollIndicator(with: currentScrollRatio)
-                self?.productCollectionView.fadeIn()
-            }
+    
+    func changeLayoutKind(at index: Int) {
+        currentLayoutKind = LayoutKind.allCases[index]
+        delegate?.openMarketDataSourceDidChangeLayout()
+    }
+    
+    func setupProducts() {
+        NetworkDataTransfer().fetchData(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 100),
+                                        decodingType: ProductPage.self) { [weak self] data in
+            let firstIndex = 0
+            self?.products = data.products
+            self?.currentProductID = data.products[firstIndex].id
+            self?.delegate?.openMarketDataSourceDidSetupProducts()
         }
     }
     
-    private func currentScrollRatio() -> CGFloat {
-        return productCollectionView.contentOffset.y / productCollectionView.contentSize.height
+    private func autoCheckNewProduct(timeInterval: TimeInterval = 10) {
+        Timer.scheduledTimer(timeInterval: timeInterval,
+                             target: self,
+                             selector: #selector(checkNewProduct),
+                             userInfo: nil,
+                             repeats: true)
     }
     
-    private func syncScrollIndicator(with currentScrollRatio: CGFloat) {
-        let nextViewMaxHeight = productCollectionView.contentSize.height
-        let offset = CGPoint(x: 0, y: nextViewMaxHeight * currentScrollRatio)
-        productCollectionView.setContentOffset(offset, animated: false)
+    @objc private func checkNewProduct() {
+        NetworkDataTransfer().fetchData(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 100),
+                                        decodingType: ProductPage.self) { [weak self] data in
+            let firstIndex = 0
+            let latestProductID = data.products[firstIndex].id
+            if latestProductID != self?.currentProductID {
+                self?.delegate?.openMarketDataSourceDidCheckNewProduct()
+            }
+        }
     }
 }
 
 // MARK: - CollectionView Data Source
-extension OpenMarketViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int {
-        return dataSource.products?.count ?? 0
+extension OpenMarketDataSource: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return products?.count ?? 0
     }
-
+    
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-                           withReuseIdentifier: dataSource.currentLayoutKind.cellIdentifier,
+                           withReuseIdentifier: currentLayoutKind.cellIdentifier,
                            for: indexPath
                          ) as? ProductCellProtocol else {
             return UICollectionViewCell()
         }
         
-        guard let product = dataSource.products?[indexPath.item] else {
+        guard let product = products?[indexPath.item] else {
             return UICollectionViewCell()
         }
         

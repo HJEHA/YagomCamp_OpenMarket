@@ -7,6 +7,7 @@ extension AddProductViewController {
                                      style: .default) { [weak self] _ in
             DispatchQueue.main.async {
                 self?.navigationController?.popViewController(animated: true)
+                // Todo: 첫번째 화면한테 상품 갱신하라고 시켜라
             }
         }
         let alert =  AlertFactory().createAlert(title: ProductRegisterAlertText.successTitle.description,

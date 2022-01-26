@@ -12,7 +12,7 @@ final class OpenMarketViewController: UIViewController {
         return .portrait
     }
     
-    var dataSource = OpenMarketDataSource()
+    let dataSource = OpenMarketDataSource()
     
     private let segmentedControl = LayoutKindSegmentedControl()
     private let activityIndicator = UIActivityIndicatorView()
@@ -23,18 +23,13 @@ final class OpenMarketViewController: UIViewController {
     // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupDataSource()
         setupViewController()
         setupNavigationBar()
         setupProductListStackView()
         setupCollectionView()
         setupActivityIndicator()
         registerCell()
-        autoCheckNewProduct()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setupProducts()
     }
     
     private func setupViewController() {
@@ -47,38 +42,52 @@ final class OpenMarketViewController: UIViewController {
             self?.endActivityIndicator()
         }
     }
+}
+
+// MARK: - DataSource
+extension OpenMarketViewController: OpenMarketDataSourceDelegate {
+    private func setupDataSource() {
+        dataSource.delegate = self
+    }
     
-    @objc private func setupProducts() {
-        NetworkDataTransfer().fetchData(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 100),
-                                        decodingType: ProductPage.self) { [weak self] data in
-            let firstIndex = 0
-            self?.dataSource.products = data.products
-            self?.dataSource.currentProductID = data.products[firstIndex].id
-            DispatchQueue.main.async {
-                self?.reloadDataWithActivityIndicator(at: self?.productCollectionView)
+    func openMarketDataSourceDidChangeLayout() {
+        let currentScrollRatio: CGFloat = currentScrollRatio()
+        
+        productCollectionView.fadeOut { _ in
+            self.productCollectionView.reloadDataCompletion { [weak self] in
+                self?.syncScrollIndicator(with: currentScrollRatio)
+                self?.productCollectionView.fadeIn()
             }
         }
     }
     
-    private func autoCheckNewProduct(timeInterval: TimeInterval = 10) {
-        Timer.scheduledTimer(timeInterval: timeInterval,
-                             target: self,
-                             selector: #selector(checkNewProduct),
-                             userInfo: nil,
-                             repeats: true)
+    func openMarketDataSourceDidSetupProducts() {
+        DispatchQueue.main.async { [weak self] in
+            self?.reloadDataWithActivityIndicator(at: self?.productCollectionView)
+        }
     }
     
-    @objc private func checkNewProduct() {
-        NetworkDataTransfer().fetchData(api: ProductPageAPI(pageNumber: 1, itemsPerPage: 100),
-                                        decodingType: ProductPage.self) { [weak self] data in
-            let firstIndex = 0
-            let latestProductID = data.products[firstIndex].id
-            if latestProductID != self?.dataSource.currentProductID {
-                DispatchQueue.main.async {
-                    self?.productListStackView.showRefreshButton()
-                }
-            }
+    func openMarketDataSourceDidCheckNewProduct() {
+        DispatchQueue.main.async { [weak self] in
+            self?.productListStackView.showRefreshButton()
         }
+    }
+}
+
+// MARK: - SegmentControl
+extension OpenMarketViewController {
+    @objc func toggleViewTypeSegmentedControl(_ sender: UISegmentedControl) {
+        dataSource.changeLayoutKind(at: sender.selectedSegmentIndex)
+    }
+    
+    private func currentScrollRatio() -> CGFloat {
+        return productCollectionView.contentOffset.y / productCollectionView.contentSize.height
+    }
+    
+    private func syncScrollIndicator(with currentScrollRatio: CGFloat) {
+        let nextViewMaxHeight = productCollectionView.contentSize.height
+        let offset = CGPoint(x: 0, y: nextViewMaxHeight * currentScrollRatio)
+        productCollectionView.setContentOffset(offset, animated: false)
     }
 }
 
@@ -135,7 +144,7 @@ extension OpenMarketViewController {
     
     private func setupCollectionView() {
         productCollectionView = productListStackView.productCollectionView
-        productCollectionView.dataSource = self
+        productCollectionView.dataSource = dataSource
         productCollectionView.delegate = self
         setupRefreshControl()
     }
@@ -152,7 +161,7 @@ extension OpenMarketViewController {
     }
     
     @objc private func didRefreshed() {
-        setupProducts()
+        dataSource.setupProducts()
         productListStackView.hideRefreshButton()
         productCollectionView.setContentOffset(CGPoint.zero, animated: true)
     }
