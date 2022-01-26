@@ -8,10 +8,6 @@ extension AddProductViewController {
     }
     
     @objc func touchUpAddProductImageButton() {
-        let alertTitle = setProductImageAlertTitle()
-        let alert =  UIAlertController(title: alertTitle,
-                                       message: nil,
-                                       preferredStyle: .actionSheet)
         let library =  UIAlertAction(title: AddProductImageActionSheetText.library.description, style: .default) { _ in
             self.openLibrary() }
         let camera =  UIAlertAction(title: AddProductImageActionSheetText.camera.description, style: .default) { _ in
@@ -20,9 +16,11 @@ extension AddProductViewController {
         let cancel = UIAlertAction(title: AddProductImageActionSheetText.cancel.description, style: .cancel) { _ in
             self.dataSource.isEditingImage = false
         }
-        alert.addAction(library)
-        alert.addAction(camera)
-        alert.addAction(cancel)
+        
+        let alertTitle = setProductImageAlertTitle()
+        let alert = AlertFactory().createAlert(style: .actionSheet,
+                                               title: alertTitle,
+                                               actions: library, camera, cancel)
         
         present(alert, animated: true)
     }
@@ -50,11 +48,9 @@ extension AddProductViewController {
     }
     
     private func showCameraDisableAlert() {
-        let alert = UIAlertController(title: AddProductImageActionSheetText.cameraDisableAlertTitle.description,
-                                      message: nil,
-                                      preferredStyle: .alert)
         let okButton = UIAlertAction(title: AddProductImageActionSheetText.confirm.description, style: .default)
-        alert.addAction(okButton)
+        let alert = AlertFactory().createAlert(title: AddProductImageActionSheetText.cameraDisableAlertTitle.description,
+                                               actions: okButton)
         
         present(alert, animated: true)
     }

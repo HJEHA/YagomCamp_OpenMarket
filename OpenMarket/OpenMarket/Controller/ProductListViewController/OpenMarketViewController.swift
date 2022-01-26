@@ -29,7 +29,7 @@ final class OpenMarketViewController: UIViewController {
         setupCollectionView()
         setupActivityIndicator()
         registerCell()
-        autoCheckNewProduct(timeInterval: 10)
+        autoCheckNewProduct()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -60,7 +60,7 @@ final class OpenMarketViewController: UIViewController {
         }
     }
     
-    private func autoCheckNewProduct(timeInterval: TimeInterval) {
+    private func autoCheckNewProduct(timeInterval: TimeInterval = 10) {
         Timer.scheduledTimer(timeInterval: timeInterval,
                              target: self,
                              selector: #selector(checkNewProduct),
