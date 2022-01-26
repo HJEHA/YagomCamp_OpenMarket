@@ -14,10 +14,10 @@ final class OpenMarketViewController: UIViewController {
     
     var dataSource = OpenMarketDataSource()
     
-    private var segmentedControl: LayoutKindSegmentedControl!
-    private(set) var productCollectionView: ProductsCollectionView!
+    private let segmentedControl = LayoutKindSegmentedControl()
+    private let activityIndicator = UIActivityIndicatorView()
     private(set) var productListStackView = ProductListStackView()
-    private var activityIndicator: UIActivityIndicatorView!
+    private(set) var productCollectionView: ProductsCollectionView!
     private(set) var refreshControl = UIRefreshControl()
     
     // MARK: - Methods
@@ -85,8 +85,6 @@ final class OpenMarketViewController: UIViewController {
 // MARK: - NavigationBar, Segmented Control
 extension OpenMarketViewController {
     private func setupNavigationBar() {
-        let itemsOfsegmentedControl = OpenMarketDataSource.LayoutKind.allCases.map { $0.description }
-        segmentedControl = LayoutKindSegmentedControl(items: itemsOfsegmentedControl)
         segmentedControl.addTarget(self, action: #selector(toggleViewTypeSegmentedControl), for: .valueChanged)
         
         navigationItem.titleView = segmentedControl
@@ -104,7 +102,6 @@ extension OpenMarketViewController {
 // MARK: - ActivityIndicator
 extension OpenMarketViewController {
     private func setupActivityIndicator() {
-        activityIndicator = UIActivityIndicatorView()
         view.addSubview(activityIndicator)
         activityIndicator.center = view.center
         
