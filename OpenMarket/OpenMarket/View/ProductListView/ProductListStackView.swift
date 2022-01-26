@@ -34,8 +34,6 @@ class ProductListStackView: UIStackView {
     }
     
     private func setupRefreshButton() {
-        productCollectionView = ProductsCollectionView(frame: self.frame,
-                                                       collectionViewLayout: UICollectionViewFlowLayout())
         addArrangedSubview(listRefreshButton)
         listRefreshButton.titleLabel?.numberOfLines = 0
         listRefreshButton.backgroundColor = .lightGray
@@ -50,6 +48,8 @@ class ProductListStackView: UIStackView {
     }
     
     private func setupProductCollectionView() {
+        productCollectionView = ProductsCollectionView(frame: self.frame,
+                                                       collectionViewLayout: UICollectionViewFlowLayout())
         addArrangedSubview(productCollectionView)
         productCollectionView.setupConstraints(with: self)
     }

@@ -17,7 +17,7 @@ final class OpenMarketViewController: UIViewController {
     private let segmentedControl = LayoutKindSegmentedControl()
     private let activityIndicator = UIActivityIndicatorView()
     private(set) var productListStackView = ProductListStackView()
-    private(set) var productCollectionView: ProductsCollectionView!
+    private(set) weak var productCollectionView: ProductsCollectionView!
     private(set) var refreshControl = UIRefreshControl()
     
     // MARK: - Methods
