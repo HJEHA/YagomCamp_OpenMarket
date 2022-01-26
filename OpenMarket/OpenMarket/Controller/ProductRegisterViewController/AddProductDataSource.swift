@@ -142,16 +142,8 @@ extension AddProductViewController {
         switch result {
         case .success(let generatedData):
             return generatedData
-        case .failure(.invalidNameCount):
-            showRegisterFailAlert(message: .nameFailMessage)
-        case .failure(.emptyPrice):
-            showRegisterFailAlert(message: .emptyPriceMessage)
-        case .failure(.invalidDiscountedPrice):
-            showRegisterFailAlert(message: .discountedPriceFailMessage)
-        case .failure(.invalidDescription):
-            showRegisterFailAlert(message: .descriptionFailMessage)
-        default:
-            print(GenerateUserInputError.unknownError)
+        case .failure(let error):
+            showRegisterFailAlert(message: error.description)
         }
         
         return nil

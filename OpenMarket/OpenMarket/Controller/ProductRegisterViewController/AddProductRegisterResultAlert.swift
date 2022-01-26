@@ -18,6 +18,7 @@ extension AddProductViewController {
     func showRegisterFailAlert(message: ProductRegisterAlertText) {
         let okButton = UIAlertAction(title: ProductRegisterAlertText.confirm.description, style: .default)
         let alert = AlertFactory().createAlert(title: ProductRegisterAlertText.failTitle.description,
+                                               message: message.description,
                                                actions: okButton)
                 
         present(alert, animated: true)

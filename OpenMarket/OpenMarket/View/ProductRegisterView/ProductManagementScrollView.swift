@@ -180,5 +180,17 @@ enum GenerateUserInputError: Error {
     case invalidDiscountedPrice
     case emptyPrice
     case invalidDescription
-    case unknownError
+    
+    var description: ProductRegisterAlertText {
+        switch self {
+        case .invalidNameCount:
+            return ProductRegisterAlertText.nameFailMessage
+        case .invalidDiscountedPrice:
+            return ProductRegisterAlertText.discountedPriceFailMessage
+        case .emptyPrice:
+            return ProductRegisterAlertText.emptyPriceMessage
+        case .invalidDescription:
+            return ProductRegisterAlertText.descriptionFailMessage
+        }
+    }
 }
