@@ -49,8 +49,10 @@ extension AddProductViewController {
     
     private func showCameraDisableAlert() {
         let okButton = UIAlertAction(title: AddProductImageActionSheetText.confirm.description, style: .default)
-        let alert = AlertFactory().createAlert(title: AddProductImageActionSheetText.cameraDisableAlertTitle.description,
-                                               actions: okButton)
+        let alert = AlertFactory().createAlert(
+                                    title: AddProductImageActionSheetText.cameraDisableAlertTitle.description,
+                                    actions: okButton
+                                   )
         
         present(alert, animated: true)
     }
@@ -67,7 +69,7 @@ extension AddProductViewController: UIImagePickerControllerDelegate, UINavigatio
         let resizedImage = image.compressImage()
         
         if dataSource.isEditingImage {
-            dataSource.productImages[dataSource.currentImageCellIndexPath.item] = resizedImage
+            dataSource.productImages[dataSource.currentImageCellIndexPath] = resizedImage
         } else {
             dataSource.productImages.append(resizedImage)
         }

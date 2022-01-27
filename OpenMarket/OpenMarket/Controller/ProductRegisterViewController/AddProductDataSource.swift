@@ -18,6 +18,8 @@ private extension UIView {
 protocol AddProductDataSourceDelegate: AnyObject {
     func addProductDataSource(didReusedCell cell: ProductImageCell)
     func addProductDataSource(didReusedFooterView footerView: AddProductImageFooterView)
+    func addProductDataSourceDidRemoveImage()
+    func addProductDataSourceDidChangeEditImageFlag()
 }
 
 final class AddProductDataSource: NSObject {
@@ -37,7 +39,18 @@ final class AddProductDataSource: NSObject {
         }
     }
     var isEditingImage = false
-    var currentImageCellIndexPath = IndexPath()
+    var currentImageCellIndexPath = 0
+    
+    func touchedImageRemoveButton(at index: Int) {
+        productImages.remove(at: index)
+        delegate?.addProductDataSourceDidRemoveImage()
+    }
+    
+    func touchedEditImageButton(at index: Int) {
+        isEditingImage = true
+        currentImageCellIndexPath = index
+        delegate?.addProductDataSourceDidChangeEditImageFlag()
+    }
 }
 
 // MARK: - ImageCollectionView DataSource
@@ -80,8 +93,7 @@ extension AddProductViewController {
             return
         }
         
-        dataSource.productImages.remove(at: indexPath.item)
-        imageCollectionView.reloadData()
+        dataSource.touchedImageRemoveButton(at: indexPath.item)
     }
     
     @objc func editImageOfSelectedItem(_ sender: UIButton) {
@@ -90,9 +102,7 @@ extension AddProductViewController {
             return
         }
         
-        dataSource.isEditingImage = true
-        dataSource.currentImageCellIndexPath = indexPath
-        touchUpAddProductImageButton()
+        dataSource.touchedEditImageButton(at: indexPath.item)
     }
 }
 

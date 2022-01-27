@@ -71,6 +71,14 @@ extension AddProductViewController: AddProductDataSourceDelegate {
     func addProductDataSource(didReusedFooterView footerView: AddProductImageFooterView) {
         footerView.addButton.addTarget(self, action: #selector(touchUpAddProductImageButton), for: .touchUpInside)
     }
+    
+    func addProductDataSourceDidRemoveImage() {
+        imageCollectionView.reloadData()
+    }
+    
+    func addProductDataSourceDidChangeEditImageFlag() {
+        touchUpAddProductImageButton()
+    }
 }
 
 // MARK: - NavigationBar, Segmented Control
