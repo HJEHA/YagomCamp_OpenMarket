@@ -1,7 +1,7 @@
 import UIKit
 
-// MARK: - AddProduct Register Result Alert
-extension AddProductViewController {
+// MARK: - ProductRegister Result Alert
+extension ProductRegisterViewController {
     func showRegisterSuccessAlert() {
         let okButton = UIAlertAction(title: ProductRegisterAlertText.confirm.description,
                                      style: .default) { [weak self] _ in

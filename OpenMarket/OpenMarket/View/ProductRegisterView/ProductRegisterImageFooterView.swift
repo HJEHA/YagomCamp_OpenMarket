@@ -1,7 +1,7 @@
 import UIKit
 
-final class AddProductImageFooterView: UICollectionReusableView {
-    static let identifier = "AddProductImageFooterView"
+final class ProductRegisterImageFooterView: UICollectionReusableView {
+    static let identifier = "ProductRegisterImageFooterView"
     private(set) var addButton = UIButton()
     
     override init(frame: CGRect) {

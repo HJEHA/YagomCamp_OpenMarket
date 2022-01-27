@@ -87,7 +87,7 @@ extension ProductListViewController {
     }
     
     @objc private func touchUpAddProductButton() {
-        let addProductViewController = AddProductViewController()
+        let addProductViewController = ProductRegisterViewController()
         navigationController?.pushViewController(addProductViewController, animated: true)
     }
 }

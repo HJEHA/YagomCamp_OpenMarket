@@ -15,46 +15,54 @@ private extension UIView {
     }
 }
 
-protocol AddProductDataSourceDelegate: AnyObject {
-    func addProductDataSource(didReusedCell cell: ProductImageCell)
-    func addProductDataSource(didReusedFooterView footerView: AddProductImageFooterView)
-    func addProductDataSourceDidRemoveImage()
-    func addProductDataSourceDidChangeEditImageFlag()
+protocol ProductRegisterDataSourceDelegate: AnyObject {
+    func productRegisterDataSource(didReusedCell cell: ProductImageCell)
+    func productRegisterDataSource(didReusedFooterView footerView: ProductRegisterImageFooterView)
+    func productRegisterDataSourceDidRemoveImage()
+    func productRegisterDataSourceDidChangeEditImageFlag()
 }
 
-final class AddProductDataSource: NSObject {
-    weak var delegate: AddProductDataSourceDelegate?
+final class ProductRegisterDataSource: NSObject {
+    weak var delegate: ProductRegisterDataSourceDelegate?
     
     static let defaultImageAddFooterViewSize = CGSize(width: UIScreen.main.bounds.width * 0.36,
                                                       height: UIScreen.main.bounds.width * 0.35)
-    var imageAddFooterViewSize = AddProductDataSource.defaultImageAddFooterViewSize
+    private(set) var imageAddFooterViewSize = ProductRegisterDataSource.defaultImageAddFooterViewSize
     
-    var productImages: [UIImage] = [] {
+    private(set) var productImages: [UIImage] = [] {
         didSet {
             if productImages.count > 4 {
                 imageAddFooterViewSize = CGSize.zero
             } else {
-                imageAddFooterViewSize = AddProductDataSource.defaultImageAddFooterViewSize
+                imageAddFooterViewSize = ProductRegisterDataSource.defaultImageAddFooterViewSize
             }
         }
     }
     var isEditingImage = false
-    var currentImageCellIndexPath = 0
+    private(set) var currentImageCellIndex = 0
     
     func touchedImageRemoveButton(at index: Int) {
         productImages.remove(at: index)
-        delegate?.addProductDataSourceDidRemoveImage()
+        delegate?.productRegisterDataSourceDidRemoveImage()
     }
     
     func touchedEditImageButton(at index: Int) {
         isEditingImage = true
-        currentImageCellIndexPath = index
-        delegate?.addProductDataSourceDidChangeEditImageFlag()
+        currentImageCellIndex = index
+        delegate?.productRegisterDataSourceDidChangeEditImageFlag()
+    }
+    
+    func applyImage(_ image: UIImage) {
+        if isEditingImage {
+            productImages[currentImageCellIndex] = image
+        } else {
+            productImages.append(image)
+        }
     }
 }
 
 // MARK: - ImageCollectionView DataSource
-extension AddProductDataSource: UICollectionViewDataSource {
+extension ProductRegisterDataSource: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return productImages.count
     }
@@ -66,7 +74,7 @@ extension AddProductDataSource: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         cell.setupProductImage(with: productImages[indexPath.item])
-        delegate?.addProductDataSource(didReusedCell: cell)
+        delegate?.productRegisterDataSource(didReusedCell: cell)
         cell.setIndexPath(at: indexPath)
         return cell
     }
@@ -76,17 +84,17 @@ extension AddProductDataSource: UICollectionViewDataSource {
                         at indexPath: IndexPath) -> UICollectionReusableView {
         guard let footerView = collectionView
                 .dequeueReusableSupplementaryView(ofKind: kind,
-                                                  withReuseIdentifier: AddProductImageFooterView.identifier,
-                                                  for: indexPath) as? AddProductImageFooterView else {
+                                                  withReuseIdentifier: ProductRegisterImageFooterView.identifier,
+                                                  for: indexPath) as? ProductRegisterImageFooterView else {
             return UICollectionReusableView()
         }
-        delegate?.addProductDataSource(didReusedFooterView: footerView)
+        delegate?.productRegisterDataSource(didReusedFooterView: footerView)
         
         return footerView
     }
 }
 
-extension AddProductViewController {
+extension ProductRegisterViewController {
     @objc func removeImage(_ sender: UIButton) {
         guard let productImageCell = sender.findSuperview(ofType: ProductImageCell.self),
               let indexPath = productImageCell.indexPath else {
@@ -107,7 +115,7 @@ extension AddProductViewController {
 }
 
 // MARK: - ImageCollectionView Delegate
-extension AddProductViewController: UICollectionViewDelegateFlowLayout {
+extension ProductRegisterViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForFooterInSection section: Int) -> CGSize {
@@ -116,7 +124,7 @@ extension AddProductViewController: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: - HTTP Post
-extension AddProductViewController {
+extension ProductRegisterViewController {
     func postProductRegister() {
         var multipartFormData = MultipartFormData()
         guard let product = validateUserInput() else {

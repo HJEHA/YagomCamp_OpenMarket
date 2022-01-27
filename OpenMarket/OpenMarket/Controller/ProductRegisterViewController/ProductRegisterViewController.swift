@@ -8,14 +8,14 @@ enum ViewTitle: String {
     }
 }
 
-final class AddProductViewController: UIViewController {
+final class ProductRegisterViewController: UIViewController {
     // MARK: - Properties
-    var dataSource = AddProductDataSource()
+    var dataSource = ProductRegisterDataSource()
+    var imagePicker = ProductRegisterImagePicker()
     
     private(set) var productManagementScrollView = ProductManagementScrollView()
     private(set) var imageCollectionView: ProductImageCollectionView!
     private var descriptionTextView: UITextView!
-    private(set) var imagePickerController = UIImagePickerController()
     
     // MARK: - Methods
     override func viewDidLoad() {
@@ -33,7 +33,7 @@ final class AddProductViewController: UIViewController {
         
         setupImageCollectionView()
         setupDescriptionTextView()
-        setupImagePickerViewController()
+        setupImagePicker()
     }
     
     private func setupViewController() {
@@ -44,9 +44,9 @@ final class AddProductViewController: UIViewController {
     private func setupImageCollectionView() {
         imageCollectionView = productManagementScrollView.imageCollectionView
         imageCollectionView.register(ProductImageCell.self, forCellWithReuseIdentifier: ProductImageCell.identifier)
-        imageCollectionView.register(AddProductImageFooterView.self,
+        imageCollectionView.register(ProductRegisterImageFooterView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
-                                     withReuseIdentifier: AddProductImageFooterView.identifier)
+                                     withReuseIdentifier: ProductRegisterImageFooterView.identifier)
         imageCollectionView.dataSource = dataSource
         imageCollectionView.delegate = self
     }
@@ -57,32 +57,84 @@ final class AddProductViewController: UIViewController {
     }
 }
 
-// MARK: - AddProduct DataSource Delegate
-extension AddProductViewController: AddProductDataSourceDelegate {
+// MARK: - ProductRegister DataSource Delegate
+extension ProductRegisterViewController: ProductRegisterDataSourceDelegate {
     private func setupDataSource() {
         self.dataSource.delegate = self
     }
     
-    func addProductDataSource(didReusedCell cell: ProductImageCell) {
+    func productRegisterDataSource(didReusedCell cell: ProductImageCell) {
         cell.removeButton.addTarget(self, action: #selector(removeImage), for: .touchUpInside)
         cell.editButton.addTarget(self, action: #selector(editImageOfSelectedItem), for: .touchUpInside)
     }
     
-    func addProductDataSource(didReusedFooterView footerView: AddProductImageFooterView) {
+    func productRegisterDataSource(didReusedFooterView footerView: ProductRegisterImageFooterView) {
         footerView.addButton.addTarget(self, action: #selector(touchUpAddProductImageButton), for: .touchUpInside)
     }
     
-    func addProductDataSourceDidRemoveImage() {
+    func productRegisterDataSourceDidRemoveImage() {
         imageCollectionView.reloadData()
     }
     
-    func addProductDataSourceDidChangeEditImageFlag() {
+    func productRegisterDataSourceDidChangeEditImageFlag() {
         touchUpAddProductImageButton()
     }
 }
 
-// MARK: - NavigationBar, Segmented Control
-extension AddProductViewController {
+// MARK: - ProductRegister ImagePicker Delegate
+extension ProductRegisterViewController: ProductRegisterImagePickerDelegate {
+    private func setupImagePicker() {
+        imagePicker.viewDelegate = self
+        imagePicker.allowsEditing = true
+        imagePicker.delegate = self
+    }
+    
+    func productRegisterImagePickerDisabledCamera() {
+        let okButton = UIAlertAction(title: AddProductImageActionSheetText.confirm.description, style: .default)
+        let alert = AlertFactory().createAlert(
+                                    title: AddProductImageActionSheetText.cameraDisableAlertTitle.description,
+                                    actions: okButton
+                                   )
+        
+        present(alert, animated: true)
+    }
+    
+    func productRegisterImagePickerChangedSourceType() {
+        present(imagePicker, animated: true)
+    }
+}
+
+extension ProductRegisterViewController {
+    @objc private func touchUpAddProductImageButton() {
+        let library =  UIAlertAction(title: AddProductImageActionSheetText.library.description, style: .default) { _ in
+            self.imagePicker.changeSourceTypeToLibrary()
+        }
+        let camera =  UIAlertAction(title: AddProductImageActionSheetText.camera.description, style: .default) { _ in
+            self.imagePicker.changeSourceTypeToCamera()
+        }
+        let cancel = UIAlertAction(title: AddProductImageActionSheetText.cancel.description, style: .cancel) { _ in
+            self.dataSource.isEditingImage = false
+        }
+        
+        let alertTitle = setProductImageAlertTitle()
+        let alert = AlertFactory().createAlert(style: .actionSheet,
+                                               title: alertTitle,
+                                               actions: library, camera, cancel)
+        
+        present(alert, animated: true)
+    }
+    
+    private func setProductImageAlertTitle() -> String {
+        if dataSource.isEditingImage {
+            return AddProductImageActionSheetText.editImageAlertTitle.description
+        } else {
+            return AddProductImageActionSheetText.addImageAlertTitle.description
+        }
+    }
+}
+
+// MARK: - NavigationBar
+extension ProductRegisterViewController {
     private func setupNavigationBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
                                                            target: self,
@@ -103,7 +155,7 @@ extension AddProductViewController {
 }
 
 // MARK: - TextView Delegate
-extension AddProductViewController: UITextViewDelegate {
+extension ProductRegisterViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.textColor == UIColor.lightGray {
             textView.text = nil
@@ -127,7 +179,7 @@ extension AddProductViewController: UITextViewDelegate {
 }
 
 // MARK: - Keyboard
-extension AddProductViewController {
+extension ProductRegisterViewController {
     private func addObserverKeyboardNotification() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillShow),
