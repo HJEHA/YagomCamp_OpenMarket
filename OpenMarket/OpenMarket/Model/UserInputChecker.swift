@@ -10,7 +10,7 @@ struct UserInputChecker {
     }
     
     func checkDiscountedPrice(discountedPrice: Double, price: Double) -> Bool {
-        return price >= discountedPrice
+        return price >= 0 && discountedPrice >= 0 && price >= discountedPrice
     }
     
     func checkStock(_ stock: Int) -> Bool {

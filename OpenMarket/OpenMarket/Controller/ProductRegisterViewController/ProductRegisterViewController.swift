@@ -79,6 +79,16 @@ extension ProductRegisterViewController: ProductRegisterDataSourceDelegate {
     func productRegisterDataSourceDidChangeEditImageFlag() {
         touchUpAddProductImageButton()
     }
+    
+    func productRegisterDataSourceCompletedPost() {
+        DispatchQueue.main.async { [weak self] in
+            self?.showRegisterSuccessAlert()
+        }
+    }
+    
+    func productRegisterDataSource(failedPost message: ProductRegisterAlertText) {
+        showRegisterFailAlert(message: message)
+    }
 }
 
 // MARK: - ProductRegister ImagePicker Delegate
@@ -150,7 +160,8 @@ extension ProductRegisterViewController {
     }
     
     @objc private func touchUpDoneButton() {
-        postProductRegister()
+        let userInput = productManagementScrollView.createUserInputData()
+        dataSource.postProductRegister(userInput)
     }
 }
 

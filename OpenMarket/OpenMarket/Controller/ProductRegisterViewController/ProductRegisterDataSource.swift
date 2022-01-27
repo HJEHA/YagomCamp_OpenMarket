@@ -20,6 +20,8 @@ protocol ProductRegisterDataSourceDelegate: AnyObject {
     func productRegisterDataSource(didReusedFooterView footerView: ProductRegisterImageFooterView)
     func productRegisterDataSourceDidRemoveImage()
     func productRegisterDataSourceDidChangeEditImageFlag()
+    func productRegisterDataSourceCompletedPost()
+    func productRegisterDataSource(failedPost message: ProductRegisterAlertText)
 }
 
 final class ProductRegisterDataSource: NSObject {
@@ -58,6 +60,53 @@ final class ProductRegisterDataSource: NSObject {
         } else {
             productImages.append(image)
         }
+    }
+    
+    func postProductRegister(_ userInput: Result<ProductDetailToRegister, GenerateUserInputError>) {
+        var multipartFormData = MultipartFormData()
+        guard let product = validateUserInput(userInput) else {
+            return
+        }
+        
+        let productRegisterData = multipartFormData.createFormData(params: "params", item: product)
+        multipartFormData.appendToBody(from: productRegisterData)
+        
+        productImages.forEach { image in
+            let imageData = multipartFormData.createImageFormData(name: "images",
+                                                                  fileName: "Test.png",
+                                                                  contentType: .png,
+                                                                  image: image)
+            multipartFormData.appendToBody(from: imageData)
+        }
+        multipartFormData.closeBody()
+        
+        let postAPI = ProductRegisterAPI(boundary: multipartFormData.boundary, body: multipartFormData.body)
+        NetworkDataTransfer().request(api: postAPI) { [weak self] result in
+            switch result {
+            case .success(_):
+                self?.delegate?.productRegisterDataSourceCompletedPost()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func validateUserInput(
+                    _ userInput: Result<ProductDetailToRegister, GenerateUserInputError>
+                 ) -> ProductDetailToRegister? {
+        guard UserInputChecker().checkImage(productImages) else {
+            delegate?.productRegisterDataSource(failedPost: .imageFailMessage)
+            return nil
+        }
+        
+        switch userInput {
+        case .success(let generatedData):
+            return generatedData
+        case .failure(let error):
+            delegate?.productRegisterDataSource(failedPost: error.description)
+        }
+        
+        return nil
     }
 }
 
@@ -120,57 +169,5 @@ extension ProductRegisterViewController: UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForFooterInSection section: Int) -> CGSize {
         return dataSource.imageAddFooterViewSize
-    }
-}
-
-// MARK: - HTTP Post
-extension ProductRegisterViewController {
-    func postProductRegister() {
-        var multipartFormData = MultipartFormData()
-        guard let product = validateUserInput() else {
-            return
-        }
-        
-        let productRegisterData = multipartFormData.createFormData(params: "params", item: product)
-        multipartFormData.appendToBody(from: productRegisterData)
-        
-        dataSource.productImages.forEach { image in
-            let imageData = multipartFormData.createImageFormData(name: "images",
-                                                                  fileName: "Test.png",
-                                                                  contentType: .png,
-                                                                  image: image)
-            multipartFormData.appendToBody(from: imageData)
-        }
-        multipartFormData.closeBody()
-        
-        let postAPI = ProductRegisterAPI(boundary: multipartFormData.boundary, body: multipartFormData.body)
-        NetworkDataTransfer().request(api: postAPI) { [weak self] result in
-            switch result {
-            case .success(_):
-                DispatchQueue.main.async {
-                    self?.showRegisterSuccessAlert()
-                }
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
-    func validateUserInput() -> ProductDetailToRegister? {
-        guard UserInputChecker().checkImage(dataSource.productImages) else {
-            showRegisterFailAlert(message: .imageFailMessage)
-            return nil
-        }
-        
-        let result = productManagementScrollView.createUserInputData()
-        
-        switch result {
-        case .success(let generatedData):
-            return generatedData
-        case .failure(let error):
-            showRegisterFailAlert(message: error.description)
-        }
-        
-        return nil
     }
 }
