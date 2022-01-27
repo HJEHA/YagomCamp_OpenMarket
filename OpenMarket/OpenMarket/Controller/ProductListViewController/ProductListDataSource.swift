@@ -1,12 +1,12 @@
 import UIKit
 
-protocol OpenMarketDataSourceDelegate: AnyObject {
-    func openMarketDataSourceDidChangeLayout()
-    func openMarketDataSourceDidSetupProducts()
-    func openMarketDataSourceDidCheckNewProduct()
+protocol ProductListDataSourceDelegate: AnyObject {
+    func productListDataSourceDidChangeLayout()
+    func productListDataSourceDidSetupProducts()
+    func productListDataSourceDidCheckNewProduct()
 }
 
-final class OpenMarketDataSource: NSObject {
+final class ProductListDataSource: NSObject {
     // MARK: - Properties
     enum LayoutKind: String, CaseIterable, CustomStringConvertible {
         case list = "LIST"
@@ -35,7 +35,7 @@ final class OpenMarketDataSource: NSObject {
         }
     }
     
-    weak var delegate: OpenMarketDataSourceDelegate?
+    weak var delegate: ProductListDataSourceDelegate?
     
     private(set) var currentLayoutKind: LayoutKind = .list
     private var products: [Product]?
@@ -54,7 +54,7 @@ final class OpenMarketDataSource: NSObject {
             let firstIndex = 0
             self?.products = data.products
             self?.currentProductID = data.products[firstIndex].id
-            self?.delegate?.openMarketDataSourceDidSetupProducts()
+            self?.delegate?.productListDataSourceDidSetupProducts()
         }
     }
     
@@ -72,19 +72,19 @@ final class OpenMarketDataSource: NSObject {
             let firstIndex = 0
             let latestProductID = data.products[firstIndex].id
             if latestProductID != self?.currentProductID {
-                self?.delegate?.openMarketDataSourceDidCheckNewProduct()
+                self?.delegate?.productListDataSourceDidCheckNewProduct()
             }
         }
     }
     
     func changeLayoutKind(at index: Int) {
         currentLayoutKind = LayoutKind.allCases[index]
-        delegate?.openMarketDataSourceDidChangeLayout()
+        delegate?.productListDataSourceDidChangeLayout()
     }
 }
 
 // MARK: - CollectionView DataSource
-extension OpenMarketDataSource: UICollectionViewDataSource {
+extension ProductListDataSource: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return products?.count ?? 0
     }

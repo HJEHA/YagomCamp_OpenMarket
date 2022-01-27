@@ -1,18 +1,18 @@
 //
-//  OpenMarket - ViewController.swift
+//  ProductList - ViewController.swift
 //  Created by yagom. 
 //  Copyright © yagom. All rights reserved.
 // 
 
 import UIKit
 
-final class OpenMarketViewController: UIViewController {
+final class ProductListViewController: UIViewController {
     // MARK: - Properties
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
     
-    private let dataSource = OpenMarketDataSource()
+    private let dataSource = ProductListDataSource()
     private lazy var layout = ProductListLayout(dataSource: dataSource)
     
     private let segmentedControl = LayoutKindSegmentedControl()
@@ -46,12 +46,12 @@ final class OpenMarketViewController: UIViewController {
 }
 
 // MARK: - DataSource Delegate
-extension OpenMarketViewController: OpenMarketDataSourceDelegate {
+extension ProductListViewController: ProductListDataSourceDelegate {
     private func setupDataSource() {
         dataSource.delegate = self
     }
     
-    func openMarketDataSourceDidChangeLayout() {
+    func productListDataSourceDidChangeLayout() {
         let currentScrollRatio: CGFloat = currentScrollRatio()
         
         productCollectionView.fadeOut { _ in
@@ -62,13 +62,13 @@ extension OpenMarketViewController: OpenMarketDataSourceDelegate {
         }
     }
     
-    func openMarketDataSourceDidSetupProducts() {
+    func productListDataSourceDidSetupProducts() {
         DispatchQueue.main.async { [weak self] in
             self?.reloadDataWithActivityIndicator(at: self?.productCollectionView)
         }
     }
     
-    func openMarketDataSourceDidCheckNewProduct() {
+    func productListDataSourceDidCheckNewProduct() {
         DispatchQueue.main.async { [weak self] in
             self?.productListStackView.showRefreshButton()
         }
@@ -76,7 +76,7 @@ extension OpenMarketViewController: OpenMarketDataSourceDelegate {
 }
 
 // MARK: - NavigationBar
-extension OpenMarketViewController {
+extension ProductListViewController {
     private func setupNavigationBar() {
         segmentedControl.addTarget(self, action: #selector(toggleViewTypeSegmentedControl), for: .valueChanged)
         
@@ -93,7 +93,7 @@ extension OpenMarketViewController {
 }
 
 // MARK: - SegmentedControl
-extension OpenMarketViewController {
+extension ProductListViewController {
     @objc private func toggleViewTypeSegmentedControl(_ sender: UISegmentedControl) {
         dataSource.changeLayoutKind(at: sender.selectedSegmentIndex)
     }
@@ -110,7 +110,7 @@ extension OpenMarketViewController {
 }
 
 // MARK: - ActivityIndicator
-extension OpenMarketViewController {
+extension ProductListViewController {
     private func setupActivityIndicator() {
         view.addSubview(activityIndicator)
         activityIndicator.center = view.center
@@ -134,7 +134,7 @@ extension OpenMarketViewController {
 }
 
 // MARK: - CollectionView
-extension OpenMarketViewController {
+extension ProductListViewController {
     private func setupProductListStackView() {
         view.addSubview(productListStackView)
         productListStackView.setupConstraints(with: view)
@@ -151,7 +151,7 @@ extension OpenMarketViewController {
     }
     
     private func registerCell() {
-        OpenMarketDataSource.LayoutKind.allCases.forEach {
+        ProductListDataSource.LayoutKind.allCases.forEach {
             productCollectionView.register($0.cellType, forCellWithReuseIdentifier: $0.cellIdentifier)
         }
     }

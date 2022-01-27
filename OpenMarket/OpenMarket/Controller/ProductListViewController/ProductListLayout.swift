@@ -1,9 +1,9 @@
 import UIKit
 
 final class ProductListLayout: NSObject {
-    private unowned var dataSource: OpenMarketDataSource
+    private unowned var dataSource: ProductListDataSource
     
-    init(dataSource: OpenMarketDataSource) {
+    init(dataSource: ProductListDataSource) {
         self.dataSource = dataSource
     }
 }
