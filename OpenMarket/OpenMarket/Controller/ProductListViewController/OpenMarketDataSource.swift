@@ -1,6 +1,5 @@
 import UIKit
 
-
 protocol OpenMarketDataSourceDelegate: AnyObject {
     func openMarketDataSourceDidChangeLayout()
     func openMarketDataSourceDidSetupProducts()
@@ -8,6 +7,7 @@ protocol OpenMarketDataSourceDelegate: AnyObject {
 }
 
 final class OpenMarketDataSource: NSObject {
+    // MARK: - Properties
     enum LayoutKind: String, CaseIterable, CustomStringConvertible {
         case list = "LIST"
         case grid = "GRID"
@@ -35,21 +35,17 @@ final class OpenMarketDataSource: NSObject {
         }
     }
     
+    weak var delegate: OpenMarketDataSourceDelegate?
+    
+    private(set) var currentLayoutKind: LayoutKind = .list
+    private var products: [Product]?
+    private var currentProductID: Int = 0
+    
+    // MARK: - Methods
     override init() {
         super.init()
         setupProducts()
         autoCheckNewProduct()
-    }
-    
-    weak var delegate: OpenMarketDataSourceDelegate?
-    
-    var currentLayoutKind: LayoutKind = .list
-    var products: [Product]?
-    var currentProductID: Int = 0
-    
-    func changeLayoutKind(at index: Int) {
-        currentLayoutKind = LayoutKind.allCases[index]
-        delegate?.openMarketDataSourceDidChangeLayout()
     }
     
     func setupProducts() {
@@ -80,9 +76,14 @@ final class OpenMarketDataSource: NSObject {
             }
         }
     }
+    
+    func changeLayoutKind(at index: Int) {
+        currentLayoutKind = LayoutKind.allCases[index]
+        delegate?.openMarketDataSourceDidChangeLayout()
+    }
 }
 
-// MARK: - CollectionView Data Source
+// MARK: - CollectionView DataSource
 extension OpenMarketDataSource: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return products?.count ?? 0
@@ -104,72 +105,5 @@ extension OpenMarketDataSource: UICollectionViewDataSource {
         cell.updateView(with: product)
         
         return cell
-    }
-}
-
-// MARK: - CollectionView Delegate FlowLayout
-extension OpenMarketViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-        switch dataSource.currentLayoutKind {
-        case .list:
-            let inset: Double = 10
-            let cellHeightRatio = 0.077
-            let listCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width - inset * 2,
-                                                                   view.frame.height * cellHeightRatio)
-            return CGSize(width: listCellSize.width, height: listCellSize.height)
-        case .grid:
-            let cellWidthRatio = 0.45
-            let cellHeightRatio = 0.32
-            let gridCellSize: (width: CGFloat, height: CGFloat) = (view.frame.width * cellWidthRatio,
-                                                                   view.frame.height * cellHeightRatio)
-            
-            return CGSize(width: gridCellSize.width, height: gridCellSize.height)
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        insetForSectionAt section: Int) -> UIEdgeInsets {
-        let inset: Double = 10
-        
-        return UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        switch dataSource.currentLayoutKind {
-        case .list:
-            let listCellLineSpacing: CGFloat = 2
-            
-            return listCellLineSpacing
-        case .grid:
-            let gridCellLineSpacing: CGFloat = 10
-            
-            return gridCellLineSpacing
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        switch dataSource.currentLayoutKind {
-        case .list:
-            let listCellIteritemSpacing: CGFloat = 0
-            
-            return listCellIteritemSpacing
-        case .grid:
-            let gridCellIteritemSpacing: CGFloat = 10
-            
-            return gridCellIteritemSpacing
-        }
-    }
-    
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if refreshControl.isRefreshing {
-            refreshControl.endRefreshing()
-        }
     }
 }

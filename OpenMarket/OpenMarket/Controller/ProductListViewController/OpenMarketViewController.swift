@@ -12,7 +12,8 @@ final class OpenMarketViewController: UIViewController {
         return .portrait
     }
     
-    let dataSource = OpenMarketDataSource()
+    private let dataSource = OpenMarketDataSource()
+    private lazy var layout = ProductListLayout(dataSource: dataSource)
     
     private let segmentedControl = LayoutKindSegmentedControl()
     private let activityIndicator = UIActivityIndicatorView()
@@ -44,7 +45,7 @@ final class OpenMarketViewController: UIViewController {
     }
 }
 
-// MARK: - DataSource
+// MARK: - DataSource Delegate
 extension OpenMarketViewController: OpenMarketDataSourceDelegate {
     private func setupDataSource() {
         dataSource.delegate = self
@@ -74,24 +75,7 @@ extension OpenMarketViewController: OpenMarketDataSourceDelegate {
     }
 }
 
-// MARK: - SegmentControl
-extension OpenMarketViewController {
-    @objc func toggleViewTypeSegmentedControl(_ sender: UISegmentedControl) {
-        dataSource.changeLayoutKind(at: sender.selectedSegmentIndex)
-    }
-    
-    private func currentScrollRatio() -> CGFloat {
-        return productCollectionView.contentOffset.y / productCollectionView.contentSize.height
-    }
-    
-    private func syncScrollIndicator(with currentScrollRatio: CGFloat) {
-        let nextViewMaxHeight = productCollectionView.contentSize.height
-        let offset = CGPoint(x: 0, y: nextViewMaxHeight * currentScrollRatio)
-        productCollectionView.setContentOffset(offset, animated: false)
-    }
-}
-
-// MARK: - NavigationBar, Segmented Control
+// MARK: - NavigationBar
 extension OpenMarketViewController {
     private func setupNavigationBar() {
         segmentedControl.addTarget(self, action: #selector(toggleViewTypeSegmentedControl), for: .valueChanged)
@@ -105,6 +89,23 @@ extension OpenMarketViewController {
     @objc private func touchUpAddProductButton() {
         let addProductViewController = AddProductViewController()
         navigationController?.pushViewController(addProductViewController, animated: true)
+    }
+}
+
+// MARK: - SegmentedControl
+extension OpenMarketViewController {
+    @objc private func toggleViewTypeSegmentedControl(_ sender: UISegmentedControl) {
+        dataSource.changeLayoutKind(at: sender.selectedSegmentIndex)
+    }
+    
+    private func currentScrollRatio() -> CGFloat {
+        return productCollectionView.contentOffset.y / productCollectionView.contentSize.height
+    }
+    
+    private func syncScrollIndicator(with currentScrollRatio: CGFloat) {
+        let nextViewMaxHeight = productCollectionView.contentSize.height
+        let offset = CGPoint(x: 0, y: nextViewMaxHeight * currentScrollRatio)
+        productCollectionView.setContentOffset(offset, animated: false)
     }
 }
 
@@ -145,7 +146,7 @@ extension OpenMarketViewController {
     private func setupCollectionView() {
         productCollectionView = productListStackView.productCollectionView
         productCollectionView.dataSource = dataSource
-        productCollectionView.delegate = self
+        productCollectionView.delegate = layout
         setupRefreshControl()
     }
     
