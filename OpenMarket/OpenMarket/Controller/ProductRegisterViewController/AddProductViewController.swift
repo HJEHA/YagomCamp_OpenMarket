@@ -10,16 +10,17 @@ enum ViewTitle: String {
 
 final class AddProductViewController: UIViewController {
     // MARK: - Properties
+    var dataSource = AddProductDataSource()
+    
     private(set) var productManagementScrollView = ProductManagementScrollView()
     private(set) var imageCollectionView: ProductImageCollectionView!
     private var descriptionTextView: UITextView!
     private(set) var imagePickerController = UIImagePickerController()
     
-    var dataSource = AddProductDataSource()
-    
     // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupDataSource()
         addObserverKeyboardNotification()
         tapBehindViewToEndEdit()
         
@@ -46,13 +47,29 @@ final class AddProductViewController: UIViewController {
         imageCollectionView.register(AddProductImageFooterView.self,
                                      forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                                      withReuseIdentifier: AddProductImageFooterView.identifier)
-        imageCollectionView.dataSource = self
+        imageCollectionView.dataSource = dataSource
         imageCollectionView.delegate = self
     }
     
     private func setupDescriptionTextView() {
         descriptionTextView = productManagementScrollView.descriptionTextView
         descriptionTextView.delegate = self
+    }
+}
+
+// MARK: - AddProduct DataSource Delegate
+extension AddProductViewController: AddProductDataSourceDelegate {
+    private func setupDataSource() {
+        self.dataSource.delegate = self
+    }
+    
+    func addProductDataSource(didReusedCell cell: ProductImageCell) {
+        cell.removeButton.addTarget(self, action: #selector(removeImage), for: .touchUpInside)
+        cell.editButton.addTarget(self, action: #selector(editImageOfSelectedItem), for: .touchUpInside)
+    }
+    
+    func addProductDataSource(didReusedFooterView footerView: AddProductImageFooterView) {
+        footerView.addButton.addTarget(self, action: #selector(touchUpAddProductImageButton), for: .touchUpInside)
     }
 }
 

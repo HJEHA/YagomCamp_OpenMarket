@@ -15,7 +15,14 @@ private extension UIView {
     }
 }
 
-final class AddProductDataSource {
+protocol AddProductDataSourceDelegate: AnyObject {
+    func addProductDataSource(didReusedCell cell: ProductImageCell)
+    func addProductDataSource(didReusedFooterView footerView: AddProductImageFooterView)
+}
+
+final class AddProductDataSource: NSObject {
+    weak var delegate: AddProductDataSourceDelegate?
+    
     static let defaultImageAddFooterViewSize = CGSize(width: UIScreen.main.bounds.width * 0.36,
                                                       height: UIScreen.main.bounds.width * 0.35)
     var imageAddFooterViewSize = AddProductDataSource.defaultImageAddFooterViewSize
@@ -34,9 +41,9 @@ final class AddProductDataSource {
 }
 
 // MARK: - ImageCollectionView DataSource
-extension AddProductViewController: UICollectionViewDataSource {
+extension AddProductDataSource: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataSource.productImages.count
+        return productImages.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -45,11 +52,24 @@ extension AddProductViewController: UICollectionViewDataSource {
                                                             for: indexPath) as? ProductImageCell else {
             return UICollectionViewCell()
         }
-        cell.setupProductImage(with: dataSource.productImages[indexPath.item])
-        cell.removeButton.addTarget(self, action: #selector(removeImage), for: .touchUpInside)
-        cell.editButton.addTarget(self, action: #selector(editImageOfSelectedItem), for: .touchUpInside)
+        cell.setupProductImage(with: productImages[indexPath.item])
+        delegate?.addProductDataSource(didReusedCell: cell)
         cell.setIndexPath(at: indexPath)
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        viewForSupplementaryElementOfKind kind: String,
+                        at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let footerView = collectionView
+                .dequeueReusableSupplementaryView(ofKind: kind,
+                                                  withReuseIdentifier: AddProductImageFooterView.identifier,
+                                                  for: indexPath) as? AddProductImageFooterView else {
+            return UICollectionReusableView()
+        }
+        delegate?.addProductDataSource(didReusedFooterView: footerView)
+        
+        return footerView
     }
 }
 
@@ -78,19 +98,6 @@ extension AddProductViewController {
 
 // MARK: - ImageCollectionView Delegate
 extension AddProductViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind kind: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
-        guard let footerView = collectionView
-                .dequeueReusableSupplementaryView(ofKind: kind,
-                                                  withReuseIdentifier: AddProductImageFooterView.identifier,
-                                                  for: indexPath) as? AddProductImageFooterView else {
-            return UICollectionReusableView()
-        }
-        footerView.addButton.addTarget(self, action: #selector(touchUpAddProductImageButton), for: .touchUpInside)
-        return footerView
-    }
-    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForFooterInSection section: Int) -> CGSize {
