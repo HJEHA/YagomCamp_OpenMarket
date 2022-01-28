@@ -68,7 +68,6 @@ class ProductDetailScrollView: UIScrollView {
     
     func setPageControl() {
         verticalStackView.addArrangedSubview(imageNumberPageControl)
-        imageNumberPageControl.numberOfPages = 5 // todo 밖에서 이미지 개수 설정
         imageNumberPageControl.currentPage = 0
         imageNumberPageControl.pageIndicatorTintColor = .lightGray
         imageNumberPageControl.currentPageIndicatorTintColor = .systemBlue
@@ -79,6 +78,8 @@ class ProductDetailScrollView: UIScrollView {
         horizontalStackView.translatesAutoresizingMaskIntoConstraints = false
         horizontalStackView.axis = .horizontal
         horizontalStackView.distribution = .fill
+        horizontalStackView.alignment = .top
+        horizontalStackView.spacing = 8
         verticalStackView.addArrangedSubview(horizontalStackView)
         horizontalStackView.addArrangedSubview(nameLabel)
         horizontalStackView.backgroundColor = .systemGray
@@ -99,7 +100,7 @@ class ProductDetailScrollView: UIScrollView {
     
     func setLabels() {
         nameLabel.text = "제목제목제목제목제목제목제목제목제목제목제목"
-        nameLabel.font = .preferredFont(forTextStyle: .body)
+        nameLabel.font = .preferredFont(forTextStyle: .headline)
         nameLabel.textAlignment = .left
         nameLabel.numberOfLines = 0
           
@@ -120,7 +121,7 @@ class ProductDetailScrollView: UIScrollView {
     private func setupDescriptionTextView() {
         verticalStackView.addArrangedSubview(descriptionTextView)
         descriptionTextView.text = ProductPlaceholder.description.text
-        descriptionTextView.textColor = UIColor.lightGray
+        descriptionTextView.textColor = .black
         descriptionTextView.isEditable = false
         descriptionTextView.isScrollEnabled = false
         descriptionTextView.font = .preferredFont(forTextStyle: .body)
@@ -131,5 +132,53 @@ class ProductDetailScrollView: UIScrollView {
         subviews.forEach { subview in
             subview.translatesAutoresizingMaskIntoConstraints = false
         }
+    }
+    
+    func updateView(with data: DetailViewProduct) {
+        imageNumberPageControl.numberOfPages = data.images.count
+        
+        nameLabel.text = data.name
+        changePriceAndDiscountedPriceLabel(price: data.price,
+                                           discountedPrice: data.discountedPrice,
+                                           bargainPrice: data.bargainPrice,
+                                           currency: data.currency)
+        changeStockLabel(by: data.stock)
+        changeDescriptionTextView(with: data.description)
+    }
+    
+    private func changePriceAndDiscountedPriceLabel(price: Double,
+                                                    discountedPrice: Double,
+                                                    bargainPrice: Double,
+                                                    currency: Currency) {
+        if discountedPrice == 0 {
+            priceLabel.attributedText = nil
+            priceLabel.textColor = .systemGray
+            priceLabel.text = "\(currency.rawValue) \(price.formattedWithComma())"
+            
+            bargainPriceLabel.isHidden = true
+        } else {
+            let priceText = "\(currency.rawValue) \(price.formattedWithComma())"
+            priceLabel.strikeThrough(text: priceText)
+            priceLabel.textColor = .systemRed
+            
+            bargainPriceLabel.isHidden = false
+            bargainPriceLabel.text = "\(currency.rawValue) \(bargainPrice.formattedWithComma())"
+        }
+    }
+    
+    private func changeStockLabel(by stock: Int) {
+        if stock == 0 {
+            stockLabel.text = "품절"
+            stockLabel.textColor = .systemYellow
+            stockLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        } else {
+            stockLabel.text = "잔여수량 : \(stock.formattedWithComma())"
+            stockLabel.textColor = .systemGray
+            stockLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        }
+    }
+    
+    private func changeDescriptionTextView(with text: String) {
+        descriptionTextView.text = text
     }
 }
