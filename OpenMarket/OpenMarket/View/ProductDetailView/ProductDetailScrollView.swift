@@ -40,7 +40,6 @@ class ProductDetailScrollView: UIScrollView {
         verticalStackView.alignment = .fill
         verticalStackView.distribution = .fill
         verticalStackView.spacing = 10
-        verticalStackView.backgroundColor = .systemRed
         let inset: CGFloat = 15
         verticalStackView.layoutMargins = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
         verticalStackView.isLayoutMarginsRelativeArrangement = true
@@ -82,7 +81,6 @@ class ProductDetailScrollView: UIScrollView {
         horizontalStackView.spacing = 8
         verticalStackView.addArrangedSubview(horizontalStackView)
         horizontalStackView.addArrangedSubview(nameLabel)
-        horizontalStackView.backgroundColor = .systemGray
         
         let stockAndPriceStackView = UIStackView()
         stockAndPriceStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -94,26 +92,21 @@ class ProductDetailScrollView: UIScrollView {
         stockAndPriceStackView.addArrangedSubview(stockLabel)
         stockAndPriceStackView.addArrangedSubview(priceLabel)
         stockAndPriceStackView.addArrangedSubview(bargainPriceLabel)
-        stockAndPriceStackView.backgroundColor = .systemPink
         stockAndPriceStackView.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
     
     func setLabels() {
-        nameLabel.text = "제목제목제목제목제목제목제목제목제목제목제목"
         nameLabel.font = .preferredFont(forTextStyle: .headline)
         nameLabel.textAlignment = .left
         nameLabel.numberOfLines = 0
           
-        stockLabel.text = "남은 수량 : 182"
         stockLabel.font = .preferredFont(forTextStyle: .body)
         stockLabel.textAlignment = .right
         stockLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         
-        priceLabel.text = "KRW 20000"
         priceLabel.font = .preferredFont(forTextStyle: .body)
         priceLabel.textAlignment = .right
         
-        bargainPriceLabel.text = "KRW 10000"
         bargainPriceLabel.font = .preferredFont(forTextStyle: .body)
         bargainPriceLabel.textAlignment = .right
     }
