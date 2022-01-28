@@ -73,6 +73,7 @@ extension ProductDetailViewController: ProductDetailDataSourceDelegate {
         if let product = product {
             DispatchQueue.main.async { [weak self] in
                 self?.productDetailScrollView.updateView(with: product)
+                self?.imageCollectionView.reloadData()
                 self?.title = product.name  // Todo: 개선 필요
             }
         }
