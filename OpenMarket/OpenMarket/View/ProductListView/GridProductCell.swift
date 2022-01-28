@@ -10,6 +10,8 @@ final class GridProductCell: UICollectionViewCell, ProductCellProtocol {
     private let bargainPriceLabel = UILabel()
     private let stockLabel = UILabel()
     
+    private(set) var productId: Int = 0
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupBorderLine()
@@ -92,7 +94,16 @@ final class GridProductCell: UICollectionViewCell, ProductCellProtocol {
         stockLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
     }
     
-    func updateView(with data: Product) {
+    func applyData(_ data: Product) {
+        setProductId(with: data)
+        updateView(with: data)
+    }
+    
+    private func setProductId(with data: Product) {
+        productId = data.id
+    }
+    
+    private func updateView(with data: Product) {
         productThumbnailView.loadImage(of: data.thumbnail)
         nameLabel.text = data.name
         changePriceAndDiscountedPriceLabel(price: data.price,

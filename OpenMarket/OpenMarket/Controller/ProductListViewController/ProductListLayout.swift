@@ -1,7 +1,12 @@
 import UIKit
 
+protocol ProductListLayoutDelegate: AnyObject {
+    func productListLayout(didSelectCell productId: Int)
+}
+
 final class ProductListLayout: NSObject {
     private unowned var dataSource: ProductListDataSource
+    weak var delegate: ProductListLayoutDelegate?
     
     init(dataSource: ProductListDataSource) {
         self.dataSource = dataSource
@@ -73,5 +78,16 @@ extension ProductListLayout: UICollectionViewDelegateFlowLayout {
            refreshControl.isRefreshing {
             refreshControl.endRefreshing()
         }
+    }
+}
+
+// MARK: - CollectionView Delegate
+extension ProductListLayout: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? ProductCellProtocol else {
+            return
+        }
+        let productId = cell.productId
+        delegate?.productListLayout(didSelectCell: productId)
     }
 }

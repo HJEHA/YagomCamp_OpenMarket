@@ -25,6 +25,7 @@ final class ProductListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDataSource()
+        setupLayout()
         setupViewController()
         setupNavigationBar()
         setupProductListStackView()
@@ -72,6 +73,19 @@ extension ProductListViewController: ProductListDataSourceDelegate {
         DispatchQueue.main.async { [weak self] in
             self?.productListStackView.showRefreshButton()
         }
+    }
+}
+
+// MARK: - ProductListLayout Delegate
+extension ProductListViewController: ProductListLayoutDelegate {
+    private func setupLayout() {
+        layout.delegate = self
+    }
+    
+    func productListLayout(didSelectCell productId: Int) {
+        let productDetailViewController = ProductDetailViewController()
+        productDetailViewController.setProductId(productId)
+        navigationController?.pushViewController(productDetailViewController, animated: true)
     }
 }
 

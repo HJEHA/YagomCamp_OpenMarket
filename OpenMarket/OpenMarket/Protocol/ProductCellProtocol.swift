@@ -1,5 +1,7 @@
 import UIKit
 
 protocol ProductCellProtocol: UICollectionViewCell {
-    func updateView(with data: Product)
+    var productId: Int { get }
+    
+    func applyData(_ data: Product)
 }

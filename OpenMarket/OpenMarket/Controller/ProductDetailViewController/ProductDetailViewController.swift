@@ -1,24 +1,29 @@
 import UIKit
 
 class ProductDetailViewController: UIViewController {
-    
     private let dataSource = ProductDetailDataSource()
     let productDetailScrollView = ProductDetailScrollView()
-
+    
+    private var productId: Int?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
         setupNavigationBar()
         setupProductDetailScrollView()
         dataSource.delegate = self
-        dataSource.setupProducts(at: 1000)
+        dataSource.setupProducts(at: productId)
     }
     
-    func setup() {
+    func setProductId(_ productId: Int) {
+        self.productId = productId
+    }
+    
+    private func setup() {
         view.backgroundColor = .white
     }
     
-    func setupProductDetailScrollView() {
+    private func setupProductDetailScrollView() {
         view.addSubview(productDetailScrollView)
         productDetailScrollView.setupConstraints(with: view)
         productDetailScrollView.setupSubviews()
@@ -28,7 +33,7 @@ class ProductDetailViewController: UIViewController {
 // MARK: - NavigationBar
 extension ProductDetailViewController {
     private func setupNavigationBar() {
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", // 목록화면에서 navi로 이동하도록 연결
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "",
                                                            style: .plain,
                                                            target: nil,
                                                            action: nil)
@@ -55,6 +60,7 @@ extension ProductDetailViewController: ProductDetailDataSourceDelegate {
         if let product = product {
             DispatchQueue.main.async { [weak self] in
                 self?.productDetailScrollView.updateView(with: product)
+                self?.title = product.name  // Todo: 개선 필요
             }
         }
     }

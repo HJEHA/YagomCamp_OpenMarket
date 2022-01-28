@@ -101,8 +101,7 @@ extension ProductListDataSource: UICollectionViewDataSource {
         guard let product = products?[indexPath.item] else {
             return UICollectionViewCell()
         }
-        
-        cell.updateView(with: product)
+        cell.applyData(product)
         
         return cell
     }

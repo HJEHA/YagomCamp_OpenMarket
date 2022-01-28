@@ -11,6 +11,8 @@ final class ListProductCell: UICollectionViewCell, ProductCellProtocol {
     private let stockLabel = UILabel()
     private let accessoryImageView = UIImageView()
     
+    private(set) var productId: Int = 0
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUnderLine()
@@ -137,7 +139,16 @@ final class ListProductCell: UICollectionViewCell, ProductCellProtocol {
         stockLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
     }
     
-    func updateView(with data: Product) {
+    func applyData(_ data: Product) {
+        setProductId(with: data)
+        updateView(with: data)
+    }
+    
+    private func setProductId(with data: Product) {
+        productId = data.id
+    }
+    
+    private func updateView(with data: Product) {
         productThumbnailView.loadImage(of: data.thumbnail)
         nameLabel.text = data.name
         changePriceAndDiscountedPriceLabel(price: data.price,
