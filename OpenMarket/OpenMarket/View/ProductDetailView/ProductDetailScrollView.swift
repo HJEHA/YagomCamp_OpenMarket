@@ -2,7 +2,7 @@ import UIKit
 
 class ProductDetailScrollView: UIScrollView {
     private let verticalStackView = UIStackView()
-    private var productDetailImageCollectionView = UICollectionView(frame: CGRect.zero,
+    private(set) var productDetailImageCollectionView = UICollectionView(frame: CGRect.zero,
                                                                     collectionViewLayout: UICollectionViewFlowLayout())
     private(set) var imageNumberPageControl = UIPageControl()
     private let nameLabel = UILabel()
@@ -57,10 +57,10 @@ class ProductDetailScrollView: UIScrollView {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
         flowLayout.minimumLineSpacing = 0
-        flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width,
-                                     height: UIScreen.main.bounds.width)
+        flowLayout.itemSize = CGSize(width: UIScreen.main.bounds.width - 30,
+                                     height: UIScreen.main.bounds.width  - 30)
         productDetailImageCollectionView.collectionViewLayout = flowLayout
-
+        productDetailImageCollectionView.isPagingEnabled = true
         productDetailImageCollectionView.heightAnchor.constraint(equalTo: productDetailImageCollectionView.widthAnchor)
             .isActive = true
     }

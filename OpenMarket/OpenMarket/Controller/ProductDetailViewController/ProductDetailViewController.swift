@@ -1,16 +1,20 @@
 import UIKit
 
 class ProductDetailViewController: UIViewController {
+    // MARK: - Properties
     private let dataSource = ProductDetailDataSource()
     let productDetailScrollView = ProductDetailScrollView()
+    private(set) var imageCollectionView: UICollectionView!
     
     private var productId: Int?
     
+    // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
         setupNavigationBar()
         setupProductDetailScrollView()
+        setupImageCollectionView()
         dataSource.delegate = self
         dataSource.setupProducts(at: productId)
     }
@@ -27,6 +31,14 @@ class ProductDetailViewController: UIViewController {
         view.addSubview(productDetailScrollView)
         productDetailScrollView.setupConstraints(with: view)
         productDetailScrollView.setupSubviews()
+    }
+    
+    private func setupImageCollectionView() {
+        imageCollectionView = productDetailScrollView.productDetailImageCollectionView
+        imageCollectionView.register(ProductDetailImageCell.self,
+                                     forCellWithReuseIdentifier: ProductDetailImageCell.identifier)
+        imageCollectionView.dataSource = dataSource
+        imageCollectionView.delegate = self
     }
 }
 
@@ -55,6 +67,7 @@ extension ProductDetailViewController {
     }
 }
 
+// MARK: - Product Detail DataSource Delegate
 extension ProductDetailViewController: ProductDetailDataSourceDelegate {
     func productDetailDataSource(didFetchProduct product: DetailViewProduct?) {
         if let product = product {
@@ -64,4 +77,15 @@ extension ProductDetailViewController: ProductDetailDataSourceDelegate {
             }
         }
     }
+}
+
+// MARK: - CollectionView Delegate
+extension ProductDetailViewController: UICollectionViewDelegate {
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                   withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let sideInset: CGFloat = 30
+        let page = Int(targetContentOffset.pointee.x / (view.frame.width - sideInset))
+        productDetailScrollView.imageNumberPageControl.currentPage = page
+      }
 }
