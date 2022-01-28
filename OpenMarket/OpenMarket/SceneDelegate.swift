@@ -16,7 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
         window = UIWindow(windowScene: windowScene)
-        let mainViewController = ProductListViewController()
+//        let mainViewController = ProductListViewController()
+        let mainViewController = ProductDetailViewController()
         let navigationController = OpenMarketNavigationController(rootViewController: mainViewController)
         
         window?.rootViewController = navigationController

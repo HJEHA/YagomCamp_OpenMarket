@@ -3,7 +3,7 @@ import UIKit
 class ProductImageCollectionView: UICollectionView {
     var reloadDataCompletionHandler: (() -> Void)?
     
-    func setupConstraints(with superview: UIView) {
+    func setupConstraints(with superview: UIView) { // ToDo: 호출하도록 수정
         translatesAutoresizingMaskIntoConstraints = false
         leadingAnchor.constraint(equalTo: superview.safeAreaLayoutGuide.leadingAnchor)
             .isActive = true
